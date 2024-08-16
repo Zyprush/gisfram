@@ -6,7 +6,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase';
 
 
-export const LoginDirect: React.FC = () => {
+export const Authenticator: React.FC = () => {
   const router = useRouter();
   const [user] = useAuthState(auth);
 
@@ -14,7 +14,7 @@ export const LoginDirect: React.FC = () => {
     const userCheck = async () => {
       if (!user) {
         try {
-          router.push('/sign-in')
+          router.push('/pages/sign-in')
         } catch (error) {
           console.error('Error fetching user data:', error);
         }

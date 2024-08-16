@@ -4,6 +4,9 @@ import { auth } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FirebaseError } from "firebase/app"; // Import FirebaseError
 
 export default function Page() {
   const router = useRouter();
@@ -14,8 +17,36 @@ export default function Page() {
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await signInUserWithEmailAndPassword(email, password);
-    router.push("/pages/dashboard");
+    try {
+      await signInUserWithEmailAndPassword(email, password);
+      router.push("/pages/dashboard");
+    } catch (error: any) {
+      if (error instanceof FirebaseError) {
+        // Define custom error messages based on Firebase error codes
+        const errorMessages: { [key: string]: string } = {
+          "auth/invalid-credential":
+            "Invalid email or password. Please try again.",
+          "auth/user-disabled":
+            "This account has been disabled. Please contact support.",
+          "auth/too-many-requests":
+            "Too many failed login attempts. Please try again later.",
+          "auth/wrong-password":
+            "The password is incorrect. Please try again.",
+          "auth/user-not-found":
+            "No user found with this email. Please check and try again.",
+          // Add more error codes and messages as needed
+        };
+
+        // Display the appropriate error message
+        toast.error(
+          errorMessages[error.code] ||
+            "An unexpected error occurred. Please try again."
+        );
+      } else {
+        // Display a generic error message for unexpected errors
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+    }
   };
 
   return (
@@ -70,6 +101,9 @@ export default function Page() {
           </form>
         </div>
       </div>
+
+      {/* Add ToastContainer to display toasts */}
+      <ToastContainer />
     </section>
   );
 }
