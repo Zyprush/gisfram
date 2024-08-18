@@ -7,7 +7,7 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/map/paluanCoords";
-import { IconFocusCentered } from "@tabler/icons-react";
+import { IconBrowserPlus, IconFocusCentered } from "@tabler/icons-react";
 
 const mapContainerStyle = {
   width: "100%",
@@ -54,12 +54,19 @@ const GoogleMapComponent: React.FC = () => {
 
   return (
     <>
-      <div className="absolute top-8 right-28 z-10 flex flex-col">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex p-2 gap-3 bg-white shadow rounded-md ">
+        <button
+          className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom"
+          data-tip="Add a record"
+        >
+          <IconBrowserPlus />
+        </button>
         <button
           onClick={handlePanToCenter}
-          className=" bg-teal-600 text-white p-2 rounded"
+          className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom"
+          data-tip="Return to Paluan"
         >
-          <IconFocusCentered/>
+          <IconFocusCentered />
         </button>
       </div>
       <GoogleMap
@@ -71,7 +78,7 @@ const GoogleMapComponent: React.FC = () => {
         onLoad={(map) => {
           mapRef.current = map;
         }}
-       options={{fullscreenControl:false}}
+        options={{ fullscreenControl: false }}
       >
         <Polyline
           path={paluanCoords}
