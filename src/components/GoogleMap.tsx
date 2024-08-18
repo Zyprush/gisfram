@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useState, useRef } from "react";
 import {
   GoogleMap,
@@ -8,6 +8,7 @@ import {
 } from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/map/paluanCoords";
 import { IconBrowserPlus, IconFocusCentered } from "@tabler/icons-react";
+import AddData from "@/app/pages/map/AddData";
 
 const mapContainerStyle = {
   width: "100%",
@@ -23,6 +24,7 @@ const options = {
 
 const GoogleMapComponent: React.FC = () => {
   const [marker, setMarker] = useState<google.maps.LatLng>();
+  const [showAddData, setShowAddData] = useState<boolean>(false);
   const mapRef = useRef<google.maps.Map | null>(null);
 
   const { isLoaded } = useJsApiLoader({
@@ -54,13 +56,19 @@ const GoogleMapComponent: React.FC = () => {
 
   return (
     <>
+      {showAddData && (
+        <AddData setAddData={setShowAddData} marker={marker} />
+      )}
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex p-2 gap-3 bg-white shadow rounded-md ">
-        <button
-          className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom"
-          data-tip="Add a record"
-        >
-          <IconBrowserPlus />
-        </button>
+        {marker && (
+          <button
+            className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom"
+            data-tip="Add a Household"
+            onClick={() => setShowAddData(true)}
+          >
+            <IconBrowserPlus />
+          </button>
+        )}
         <button
           onClick={handlePanToCenter}
           className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom"
@@ -84,7 +92,6 @@ const GoogleMapComponent: React.FC = () => {
           path={paluanCoords}
           options={{ strokeColor: "#FF0000", strokeWeight: 3 }}
         />
-        <Marker position={center} title="Paluan, Occidental Mindoro" />
         {marker && <Marker position={marker} />}
       </GoogleMap>
     </>
