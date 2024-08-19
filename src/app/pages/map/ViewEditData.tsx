@@ -18,6 +18,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
       try {
         const docRef = doc(db, "households", id);
         const docSnap = await getDoc(docRef);
+        console.log('docSnap.data()', docSnap.data())
 
         if (docSnap.exists()) {
           setData(docSnap.data());
@@ -46,6 +47,23 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
   const handleMemberChange = (index: number, field: string, value: any) => {
     const newMembers = [...data.member];
     newMembers[index] = { ...newMembers[index], [field]: value };
+    setData({ ...data, member: newMembers });
+  };
+
+  const addMember = () => {
+    const newMember = {
+      name: "",
+      age: "",
+      gender: "Male",
+      contact: "",
+      pwd: false,
+      indigenous: false
+    };
+    setData({ ...data, member: [...data.member, newMember] });
+  };
+
+  const deleteMember = (index: number) => {
+    const newMembers = data.member.filter((_: any, i: number) => i !== index);
     setData({ ...data, member: newMembers });
   };
 
@@ -265,8 +283,24 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   />
                   Indigenous
                 </label>
+                {isEditing && (
+                  <button
+                    onClick={() => deleteMember(index)}
+                    className="btn btn-sm btn-error"
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             ))}
+            {isEditing && (
+              <button
+                onClick={addMember}
+                className="btn btn-sm btn-secondary mt-2"
+              >
+                Add Member
+              </button>
+            )}
           </div>
 
           {isEditing && (

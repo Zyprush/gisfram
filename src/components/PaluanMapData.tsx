@@ -17,7 +17,7 @@ import {
   Query,
 } from "firebase/firestore";
 import { db } from "@/firebase"; // Make sure to import your Firestore instance
-import ViewEditData from "@/app/pages/add-data/ViewEditData";
+import ViewEditData from "@/app/pages/map/ViewEditData";
 
 const mapContainerStyle = {
   width: "100%",
