@@ -100,7 +100,18 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               disabled={!isEditing}
               className="select border-zinc-200 focus:outline-none"
             >
-              {/* Add options for barangays */}
+              <option value="Alipaoy">Alipaoy</option>
+              <option value="Barangay 5">Barangay 5</option>
+              <option value="Barangay 2">Barangay 2</option>
+              <option value="Harrison">Harrison</option>
+              <option value="Lumangbayan">Lumangbayan</option>
+              <option value="Mananao">Mananao</option>
+              <option value="Barangay 1">Barangay 1</option>
+              <option value="Marikit">Marikit</option>
+              <option value="Barangay 4">Barangay 4</option>
+              <option value="Barangay 6">Barangay 6</option>
+              <option value="Barangay 3">Barangay 3</option>
+              <option value="Tubili">Tubili</option>
             </select>
             <input
               type="text"
@@ -116,7 +127,9 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               disabled={!isEditing}
               className="select select-bordered border-zinc-200 focus:outline-none"
             >
-              {/* Add options for house structures */}
+              <option value="concrete">Concrete</option>
+              <option value="cement">Cement</option>
+              <option value="mix">Mix</option>
             </select>
           </div>
 
@@ -135,7 +148,9 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               type="number"
               placeholder="Age"
               value={data.headInfo.age}
-              onChange={(e) => handleHeadInfoChange("age", parseInt(e.target.value) || "")}
+              onChange={(e) =>
+                handleHeadInfoChange("age", parseInt(e.target.value) || "")
+              }
               disabled={!isEditing}
               className="input input-bordered border-zinc-200 focus:outline-none text-sm"
             />
@@ -169,7 +184,9 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               <input
                 type="checkbox"
                 checked={data.headInfo.indigenous}
-                onChange={(e) => handleHeadInfoChange("indigenous", e.target.checked)}
+                onChange={(e) =>
+                  handleHeadInfoChange("indigenous", e.target.checked)
+                }
                 disabled={!isEditing}
               />
               Indigenous
@@ -185,7 +202,9 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   type="text"
                   placeholder="Name"
                   value={member.name}
-                  onChange={(e) => handleMemberChange(index, "name", e.target.value)}
+                  onChange={(e) =>
+                    handleMemberChange(index, "name", e.target.value)
+                  }
                   disabled={!isEditing}
                   className="input input-bordered border-zinc-200 focus:outline-none text-sm"
                 />
@@ -193,13 +212,21 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   type="number"
                   placeholder="Age"
                   value={member.age}
-                  onChange={(e) => handleMemberChange(index, "age", parseInt(e.target.value) || "")}
+                  onChange={(e) =>
+                    handleMemberChange(
+                      index,
+                      "age",
+                      parseInt(e.target.value) || ""
+                    )
+                  }
                   disabled={!isEditing}
                   className="input input-bordered border-zinc-200 focus:outline-none text-sm"
                 />
                 <select
                   value={member.gender}
-                  onChange={(e) => handleMemberChange(index, "gender", e.target.value)}
+                  onChange={(e) =>
+                    handleMemberChange(index, "gender", e.target.value)
+                  }
                   disabled={!isEditing}
                   className="select select-bordered border-zinc-200 focus:outline-none"
                 >
@@ -210,7 +237,9 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   type="text"
                   placeholder="Contact (Optional)"
                   value={member.contact || ""}
-                  onChange={(e) => handleMemberChange(index, "contact", e.target.value)}
+                  onChange={(e) =>
+                    handleMemberChange(index, "contact", e.target.value)
+                  }
                   disabled={!isEditing}
                   className="input input-bordered border-zinc-200 focus:outline-none text-sm"
                 />
@@ -218,7 +247,9 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   <input
                     type="checkbox"
                     checked={member.pwd}
-                    onChange={(e) => handleMemberChange(index, "pwd", e.target.checked)}
+                    onChange={(e) =>
+                      handleMemberChange(index, "pwd", e.target.checked)
+                    }
                     disabled={!isEditing}
                   />
                   PWD
@@ -227,7 +258,9 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   <input
                     type="checkbox"
                     checked={member.indigenous}
-                    onChange={(e) => handleMemberChange(index, "indigenous", e.target.checked)}
+                    onChange={(e) =>
+                      handleMemberChange(index, "indigenous", e.target.checked)
+                    }
                     disabled={!isEditing}
                   />
                   Indigenous
@@ -250,7 +283,8 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
         </div>
 
         <div className="m-auto mb-0 text-xs text-zinc-500">
-          Data location: Latitude: {data.position.lat}, Longitude: {data.position.lng}
+          Data location: Latitude: {data.position.lat}, Longitude:{" "}
+          {data.position.lng}
         </div>
       </div>
     </div>

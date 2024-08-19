@@ -17,6 +17,7 @@ import {
   Query,
 } from "firebase/firestore";
 import { db } from "@/firebase"; // Make sure to import your Firestore instance
+import ViewEditData from "@/app/pages/add-data/ViewEditData";
 
 const mapContainerStyle = {
   width: "100%",
@@ -36,13 +37,14 @@ interface HouseholdData {
   barangay: string;
   head: { name: string };
   houseNo: string;
-  // Add other fields as needed
 }
 
 const PaluanMapData: React.FC = () => {
   const [data, setData] = useState<HouseholdData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [barangayFilter, setBarangayFilter] = useState<string>("");
+  const [id, setId] = useState<string>("");
+  const [viewEditData, setViewEditData] = useState<boolean>(false);
   const [nameSearch, setNameSearch] = useState<string>("");
   const [houseNumberSearch, setHouseNumberSearch] = useState<string>(""); // Add state for house number filter
   const mapRef = useRef<google.maps.Map | null>(null);
@@ -93,7 +95,7 @@ const PaluanMapData: React.FC = () => {
 
   useEffect(() => {
     fetchFilteredData(); // Fetch data initially
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!isLoaded) return <div>Loading...</div>;
@@ -121,49 +123,51 @@ const PaluanMapData: React.FC = () => {
 
   return (
     <>
+      {viewEditData && (
+        <ViewEditData id={id} setViewEditData={setViewEditData} />
+      )}
       <div className="text-zinc-700 absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex items-center p-2 gap-3">
-      <div className="flex gap-2 items-center bg-white rounded-lg shadow-sm w-auto p-2">
-
-        <select
-          value={barangayFilter}
-          onChange={(e) => setBarangayFilter(e.target.value)}
-          className="select border-zinc-200 focus:outline-none"
-        >
-          <option value="">Select Barangay</option>
-          <option value="Alipaoy">Alipaoy</option>
-          <option value="Barangay 5">Barangay 5</option>
-          <option value="Barangay 2">Barangay 2</option>
-          <option value="Harrison">Harrison</option>
-          <option value="Lumangbayan">Lumangbayan</option>
-          <option value="Mananao">Mananao</option>
-          <option value="Barangay 1">Barangay 1</option>
-          <option value="Marikit">Marikit</option>
-          <option value="Barangay 4">Barangay 4</option>
-          <option value="Barangay 6">Barangay 6</option>
-          <option value="Barangay 3">Barangay 3</option>
-          <option value="Tubili">Tubili</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Head of Family"
-          value={nameSearch}
-          onChange={(e) => setNameSearch(e.target.value)}
-          className="input input-bordered border-zinc-200 focus:outline-none text-sm"
-        />
-        <input
-          type="text"
-          placeholder="House Number"
-          value={houseNumberSearch}
-          onChange={(e) => setHouseNumberSearch(e.target.value)}
-          className="input input-bordered border-zinc-200 focus:outline-none text-sm"
-        />
-        <button
-          onClick={handleFilterSubmit}
-          className="bg-primary text-white p-1 rounded text-sm py-4 px-6"
-        >
-          Search
-        </button>
-      </div>
+        <div className="flex gap-2 items-center bg-white rounded-lg shadow-sm w-auto p-2">
+          <select
+            value={barangayFilter}
+            onChange={(e) => setBarangayFilter(e.target.value)}
+            className="select border-zinc-200 focus:outline-none"
+          >
+            <option value="">Select Barangay</option>
+            <option value="Alipaoy">Alipaoy</option>
+            <option value="Barangay 5">Barangay 5</option>
+            <option value="Barangay 2">Barangay 2</option>
+            <option value="Harrison">Harrison</option>
+            <option value="Lumangbayan">Lumangbayan</option>
+            <option value="Mananao">Mananao</option>
+            <option value="Barangay 1">Barangay 1</option>
+            <option value="Marikit">Marikit</option>
+            <option value="Barangay 4">Barangay 4</option>
+            <option value="Barangay 6">Barangay 6</option>
+            <option value="Barangay 3">Barangay 3</option>
+            <option value="Tubili">Tubili</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Head of Family"
+            value={nameSearch}
+            onChange={(e) => setNameSearch(e.target.value)}
+            className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+          />
+          <input
+            type="text"
+            placeholder="House Number"
+            value={houseNumberSearch}
+            onChange={(e) => setHouseNumberSearch(e.target.value)}
+            className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+          />
+          <button
+            onClick={handleFilterSubmit}
+            className="bg-primary text-white p-1 rounded text-sm py-4 px-6"
+          >
+            Search
+          </button>
+        </div>
 
         <button
           onClick={handlePanToCenter}
@@ -183,7 +187,7 @@ const PaluanMapData: React.FC = () => {
         onLoad={(map) => {
           mapRef.current = map;
         }}
-        options={{ fullscreenControl: false}}
+        options={{ fullscreenControl: false }}
       >
         <Polyline
           path={paluanCoords}
@@ -193,8 +197,11 @@ const PaluanMapData: React.FC = () => {
           <Marker
             key={household.id}
             position={household.position}
-            title={`House NO: ${household.houseNo}\nHead: ${household.head}\nBarangay: ${household.barangay}`}
-            // onClick={(household)=>{console.log(household.id)}}
+            title={`House NO: ${household.houseNo}\nHead: ${household.head.name}\nBarangay: ${household.barangay}`}
+            onClick={() => {
+              setId(household.id);
+              setViewEditData(true);
+            }}
           />
         ))}
       </GoogleMap>
