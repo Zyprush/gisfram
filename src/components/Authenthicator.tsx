@@ -14,7 +14,7 @@ export const Authenticator: React.FC = () => {
     const userCheck = async () => {
       if (!user) {
         try {
-          router.push('/pages/sign-in')
+          //router.push('/pages/sign-in')
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
