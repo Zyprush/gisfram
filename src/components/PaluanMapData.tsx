@@ -26,7 +26,7 @@ const mapContainerStyle = {
 const center = { lat: 13.4341, lng: 120.4603 };
 
 const options = {
-  mapTypeId: google.maps.MapTypeId.SATELLITE,
+  mapTypeId: "roadmap" as google.maps.MapTypeId,
   zoom: 11.3,
 };
 
