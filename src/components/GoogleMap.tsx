@@ -37,11 +37,8 @@ const GoogleMapComponent: React.FC = () => {
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (!event.latLng) return;
-
     const clickedLocation = event.latLng;
-
     const polygon = new google.maps.Polygon({ paths: paluanCoords });
-
     if (google.maps.geometry.poly.containsLocation(clickedLocation, polygon)) {
       setMarker(clickedLocation);
     } else {
@@ -93,7 +90,7 @@ const GoogleMapComponent: React.FC = () => {
           options={{ strokeColor: "#FF0000", strokeWeight: 3 }}
         />
         {marker && (
-          <Marker position={marker} />
+          <Marker position={marker}/>
         )}
       </GoogleMap>
     </>

@@ -1,6 +1,6 @@
 import { Authenticator } from "@/components/Authenthicator";
-import GoogleMap from "@/components/GoogleMap";
 import { Layout } from "@/components/Layout";
+import PaluanMapData from "@/components/PaluanMapData";
 
 const Map = () => {
     return (
@@ -8,7 +8,7 @@ const Map = () => {
             {/* <Authenticator /> */}
             <div className="flex flex-1 h-screen">
                 <div className="p-2 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-                    <GoogleMap />
+                    <PaluanMapData/>
                 </div>
             </div>
         </Layout>
