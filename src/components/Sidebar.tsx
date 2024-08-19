@@ -5,15 +5,14 @@ import {
   IconArrowLeft,
   IconLayoutDashboard,
   IconSettings,
-  IconUserBolt,
   IconChartHistogram,
   IconAlertTriangle,
   IconMap,
+  IconMapPin,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import router from "next/router";
 import { useSignOut } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase";
 
@@ -27,10 +26,17 @@ const links = [
   },
   {
     //this is temporary
-    label: "Map",
-    href: "/pages/map",
+    label: "Add data",
+    href: "/pages/add-data",
     icon: (
       <IconMap className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+    ),
+  },
+  {
+    label: "Map Data",
+    href: "/pages/map",
+    icon: (
+      <IconMapPin className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {

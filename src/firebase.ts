@@ -6,12 +6,13 @@ import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA8kJYXyDwhitc4WmMbf9XcSJgW4dQYAco",
-  authDomain: "gis-fram.firebaseapp.com",
-  projectId: "gis-fram",
-  storageBucket: "gis-fram.appspot.com",
-  messagingSenderId: "450414681177",
-  appId: "1:450414681177:web:5aba975a1d734902e7e548"
+  apiKey: "AIzaSyBIBMfnLa6yDxKpvzrmFAkQV4E7CUApq-Q",
+  authDomain: "gifram-b557d.firebaseapp.com",
+  projectId: "gifram-b557d",
+  storageBucket: "gifram-b557d.appspot.com",
+  messagingSenderId: "351311185950",
+  appId: "1:351311185950:web:d3be28d38da728b1fb860f",
+  measurementId: "G-0NGMYZTLFN"
 };
 
 export const firebaseApp = initializeApp(firebaseConfig)
