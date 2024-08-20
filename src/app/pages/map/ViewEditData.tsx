@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db } from "@/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
 interface ViewEditDataProps {
   id: string;
@@ -18,7 +18,6 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
       try {
         const docRef = doc(db, "households", id);
         const docSnap = await getDoc(docRef);
-        console.log('docSnap.data()', docSnap.data())
 
         if (docSnap.exists()) {
           setData(docSnap.data());
@@ -57,7 +56,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
       gender: "Male",
       contact: "",
       pwd: false,
-      indigenous: false
+      indigenous: false,
     };
     setData({ ...data, member: [...data.member, newMember] });
   };
@@ -68,6 +67,27 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
   };
 
   const handleSubmit = async () => {
+    if (!data.barangay || !data.houseNo || !data.houseStruc) {
+      window.alert("Please fill in all required fields for the household.");
+      return;
+    }
+
+    if (!data.headInfo.name || !data.headInfo.age || !data.headInfo.gender) {
+      window.alert(
+        "Please fill in all required fields for the head of the household."
+      );
+      return;
+    }
+
+    for (const member of data.member) {
+      if (!member.name || !member.age || !member.gender) {
+        window.alert(
+          "Please fill in all required fields for each household member."
+        );
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       const docRef = doc(db, "households", id);
@@ -79,6 +99,26 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
       window.alert("Error updating data. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this record? This action cannot be undone."
+    );
+    if (confirmDelete) {
+      setLoading(true);
+      try {
+        const docRef = doc(db, "households", id);
+        await deleteDoc(docRef);
+        window.alert("Record deleted successfully!");
+        setViewEditData(false); // Close the modal after deletion
+      } catch (e) {
+        console.error("Error deleting document: ", e);
+        window.alert("Error deleting data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -101,6 +141,12 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               {isEditing ? "Cancel Edit" : "Edit"}
             </button>
             <button
+              onClick={handleDelete}
+              className="btn btn-sm btn-error mr-2"
+            >
+              Delete
+            </button>
+            <button
               onClick={() => setViewEditData(false)}
               className="btn btn-sm btn-primary"
             >
@@ -109,8 +155,8 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
           </div>
         </div>
 
+        {/* Main info */}
         <div className="flex flex-col gap-4 mt-4">
-          {/* Main info */}
           <div className="flex gap-3">
             <select
               value={data.barangay}
@@ -132,7 +178,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               <option value="Tubili">Tubili</option>
             </select>
             <input
-              type="text"
+              type="number"
               placeholder="House No"
               value={data.houseNo}
               onChange={(e) => handleInputChange("houseNo", e.target.value)}
@@ -189,137 +235,100 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               disabled={!isEditing}
               className="input input-bordered border-zinc-200 focus:outline-none text-sm"
             />
-            <label className="flex items-center gap-2">
+          </div>
+
+          {/* Member info */}
+          <span className="font-bold">Household Members</span>
+          {data.member.map((member: any, index: number) => (
+            <div className="flex gap-3" key={index}>
               <input
-                type="checkbox"
-                checked={data.headInfo.pwd}
-                onChange={(e) => handleHeadInfoChange("pwd", e.target.checked)}
-                disabled={!isEditing}
-              />
-              PWD
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={data.headInfo.indigenous}
+                type="text"
+                placeholder="Member Name"
+                value={member.name}
                 onChange={(e) =>
-                  handleHeadInfoChange("indigenous", e.target.checked)
+                  handleMemberChange(index, "name", e.target.value)
                 }
                 disabled={!isEditing}
+                className="input input-bordered border-zinc-200 focus:outline-none text-sm"
               />
-              Indigenous
-            </label>
-          </div>
-
-          {/* Members Section */}
-          <div className="flex flex-col gap-3">
-            <span className="font-bold">Household Members</span>
-            {data.member.map((member: any, index: number) => (
-              <div key={index} className="flex gap-3">
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={member.name}
-                  onChange={(e) =>
-                    handleMemberChange(index, "name", e.target.value)
-                  }
-                  disabled={!isEditing}
-                  className="input input-bordered border-zinc-200 focus:outline-none text-sm"
-                />
-                <input
-                  type="number"
-                  placeholder="Age"
-                  value={member.age}
-                  onChange={(e) =>
-                    handleMemberChange(
-                      index,
-                      "age",
-                      parseInt(e.target.value) || ""
-                    )
-                  }
-                  disabled={!isEditing}
-                  className="input input-bordered border-zinc-200 focus:outline-none text-sm"
-                />
-                <select
-                  value={member.gender}
-                  onChange={(e) =>
-                    handleMemberChange(index, "gender", e.target.value)
-                  }
-                  disabled={!isEditing}
-                  className="select select-bordered border-zinc-200 focus:outline-none"
-                >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-                <input
-                  type="text"
-                  placeholder="Contact (Optional)"
-                  value={member.contact || ""}
-                  onChange={(e) =>
-                    handleMemberChange(index, "contact", e.target.value)
-                  }
-                  disabled={!isEditing}
-                  className="input input-bordered border-zinc-200 focus:outline-none text-sm"
-                />
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={member.pwd}
-                    onChange={(e) =>
-                      handleMemberChange(index, "pwd", e.target.checked)
-                    }
-                    disabled={!isEditing}
-                  />
-                  PWD
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={member.indigenous}
-                    onChange={(e) =>
-                      handleMemberChange(index, "indigenous", e.target.checked)
-                    }
-                    disabled={!isEditing}
-                  />
-                  Indigenous
-                </label>
-                {isEditing && (
-                  <button
-                    onClick={() => deleteMember(index)}
-                    className="btn btn-sm btn-error"
-                  >
-                    Delete
-                  </button>
-                )}
-              </div>
-            ))}
-            {isEditing && (
-              <button
-                onClick={addMember}
-                className="btn btn-sm btn-secondary mt-2"
+              <input
+                type="number"
+                placeholder="Age"
+                value={member.age}
+                onChange={(e) =>
+                  handleMemberChange(index, "age", parseInt(e.target.value))
+                }
+                disabled={!isEditing}
+                className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              />
+              <select
+                value={member.gender}
+                onChange={(e) =>
+                  handleMemberChange(index, "gender", e.target.value)
+                }
+                disabled={!isEditing}
+                className="select select-bordered border-zinc-200 focus:outline-none"
               >
-                Add Member
-              </button>
-            )}
-          </div>
-
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Contact (Optional)"
+                value={member.contact}
+                onChange={(e) =>
+                  handleMemberChange(index, "contact", e.target.value)
+                }
+                disabled={!isEditing}
+                className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              />
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={member.pwd}
+                  onChange={(e) =>
+                    handleMemberChange(index, "pwd", e.target.checked)
+                  }
+                  disabled={!isEditing}
+                  className="checkbox checkbox-primary"
+                />
+                <span className="label-text text-xs">PWD</span>
+              </label>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={member.indigenous}
+                  onChange={(e) =>
+                    handleMemberChange(index, "indigenous", e.target.checked)
+                  }
+                  disabled={!isEditing}
+                  className="checkbox checkbox-primary"
+                />
+                <span className="label-text text-xs">Indigenous</span>
+              </label>
+              {isEditing && (
+                <button
+                  onClick={() => deleteMember(index)}
+                  className="btn btn-sm btn-error"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          ))}
           {isEditing && (
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className={`btn mt-4 text-white mx-auto ${
-                loading ? "btn-disabled" : "btn-primary"
-              }`}
-            >
-              Save Changes
+            <button onClick={addMember} className="btn btn-secondary mt-2">
+              Add Member
             </button>
           )}
         </div>
 
-        <div className="m-auto mb-0 text-xs text-zinc-500">
-          Data location: Latitude: {data.position.lat}, Longitude:{" "}
-          {data.position.lng}
-        </div>
+        {/* Submit Button */}
+        {isEditing && (
+          <button onClick={handleSubmit} className="btn btn-primary mt-4">
+            Submit
+          </button>
+        )}
       </div>
     </div>
   );

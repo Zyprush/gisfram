@@ -9,7 +9,7 @@ interface AddDataProps {
 
 const AddData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
   const [barangay, setBarangay] = useState("");
-  const [houseNo, setHouseNo] = useState("");
+  const [houseNo, setHouseNo] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
   const [headName, setHeadName] = useState("");
   const [headAge, setHeadAge] = useState<number | "">("");
@@ -183,10 +183,10 @@ const AddData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               <option value="Tubili">Tubili</option>
             </select>
             <input
-              type="text"
+              type="number"
               placeholder="House No"
               value={houseNo}
-              onChange={(e) => setHouseNo(e.target.value)}
+              onChange={(e) => setHouseNo(parseInt(e.target.value) || "")}
               className="input input-bordered border-zinc-200 focus:outline-none text-sm"
             />
 

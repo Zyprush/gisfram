@@ -96,7 +96,7 @@ const PaluanMapData: React.FC = () => {
   useEffect(() => {
     fetchFilteredData(); // Fetch data initially
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [viewEditData]);
 
   if (!isLoaded) return <div>Loading...</div>;
 
@@ -197,7 +197,7 @@ const PaluanMapData: React.FC = () => {
           <Marker
             key={household.id}
             position={household.position}
-            title={`House NO: ${household.houseNo}\nHead: ${household.head.name}\nBarangay: ${household.barangay}`}
+            title={`House NO: ${household.houseNo}\nHead: ${household.head}\nBarangay: ${household.barangay}`}
             onClick={() => {
               setId(household.id);
               setViewEditData(true);
