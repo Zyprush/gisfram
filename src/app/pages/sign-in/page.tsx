@@ -54,8 +54,8 @@ export default function Page() {
 
   return (
     <section>
-      <div className="flex h-screen bg-white items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-8">
-        <div className="xl:mx-auto xl:w-full shadow-md p-4 xl:max-w-sm 2xl:max-w-md">
+      <div className="flex h-screen bg-primary items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-8">
+        <div className="xl:mx-auto xl:w-full shadow-md p-4 xl:max-w-sm 2xl:max-w-md bg-white">
           <div className="mb-2 flex justify-center"></div>
           <h2 className="text-center text-2xl font-bold leading-tight text-black">
             Sign in
@@ -95,7 +95,7 @@ export default function Page() {
               <div>
                 <SignedOut>
                   <button
-                    className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-secondary px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-secondary/80"
                     type="submit"
                   >
                     Sign In
@@ -104,7 +104,7 @@ export default function Page() {
                 <SignedIn>
                   <LoggedIn/>
                   <button
-                    className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-secondary px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-secondary/80"
                     type="submit"
                   >
                     Signing In

@@ -5,13 +5,14 @@ import Link from "next/link";
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 import { LoggedIn } from "@/components/LoggedIn";
 import { auth } from "@/firebase";
+import Image from "next/image";
 
 export default function Home() {
   const [user] = useAuthState(auth);
   const [signOut] = useSignOut(auth);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
+    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-100 dark:bg-primary">
       <SignedIn>
         <LoggedIn />
         <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg text-center dark:bg-gray-800">
@@ -43,20 +44,18 @@ export default function Home() {
       </SignedIn>
       <SignedOut>
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-primary-500 mb-6 dark:text-primary-400">
-            Welcome to GISFRAM-POM !
-          </h1>
+          <Image
+            src="/img/logo.png"
+            alt="Logo"
+            width={500}
+            height={500}
+            className="mx-auto"
+          />
           <Link
             href="/pages/sign-in"
-            className="inline-block px-8 py-2 bg-primary-500 text-white font-semibold rounded-full shadow-lg hover:bg-primary-600 transition dark:bg-primary-600 dark:hover:bg-primary-700"
+            className="inline-block px-8 py-2 ml-4 bg-gray-500 text-white font-semibold rounded-full shadow-lg hover:bg-gray-600 transition dark:bg-secondary dark:hover:bg-secondary/80"
           >
             Sign in
-          </Link>
-          <Link
-            href="/pages/sign-up"
-            className="inline-block px-8 py-2 ml-4 bg-gray-500 text-white font-semibold rounded-full shadow-lg hover:bg-gray-600 transition dark:bg-gray-600 dark:hover:bg-gray-700"
-          >
-            Create account
           </Link>
         </div>
       </SignedOut>
