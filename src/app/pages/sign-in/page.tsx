@@ -7,6 +7,9 @@ import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FirebaseError } from "firebase/app"; // Import FirebaseError
+import { SignedOut } from "@/components/signed-out";
+import { SignedIn } from "@/components/signed-in";
+import { LoggedIn } from "@/components/LoggedIn";
 
 export default function Page() {
   const router = useRouter();
@@ -40,7 +43,7 @@ export default function Page() {
         // Display the appropriate error message
         toast.error(
           errorMessages[error.code] ||
-            "An unexpected error occurred. Please try again."
+          "An unexpected error occurred. Please try again."
         );
       } else {
         // Display a generic error message for unexpected errors
@@ -90,18 +93,28 @@ export default function Page() {
                 </div>
               </div>
               <div>
-                <button
-                  className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
-                  type="submit"
-                >
-                  Sign In
-                </button>
+                <SignedOut>
+                  <button
+                    className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+                    type="submit"
+                  >
+                    Sign In
+                  </button>
+                </SignedOut>
+                <SignedIn>
+                  <LoggedIn/>
+                  <button
+                    className="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
+                    type="submit"
+                  >
+                    Signing In
+                  </button>
+                </SignedIn>
               </div>
             </div>
           </form>
         </div>
       </div>
-
       {/* Add ToastContainer to display toasts */}
       <ToastContainer />
     </section>
