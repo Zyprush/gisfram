@@ -1,7 +1,7 @@
 "use client";
 
 import { auth } from "@/firebase";
-import { IconFidgetSpinner } from "@tabler/icons-react";
+import { IconEye, IconEyeOff, IconFidgetSpinner } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
@@ -17,6 +17,12 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -52,17 +58,26 @@ export default function Page() {
                 </div>
               </div>
               <div>
-                <label className="text-base font-medium text-gray-900">
-                  Password
-                </label>
-                <div className="mt-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-base font-medium text-gray-900">
+                    Password
+                  </label>
+                </div>
+                <div className="mt-2 relative">
                   <input
                     placeholder="Password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     onChange={(e) => setPassword(e.target.value)}
                     value={password}
                     className="flex h-10 text-black w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                   />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"
+                  >
+                    {showPassword ? <IconEye /> : <IconEyeOff />}
+                  </button>
                 </div>
               </div>
               <div>

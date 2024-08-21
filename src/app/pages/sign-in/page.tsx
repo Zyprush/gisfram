@@ -10,6 +10,7 @@ import { FirebaseError } from "firebase/app"; // Import FirebaseError
 import { SignedOut } from "@/components/signed-out";
 import { SignedIn } from "@/components/signed-in";
 import { LoggedIn } from "@/components/LoggedIn";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
 export default function Page() {
   const router = useRouter();
@@ -17,6 +18,12 @@ export default function Page() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -82,16 +89,24 @@ export default function Page() {
                     Password
                   </label>
                 </div>
-                <div className="mt-2">
+                <div className="mt-2 relative">
                   <input
                     placeholder="Password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     onChange={(e) => setPassword(e.target.value)}
                     value={password}
                     className="flex h-10 text-black w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                   />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400"
+                  >
+                    {showPassword ? <IconEye /> : <IconEyeOff />}
+                  </button>
                 </div>
               </div>
+
               <div>
                 <SignedOut>
                   <button
@@ -102,7 +117,7 @@ export default function Page() {
                   </button>
                 </SignedOut>
                 <SignedIn>
-                  <LoggedIn/>
+                  <LoggedIn />
                   <button
                     className="inline-flex w-full items-center justify-center rounded-md bg-secondary px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-secondary/80"
                     type="submit"
