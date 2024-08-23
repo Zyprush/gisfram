@@ -88,7 +88,7 @@ export const Sidebar: React.FC = () => {
             <SidebarLink
               link={{
                 label: "Logout",
-                href: "#", 
+                href: "#",
                 icon: (
                   <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
                 ),
@@ -104,7 +104,7 @@ export const Sidebar: React.FC = () => {
               href: "#",
               icon: (
                 <Image
-                  src="/next.svg"
+                  src="/img/avatar.svg"
                   className="h-7 w-7 flex-shrink-0 rounded-full"
                   width={50}
                   height={50}
@@ -125,7 +125,13 @@ const Logo = () => {
       href="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-slate-500 dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <Image
+        src="/img/logo.png"
+        className="h-7 w-7 flex-shrink-0 rounded-full"
+        width={50}
+        height={50}
+        alt="Avatar"
+      />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -143,7 +149,13 @@ const LogoIcon = () => {
       href="/pages/dashboard"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-slate-500 dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-    </Link>
+      <Image
+        src="/img/logo.png"
+        className="h-7 w-7 flex-shrink-0 rounded-full"
+        width={50}
+        height={50}
+        alt="Avatar"
+      />    
+      </Link>
   );
 };

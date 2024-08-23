@@ -9,17 +9,19 @@ import {
 import { paluanCoords } from "@/app/pages/add-data/paluanCoords";
 import { IconBrowserPlus, IconFocusCentered } from "@tabler/icons-react";
 import AddData from "@/app/pages/add-data/AddData";
+import Loading from "./Loading";
 
 const mapContainerStyle = {
   width: "100%",
   height: "100vh",
+  borderRadius: "10px",
 };
 
-const center = { lat: 13.4341, lng: 120.4603 };
+const center = { lat: 13.397099, lng: 120.459089 }; //fix the map certered
 
 const options = {
   mapTypeId: "roadmap" as google.maps.MapTypeId,
-  zoom: 11.3,
+  zoom: 11.6, //fix the zoom
 };
 
 const GoogleMapComponent: React.FC = () => {
@@ -33,7 +35,7 @@ const GoogleMapComponent: React.FC = () => {
     libraries: ["geometry"],
   });
 
-  if (!isLoaded) return <div>Loading...</div>;
+  if (!isLoaded) return <div><Loading/></div>;
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (!event.latLng) return;

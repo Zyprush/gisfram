@@ -18,17 +18,19 @@ import {
 } from "firebase/firestore";
 import { db } from "@/firebase"; // Make sure to import your Firestore instance
 import ViewEditData from "@/app/pages/map/ViewEditData";
+import Loading from "./Loading";
 
 const mapContainerStyle = {
   width: "100%",
   height: "100vh",
+  borderRadius: "10px",
 };
 
-const center = { lat: 13.4341, lng: 120.4603 };
+const center = { lat: 13.397099, lng: 120.459089 }; //fix the map certered
 
 const options = {
   mapTypeId: "roadmap" as google.maps.MapTypeId,
-  zoom: 11.3,
+  zoom: 11.6, //fix the zoom
 };
 
 interface HouseholdData {
@@ -98,7 +100,7 @@ const PaluanMapData: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewEditData]);
 
-  if (!isLoaded) return <div>Loading...</div>;
+  if (!isLoaded) return <div><Loading/></div>;
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (!event.latLng) return;
