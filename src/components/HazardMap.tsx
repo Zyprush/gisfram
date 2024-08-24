@@ -1,11 +1,8 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import {
-  GoogleMap,
-  useJsApiLoader,
-  Data,
-} from "@react-google-maps/api";
+import { GoogleMap, useJsApiLoader, Data } from "@react-google-maps/api";
 import Loading from "./Loading";
+import { IconArrowBack, IconLocation } from "@tabler/icons-react";
 
 const mapContainerStyle = {
   width: "100%",
@@ -68,6 +65,13 @@ const HazardMap: React.FC = () => {
     setSelectedFile(newSelectedFile);
   };
 
+  const handleCenterMap = () => {
+    if (mapRef.current) {
+      mapRef.current.setCenter(center);
+      mapRef.current.setZoom(options.zoom);
+    }
+  };
+
   if (!isLoaded) return <div><Loading /></div>;
 
   return (
@@ -79,7 +83,7 @@ const HazardMap: React.FC = () => {
             onChange={handleFileSelect}
             className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="">Select</option>
+            <option value="">Select Visual Data</option>
             {geoJsonFiles.map((file) => (
               <option key={file.file} value={file.file}>
                 {file.name}
@@ -88,6 +92,16 @@ const HazardMap: React.FC = () => {
           </select>
         </div>
       </div>
+        {/* Button to center the map */}
+        <button
+          onClick={handleCenterMap}
+          className="absolute top-4 right-4 z-50 bg-white text-blue-600 border border-blue-600 px-2 py-2 rounded shadow-md hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <IconArrowBack />
+        </button>
+
+
+
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}
@@ -116,7 +130,6 @@ const HazardMap: React.FC = () => {
                 }
               });
             }}
-            
           />
         )}
       </GoogleMap>
