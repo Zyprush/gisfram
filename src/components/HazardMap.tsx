@@ -119,7 +119,8 @@ const HazardMap: React.FC = () => {
               console.log("Loading GeoJSON data onto map for file:", selectedFile);
               data.addGeoJson(geoJsonData);
               data.setStyle({
-                strokeColor: "#000",
+                strokeColor: "#FF0000",
+                fillColor: "#FF0000",
                 strokeOpacity: 1.0,
                 strokeWeight: 1.5,
                 fillOpacity: 0.0,

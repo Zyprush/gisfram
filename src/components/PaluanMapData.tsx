@@ -191,10 +191,14 @@ const PaluanMapData: React.FC = () => {
         }}
         options={{ fullscreenControl: false }}
       >
+        {/*
+        // tempporary disable
+        
         <Polyline
           path={paluanCoords}
           options={{ strokeColor: "#FF0000", strokeWeight: 3 }}
         />
+        */}
         {data.map((household) => (
           <Marker
             key={household.id}

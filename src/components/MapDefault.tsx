@@ -35,7 +35,7 @@ const dashedPolylineOptions = {
     ],
   };
 
-const HazardMap: React.FC = () => {
+const MapDefault: React.FC = () => {
   const [error] = useState<string | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -69,4 +69,4 @@ const HazardMap: React.FC = () => {
   );
 };
 
-export default HazardMap;
+export default MapDefault;
