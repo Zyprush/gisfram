@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Data } from "@react-google-maps/api";
 import Loading from "./Loading";
-import { IconArrowBack, IconLocation } from "@tabler/icons-react";
+import { IconArrowBack, IconLocation, IconUpload } from "@tabler/icons-react";
 
 const mapContainerStyle = {
   width: "100%",
@@ -21,6 +21,9 @@ const HazardMap: React.FC = () => {
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [geoJsonFiles, setGeoJsonFiles] = useState<Array<{ name: string, file: string }>>([]);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
@@ -72,16 +75,48 @@ const HazardMap: React.FC = () => {
     }
   };
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.name.endsWith('.geojson')) {
+      const formData = new FormData();
+      const fileName = file.name.replace(/\s+/g, '_');
+      formData.append('file', file, fileName);
+
+      try {
+        const response = await fetch('/api/upload-geojson', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          // Refresh the list of GeoJSON files
+          const filesResponse = await fetch('/api/geojson-files');
+          const files = await filesResponse.json();
+          setGeoJsonFiles(files);
+          setIsModalOpen(false);
+        } else {
+          setError('Error uploading file');
+        }
+      } catch (err) {
+        console.error('Error uploading file:', err);
+        setError('Error uploading file');
+      }
+    } else {
+      setError('Please select a valid .geojson file');
+    }
+  };
+
+
   if (!isLoaded) return <div><Loading /></div>;
 
   return (
     <>
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4">
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className="bg-white rounded-lg shadow-md p-4 flex items-center">
           <select
             value={selectedFile || ''}
             onChange={handleFileSelect}
-            className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mr-2"
           >
             <option value="">Select Visual Data</option>
             {geoJsonFiles.map((file) => (
@@ -90,15 +125,49 @@ const HazardMap: React.FC = () => {
               </option>
             ))}
           </select>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <IconUpload size={20} />
+          </button>
         </div>
       </div>
-        {/* Button to center the map */}
-        <button
-          onClick={handleCenterMap}
-          className="absolute top-4 right-4 z-50 bg-white text-blue-600 border border-blue-600 px-2 py-2 rounded shadow-md hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <IconArrowBack />
-        </button>
+      {/* Import Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl">
+            <h2 className="text-xl font-bold mb-4">Import GeoJSON File</h2>
+            <input
+              type="file"
+              accept=".geojson"
+              onChange={handleFileUpload}
+              className="mb-4"
+            />
+            <div className="flex justify-end">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2 hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              >
+                Upload
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Button to center the map */}
+      <button
+        onClick={handleCenterMap}
+        className="absolute top-4 right-4 z-50 bg-white text-blue-600 border border-blue-600 px-2 py-2 rounded shadow-md hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <IconArrowBack />
+      </button>
 
 
 
