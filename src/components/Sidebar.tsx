@@ -9,6 +9,7 @@ import {
   IconAlertTriangle,
   IconMap,
   IconMapPin,
+  IconRipple,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -44,6 +45,13 @@ const links = [
     href: "/pages/hazard",
     icon: (
       <IconAlertTriangle className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+    ),
+  },
+  {
+    label: "Flood Data",
+    href: "/pages/flood",
+    icon: (
+      <IconRipple className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {

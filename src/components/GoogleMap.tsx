@@ -7,9 +7,10 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/add-data/paluanCoords";
-import { IconBrowserPlus, IconFocusCentered } from "@tabler/icons-react";
+import { IconBrowserPlus, IconFocusCentered, IconRipple } from "@tabler/icons-react";
 import AddData from "@/app/pages/add-data/AddData";
 import Loading from "./Loading";
+import AddFloodData from "@/app/pages/add-data/AddFloodData";
 
 const mapContainerStyle = {
   width: "100%",
@@ -27,7 +28,7 @@ const options = {
 const GoogleMapComponent: React.FC = () => {
   const [marker, setMarker] = useState<google.maps.LatLng>();
   const [showAddData, setShowAddData] = useState<boolean>(false);
-  const [viewEditData, setViewEditData] = useState<boolean>(false);
+  const [showAddFloodRecord, setShowAddFloodRecord] = useState<boolean>(false);
   const mapRef = useRef<google.maps.Map | null>(null);
 
   const { isLoaded } = useJsApiLoader({
@@ -35,7 +36,12 @@ const GoogleMapComponent: React.FC = () => {
     libraries: ["geometry"],
   });
 
-  if (!isLoaded) return <div><Loading/></div>;
+  if (!isLoaded)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (!event.latLng) return;
@@ -56,16 +62,25 @@ const GoogleMapComponent: React.FC = () => {
 
   return (
     <>
-    {/* <ViewEditData id="5paHBCxOThBd8v5XAlol" setViewEditData={setViewEditData}/> */}
       {showAddData && <AddData setAddData={setShowAddData} marker={marker} />}
+      {showAddFloodRecord && <AddFloodData setAddData={setShowAddFloodRecord} marker={marker} />}
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex p-2 gap-3 bg-white shadow rounded-md ">
         {marker && (
           <button
-            className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom"
+            className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom flex gap-2 items-center"
             data-tip="Add a Household"
             onClick={() => setShowAddData(true)}
           >
-            <IconBrowserPlus />
+            <IconBrowserPlus /> Household
+          </button>
+        )}
+        {marker && (
+          <button
+            className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom flex gap-2 items-center"
+            data-tip="Add Flood Record"
+            onClick={() => setShowAddFloodRecord(true)}
+          >
+            <IconRipple /> Flood Record
           </button>
         )}
         <button
@@ -87,17 +102,15 @@ const GoogleMapComponent: React.FC = () => {
         }}
         options={{ fullscreenControl: false }}
       >
-        {/*
-        // tempporary disable
+        
+        {/* // tempporary disable */}
         
         <Polyline
           path={paluanCoords}
           options={{ strokeColor: "#FF0000", strokeWeight: 3 }}
         />
-        */}
-        {marker && (
-          <Marker position={marker}/>
-        )}
+       
+        {marker && <Marker position={marker} />}
       </GoogleMap>
     </>
   );
