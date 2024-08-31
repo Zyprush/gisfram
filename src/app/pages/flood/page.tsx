@@ -112,7 +112,7 @@ const FloodData = () => {
             <select
               value={filters.barangay}
               onChange={(e) => setFilters({ ...filters, barangay: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2"
+              className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-xs"
             >
               <option value="">All Barangays</option>
               <option value="Alipaoy">Alipaoy</option>
@@ -147,9 +147,10 @@ const FloodData = () => {
               onSave={handleEditSave}
             />
           ) : (
+            <div className="p-3 rounded-md bg-zinc-800">
             <table className="table-auto w-full">
               <thead>
-                <tr className="text-sm text-neutral-700 dark:text-neutral-200 border-b border-neutral-200 dark:border-neutral-700 text-left p-2">
+                <tr className="text-sm text-neutral-700 dark:text-neutral-200 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
                   <th className="p-2">Barangay</th>
                   <th className="p-2">Date</th>
                   <th className="p-2">Severity</th>
@@ -189,6 +190,7 @@ const FloodData = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

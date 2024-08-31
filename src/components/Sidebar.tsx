@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Sidebar as UISidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import {
   IconArrowLeft,
@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useSignOut } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase";
+import { getSetting } from "@/app/pages/settings/getSetting";
 
 const links = [
   {
@@ -72,8 +73,20 @@ const links = [
 
 export const Sidebar: React.FC = () => {
   const [open, setOpen] = useState(false);
-
+  const [brandName, setBrandName] = useState("GISFRAM");
   const [signOut] = useSignOut(auth);
+
+  useEffect(() => {
+    const fetchBrandName = async () => {
+      try {
+        const name = await getSetting("sysName");
+        if (name) setBrandName(name);
+      } catch (error) {
+        console.error("Error fetching brand name:", error);
+      }
+    };
+    fetchBrandName();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -88,7 +101,7 @@ export const Sidebar: React.FC = () => {
     <UISidebar open={open} setOpen={setOpen}>
       <SidebarBody className="justify-between gap-10">
         <div className="flex flex-col flex-1 overflow-y-auto">
-          {open ? <Logo /> : <LogoIcon />}
+          {open ? <Logo brandName={brandName} /> : <LogoIcon />}
           <div className="mt-8 flex flex-col gap-2">
             {links.map((link, idx) => (
               <SidebarLink key={idx} link={link} />
@@ -127,31 +140,7 @@ export const Sidebar: React.FC = () => {
   );
 };
 
-const Logo = () => {
-  return (
-    <Link
-      href="#"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
-    >
-      <Image
-        src="/img/logo.png"
-        className="h-7 w-7 flex-shrink-0 rounded-full"
-        width={50}
-        height={50}
-        alt="Avatar"
-      />
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="font-medium text-black dark:text-white whitespace-pre"
-      >
-        GISFRAM-POM
-      </motion.span>
-    </Link>
-  );
-};
-
-const LogoIcon = () => {
+const Logo: React.FC<{ brandName: string }> = ({ brandName }) => {
   return (
     <Link
       href="/pages/dashboard"
@@ -162,8 +151,32 @@ const LogoIcon = () => {
         className="h-7 w-7 flex-shrink-0 rounded-full"
         width={50}
         height={50}
-        alt="Avatar"
+        alt="Logo"
+      />
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="font-medium text-lg text-black dark:text-white whitespace-pre"
+      >
+        {brandName}
+      </motion.span>
+    </Link>
+  );
+};
+
+const LogoIcon: React.FC = () => {
+  return (
+    <Link
+      href="/pages/dashboard"
+      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+    >
+      <Image
+        src="/img/logo.png"
+        className="h-7 w-7 flex-shrink-0 rounded-full"
+        width={50}
+        height={50}
+        alt="Logo"
       />    
-      </Link>
+    </Link>
   );
 };

@@ -1,32 +1,42 @@
 import { Authenticator } from "@/components/Authenthicator";
 import { Layout } from "@/components/Layout";
+import SettingsItem from "@/components/SettingsItem";
+import { IconSettings } from "@tabler/icons-react";
+import Link from "next/link";
 
 const Settings = () => {
-    return (
-        <Layout>
-            <Authenticator />
-            <div className="flex flex-1 h-screen">
-                <div className="p-2 md:p-8 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-                    <div className="flex gap-2">
-                        {[...new Array(4)].map((i) => (
-                            <div
-                                key={"first-array" + i}
-                                className="h-20 w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 animate-pulse"
-                            ></div>
-                        ))}
-                    </div>
-                    <div className="flex gap-2 flex-1">
-                        {[...new Array(2)].map((i) => (
-                            <div
-                                key={"second-array" + i}
-                                className="h-full w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 animate-pulse"
-                            ></div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </Layout>
-    );
+  return (
+    <Layout>
+      <Authenticator />
+      <div className="flex flex-1 h-screen">
+        <div className="p-2 md:p-8 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col items-start justify-start gap-5 flex-1 w-full h-full ">
+          <div className="flex items-start justify-start gap-5">
+            <SettingsItem title="System Name" name="sysName" />
+            <SettingsItem title="Address" name="address" />
+            <Link href={"/pages/password"} className="p-4 flex flex-col bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 h-full min-w-60">
+              <span className="flex font-semibold justify-between mt-1">
+                <h1>Password</h1>
+                <span className="text-white">
+                  <IconSettings />
+                </span>
+              </span>
+              <p className="mt-auto mb-0 text-sm text-zinc-300">Chnage your password here</p>
+            </Link>
+            <Link href={"/pages/boundary"} className="p-4 flex flex-col bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 h-full min-w-60">
+              <span className="flex font-semibold justify-between mt-1">
+                <h1>Boundary</h1>
+                <span className="text-white">
+                  <IconSettings />
+                </span>
+              </span>
+              <p className="mt-auto mb-0 text-sm text-zinc-300">Change boundary of the map</p>
+            </Link>
+          </div>
+          <SettingsItem title="About Us" name="aboutUs" />
+        </div>
+      </div>
+    </Layout>
+  );
 };
 
-export default Settings
+export default Settings;
