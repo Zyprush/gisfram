@@ -30,6 +30,7 @@ const FloodData = () => {
     try {
       const conditions: any[] = [];
 
+      // Add date filters
       if (filters.from && filters.to) {
         conditions.push(
           where("date", ">=", filters.from),
@@ -41,10 +42,12 @@ const FloodData = () => {
         conditions.push(where("date", "<=", filters.to));
       }
 
+      // Add barangay filter if selected
       if (filters.barangay) {
         conditions.push(where("barangay", "==", filters.barangay));
       }
 
+      // Query the collection with the applied filters
       const q = query(
         collection(db, "floods"),
         ...conditions,
@@ -147,15 +150,15 @@ const FloodData = () => {
               onSave={handleEditSave}
             />
           ) : (
-            <div className="p-3 rounded-md bg-zinc-800">
+            <div className="p-3 rounded-md bg-zinc-800 border border-zinc-700">
             <table className="table-auto w-full">
               <thead>
                 <tr className="text-sm text-neutral-700 dark:text-neutral-200 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
                   <th className="p-2">Barangay</th>
                   <th className="p-2">Date</th>
                   <th className="p-2">Severity</th>
-                  <th className="p-2">Water Level (m)</th>
-                  <th className="p-2">Rainfall Amount (mm)</th>
+                  <th className="p-2">Water Level</th>
+                  <th className="p-2">Rainfall Amount</th>
                   <th className="p-2">Casualties</th>
                   <th className="p-2">Actions</th>
                 </tr>
@@ -169,8 +172,8 @@ const FloodData = () => {
                     <td className="p-2">{data.barangay}</td>
                     <td className="p-2">{data.date}</td>
                     <td className="p-2">{data.severity}</td>
-                    <td className="p-2">{data.waterLevel}</td>
-                    <td className="p-2">{data.rainfallAmount}</td>
+                    <td className="p-2">{data.waterLevel} m</td>
+                    <td className="p-2">{data.rainfallAmount} mm</td>
                     <td className="p-2">{data.casualties}</td>
                     <td className="p-2 flex gap-4">
                       <button

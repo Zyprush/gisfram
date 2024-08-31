@@ -49,10 +49,8 @@ const Password = ({
         await reauthenticateWithCredential(user, credential);
         await updatePassword(user, newPassword);
         alert("Password updated successfully.");
-        console.log("Password updated successfully.");
         setEdit(false);
       } catch (error: any) {
-        console.log("error", error);
         if (error instanceof FirebaseError) {
           const errorMessages: { [key: string]: string } = {
             "auth/invalid-credential": "Please enter the correct old password!",
@@ -93,9 +91,9 @@ const Password = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+    <div className="fixed inset-0 bg-gray-700 bg-opacity-70 overflow-y-auto h-full w-full flex items-center justify-center">
+      <div className="bg-gray-800 text-gray-200 p-8 rounded-lg shadow-xl w-full max-w-[23rem]">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-200">
           Change Password
         </h2>
 
@@ -106,7 +104,7 @@ const Password = ({
               value={oldPassword}
               onChange={handleOldPasswordChange}
               placeholder="Old password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-200"
+              className="w-full px-3 py-2 bg-gray-700 bg-opacity-50 rounded-md focus:outline-none focus:ring-1 focus:ring-primary transition ease-in-out duration-150 text-sm"
             />
           </div>
 
@@ -116,7 +114,7 @@ const Password = ({
               value={newPassword}
               onChange={handleNewPasswordChange}
               placeholder="New password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-200"
+              className="w-full px-3 py-2 bg-gray-700 bg-opacity-50 rounded-md focus:outline-none focus:ring-1 focus:ring-primary transition ease-in-out duration-150 text-sm"
             />
           </div>
 
@@ -126,7 +124,7 @@ const Password = ({
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
               placeholder="Confirm new password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-200"
+              className="w-full px-3 py-2 bg-gray-700 bg-opacity-50 rounded-md focus:outline-none focus:ring-1 focus:ring-primary transition ease-in-out duration-150 text-sm"
             />
           </div>
         </div>
@@ -134,31 +132,31 @@ const Password = ({
         <div className="mt-6 flex justify-between items-center">
           <button
             onClick={toggleShowPasswords}
-            className="text-sm text-gray-600 hover:text-gray-800 focus:outline-none"
+            className="text-sm text-gray-400 hover:text-gray-200 focus:outline-none"
           >
             {showPasswords ? (
               <span className="flex items-center">
-                <IconEye className="mr-1" /> Hide Passwords
+                <IconEyeOff className="mr-1" /> Hide Passwords
               </span>
             ) : (
               <span className="flex items-center">
-                <IconEyeOff className="mr-1" /> Show Passwords
+                <IconEye className="mr-1" /> Show Passwords
               </span>
             )}
           </button>
         </div>
+
         <button
           onClick={handleChangePassword}
           disabled={loading}
-          className="mt-4 w-full px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary hover:text-black focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          className="mt-4 w-full px-4 py-2 bg-primary text-sm text-white rounded-md hover:bg-primary/90 focus:outline-none focus:ring-1 focus:ring-primary focus:ring-opacity-50 transition ease-in-out duration-150"
         >
           {loading ? "Updating..." : "Update Password"}
         </button>
 
         <Link
-          href={"/pages/settings"}
-          className="mt-4 w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          //   disabled={loading}
+          href="/pages/settings"
+          className="mt-4 w-full block text-center px-4 py-2 text-gray-200 rounded-md hover:bg-gray-500 focus:outline-none focus:ring-1 focus:ring-secondary focus:ring-opacity-50 transition ease-in-out duration-150 text-sm border border-gray-500"
         >
           Cancel
         </Link>
