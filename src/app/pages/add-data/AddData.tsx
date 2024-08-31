@@ -149,12 +149,12 @@ const AddData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
 
   return (
     <div className="fixed top-0 bottom-0 right-0 left-0 w-full h-full bg-zinc-900 bg-opacity-80 py-6 flex p-20 flex-col justify-center items-center sm:py-12 z-50 text-zinc-700">
-      <div className="flex flex-col bg-[#f0f6f9] rounded-xl shadow-sm w-[70rem] h-full p-4">
+      <div className="flex flex-col bg-[#f0f6f9] rounded-xl shadow-sm w-[70rem] h-full p-4 dark:bg-neutral-800 dark:text-white">
         <div className="flex justify-between">
           <span className="font-bold text-lg">Add Household Data</span>
           <button
             onClick={() => setAddData(false)}
-            className="btn-primary btn btn-sm rounded-md"
+            className="btn-primary btn btn-sm rounded-md dark:bg-neutral-700 dark:text-white"
           >
             Cancel
           </button>
@@ -162,11 +162,11 @@ const AddData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
 
         <div className="flex flex-col gap-4 mt-4">
           {/* main info */}
-          <div className="flex gap-3 ">
+          <div className="flex gap-3">
             <select
               value={barangay}
               onChange={(e) => setBarangay(e.target.value)}
-              className="select border-zinc-200 focus:outline-none"
+              className="select border-zinc-200 focus:outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
             >
               <option value="">Select Barangay</option>
               <option value="Alipaoy">Alipaoy</option>
@@ -187,13 +187,13 @@ const AddData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               placeholder="House No"
               value={houseNo}
               onChange={(e) => setHouseNo(parseInt(e.target.value) || "")}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="input input-bordered border-zinc-200 focus:outline-none text-sm dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
             />
 
             <select
               value={houseStruc}
               onChange={(e) => setHouseStruc(e.target.value)}
-              className="select select-bordered border-zinc-200 focus:outline-none"
+              className="select select-bordered border-zinc-200 focus:outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
             >
               <option value="">House Structure</option>
               <option value="concrete">Concrete</option>
@@ -203,7 +203,7 @@ const AddData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
           </div>
 
           {/* head */}
-          <span className="font-bold">Household Leader</span>
+          <span className="font-bold dark:text-white">Household Leader</span>
 
           <div className="flex gap-3">
             <input
@@ -211,19 +211,19 @@ const AddData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               placeholder="Head of Household Name"
               value={headName}
               onChange={(e) => setHeadName(e.target.value)}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="input input-bordered border-zinc-200 focus:outline-none text-sm dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
             />
             <input
               type="number"
               placeholder="Age"
               value={headAge}
               onChange={(e) => setHeadAge(parseInt(e.target.value) || "")}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="input input-bordered border-zinc-200 focus:outline-none text-sm dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
             />
             <select
               value={headGender}
               onChange={(e) => setHeadGender(e.target.value)}
-              className="select select-bordered border-zinc-200 focus:outline-none"
+              className="select select-bordered border-zinc-200 focus:outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -234,127 +234,121 @@ const AddData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               placeholder="Contact (Optional)"
               value={headContact}
               onChange={(e) => setHeadContact(e.target.value)}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="input input-bordered border-zinc-200 focus:outline-none text-sm dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
             />
 
-            <label className="flex items-center gap-2">
+            <label className="flex items-center space-x-3">
               <input
                 type="checkbox"
                 checked={headPwd}
                 onChange={(e) => setHeadPwd(e.target.checked)}
+                className="checkbox checkbox-primary dark:bg-neutral-700 dark:border-neutral-600 dark:checkbox-accent"
               />
-              PWD
+              <span className="text-sm dark:text-white">PWD</span>
             </label>
 
-            <label className="flex items-center gap-2">
+            <label className="flex items-center space-x-3">
               <input
                 type="checkbox"
                 checked={headIndigenous}
                 onChange={(e) => setHeadIndigenous(e.target.checked)}
+                className="checkbox checkbox-primary dark:bg-neutral-700 dark:border-neutral-600 dark:checkbox-accent"
               />
-              Indigenous
+              <span className="text-sm dark:text-white">Indigenous</span>
             </label>
           </div>
 
-          {/* Members Section */}
-          <div className="flex flex-col gap-3">
-            <span className="font-bold">Household Members</span>
+          <div className="flex flex-col">
+            <div className="flex justify-between items-center">
+              <span className="font-bold dark:text-white">Members</span>
+              <button
+                onClick={addMember}
+                className="btn btn-primary btn-sm rounded-md dark:bg-neutral-700 dark:text-white"
+              >
+                Add Member
+              </button>
+            </div>
             {members.map((member, index) => (
-              <div key={index} className="flex gap-3">
+              <div key={index} className="flex gap-3 mt-3 items-center">
                 <input
                   type="text"
-                  placeholder="Name"
+                  placeholder={`Member ${index + 1} Name`}
                   value={member.name}
                   onChange={(e) =>
                     handleMemberChange(index, "name", e.target.value)
                   }
-                  className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+                  className="input input-bordered border-zinc-200 focus:outline-none text-sm dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
                 />
                 <input
                   type="number"
                   placeholder="Age"
                   value={member.age}
                   onChange={(e) =>
-                    handleMemberChange(
-                      index,
-                      "age",
-                      parseInt(e.target.value) || ""
-                    )
+                    handleMemberChange(index, "age", parseInt(e.target.value))
                   }
-                  className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+                  className="input input-bordered border-zinc-200 focus:outline-none text-sm dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
                 />
                 <select
                   value={member.gender}
                   onChange={(e) =>
                     handleMemberChange(index, "gender", e.target.value)
                   }
-                  className="select select-bordered border-zinc-200 focus:outline-none"
+                  className="select select-bordered border-zinc-200 focus:outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
                 >
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                 </select>
-
                 <input
                   type="number"
                   placeholder="Contact (Optional)"
-                  value={member.contact || ""}
+                  value={member.contact}
                   onChange={(e) =>
                     handleMemberChange(index, "contact", e.target.value)
                   }
-                  className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+                  className="input input-bordered border-zinc-200 focus:outline-none text-sm dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
                 />
-
-                <label className="flex items-center gap-2">
+                <label className="flex items-center space-x-3">
                   <input
                     type="checkbox"
-                    className=""
                     checked={member.pwd}
                     onChange={(e) =>
                       handleMemberChange(index, "pwd", e.target.checked)
                     }
+                    className="checkbox checkbox-primary dark:bg-neutral-700 dark:border-neutral-600 dark:checkbox-accent"
                   />
-                  PWD
+                  <span className="text-sm dark:text-white">PWD</span>
                 </label>
-                <label className="flex items-center gap-2">
+                <label className="flex items-center space-x-3">
                   <input
                     type="checkbox"
                     checked={member.indigenous}
                     onChange={(e) =>
                       handleMemberChange(index, "indigenous", e.target.checked)
                     }
+                    className="checkbox checkbox-primary dark:bg-neutral-700 dark:border-neutral-600 dark:checkbox-accent"
                   />
-                  Indigenous
+                  <span className="text-sm dark:text-white">Indigenous</span>
                 </label>
-
                 <button
                   onClick={() => deleteMember(index)}
-                  className="btn btn-sm my-auto rounded-md btn-error"
+                  className="btn btn-error btn-sm rounded-md dark:bg-neutral-700 dark:text-white"
                 >
-                  Delete
+                  Remove
                 </button>
               </div>
             ))}
-            <button onClick={addMember} className="btn mx-auto btn-secondary">
-              Add Member
-            </button>
           </div>
 
+          {/* submit */}
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className={`btn mt-4 text-white mx-auto ${
-              loading ? "btn-disabled" : "btn-primary"
-            } `}
+            className={`btn btn-primary mt-6 self-end dark:bg-neutral-700 dark:text-white ${
+              loading ? "loading" : ""
+            }`}
           >
-            Save Household Data
+            Submit
           </button>
-        </div>
-
-        <div className=" m-auto mb-0 text-xs text-zinc-500">
-          Add data at location:
-          {marker
-            ? ` Latitude: ${marker.lat()}, Longitude: ${marker.lng()}`
-            : "No location selected"}
         </div>
       </div>
     </div>

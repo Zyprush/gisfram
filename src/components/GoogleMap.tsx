@@ -7,7 +7,7 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/add-data/paluanCoords";
-import { IconBrowserPlus, IconFocusCentered, IconRipple } from "@tabler/icons-react";
+import { IconBrowserPlus, IconFocusCentered, IconHome, IconRipple } from "@tabler/icons-react";
 import AddData from "@/app/pages/add-data/AddData";
 import Loading from "./Loading";
 import AddFloodData from "@/app/pages/add-data/AddFloodData";
@@ -64,19 +64,19 @@ const GoogleMapComponent: React.FC = () => {
     <>
       {showAddData && <AddData setAddData={setShowAddData} marker={marker} />}
       {showAddFloodRecord && <AddFloodData setAddData={setShowAddFloodRecord} marker={marker} />}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex p-2 gap-3 bg-white shadow rounded-md ">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex p-3 px-4 rounded-xl gap-3 bg-white shadow">
         {marker && (
           <button
-            className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom flex gap-2 items-center"
+            className=" bg-primary text-white p-2 text-sm rounded tooltip tooltip-bottom flex gap-2 items-center"
             data-tip="Add a Household"
             onClick={() => setShowAddData(true)}
           >
-            <IconBrowserPlus /> Household
+            <IconHome /> Household
           </button>
         )}
         {marker && (
           <button
-            className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom flex gap-2 items-center"
+            className=" bg-primary text-white p-2 rounded tooltip tooltip-bottom flex gap-2 items-center text-sm"
             data-tip="Add Flood Record"
             onClick={() => setShowAddFloodRecord(true)}
           >
@@ -85,7 +85,7 @@ const GoogleMapComponent: React.FC = () => {
         )}
         <button
           onClick={handlePanToCenter}
-          className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom"
+          className=" bg-primary text-white p-1 rounded tooltip tooltip-bottom px-2"
           data-tip="Return to Paluan"
         >
           <IconFocusCentered />

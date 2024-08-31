@@ -10,11 +10,7 @@ import { FirebaseError } from "firebase/app";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import Link from "next/link";
 
-const Password = ({
-  setEdit,
-}: {
-  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const Password = () => {
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -49,7 +45,7 @@ const Password = ({
         await reauthenticateWithCredential(user, credential);
         await updatePassword(user, newPassword);
         alert("Password updated successfully.");
-        setEdit(false);
+        // Handle successful password change
       } catch (error: any) {
         if (error instanceof FirebaseError) {
           const errorMessages: { [key: string]: string } = {

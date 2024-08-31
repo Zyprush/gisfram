@@ -50,12 +50,12 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
 
   return (
     <div className="fixed top-0 bottom-0 right-0 left-0 w-full h-full bg-zinc-900 bg-opacity-80 py-6 flex p-20 flex-col justify-center items-center sm:py-12 z-50 text-zinc-700">
-      <div className="flex flex-col bg-[#f0f6f9] rounded-xl shadow-sm w-[70rem] h-full p-4">
+      <div className="flex flex-col bg-[#f0f6f9] dark:bg-zinc-800 rounded-xl shadow-sm w-[50rem] h-auto my-auto p-6">
         <div className="flex justify-between">
-          <span className="font-bold text-lg">Add Flood Data</span>
+          <span className="font-bold text-lg dark:text-zinc-100">Add Flood Data</span>
           <button
             onClick={() => setAddData(false)}
-            className="btn-primary btn btn-sm rounded-md"
+            className="btn-primary btn btn-sm rounded-md dark:bg-neutral-700 dark:text-white"
           >
             Cancel
           </button>
@@ -63,23 +63,24 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
 
         <div className="flex flex-col gap-4 mt-4">
           {/* Basic Information */}
-          <div className="flex flex-row justify-start items-center gap-2">
-              <label htmlFor="date">Date</label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                data-tip="Date of the flood"
-                className="border-zinc-200 focus:outline-none text-sm p-2 rounded-md bg-white text-zinc-700 tooltip tooltip-top"
-              />
-            </div>
+          <div className="flex flex-col justify-start items-start gap-2">
+            <label htmlFor="date" className="dark:text-gray-200">Date</label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              data-tip="Date of the flood"
+              className="input input-bordered border-zinc-600 focus:outline-none text-sm w-auto bg-gray-700 dark:bg-neutral-700 text-gray-300 dark:text-white"
+              style={{ colorScheme: "" }}
+            />
+          </div>
 
           <div className="flex gap-3">
             <select
               value={barangay}
               onChange={(e) => setBarangay(e.target.value)}
               data-tip="Barangay"
-              className="select border-zinc-200 focus:outline-none tooltip tooltip-top"
+              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
             >
               <option value="">Select Barangay</option>
               <option value="Alipaoy">Alipaoy</option>
@@ -99,7 +100,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
             <select
               value={severity}
               onChange={(e) => setSeverity(e.target.value)}
-              className="select border-zinc-200 focus:outline-none"
+              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
             >
               <option value="">Select Severity</option>
               <option value="Low">Low</option>
@@ -115,7 +116,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               placeholder="Water Level (in meters)"
               value={waterLevel}
               onChange={(e) => setWaterLevel(parseFloat(e.target.value) || "")}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
             />
             <input
               type="number"
@@ -124,7 +125,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               onChange={(e) =>
                 setRainfallAmount(parseFloat(e.target.value) || "")
               }
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
             />
           </div>
 
@@ -135,29 +136,30 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               placeholder="Casualties"
               value={casualties}
               onChange={(e) => setCasualties(parseInt(e.target.value) || "")}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
             />
+
             <input
               type="text"
               placeholder="Damages (description)"
               value={damages}
               onChange={(e) => setDamages(e.target.value)}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
             />
           </div>
 
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className={`btn mt-4 text-white mx-auto ${
+            className={`btn mt-4 text-white mx-auto dark:bg-neutral-700 dark:text-white ${
               loading ? "btn-disabled" : "btn-primary"
-            } `}
+            }`}
           >
             Save Flood Data
           </button>
         </div>
 
-        <div className="m-auto mb-0 text-xs text-zinc-500">
+        <div className="m-auto mb-0 mt-8 text-xs text-zinc-400 dark:text-gray-400">
           Add data at location:
           {marker
             ? ` Latitude: ${marker.lat()}, Longitude: ${marker.lng()}`
