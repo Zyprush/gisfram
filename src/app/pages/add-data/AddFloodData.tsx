@@ -35,6 +35,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
         waterLevel: waterLevel || "undefined",
         rainfallAmount: rainfallAmount || "undefined",
         casualties: casualties || 0,
+        damages,
       };
 
       try {
@@ -49,7 +50,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
   };
 
   return (
-    <div className="fixed top-0 bottom-0 right-0 left-0 w-full h-full bg-zinc-900 bg-opacity-80 py-6 flex p-20 flex-col justify-center items-center sm:py-12 z-50 text-zinc-700">
+    <div className="fixed top-0 bottom-0 right-0 left-0 w-full h-full bg-zinc-900 bg-opacity-80 py-6 flex p-20 flex-col justify-center items-center sm:py-12 z-50 text-zinc-700 dark:text-zinc-200">
       <div className="flex flex-col bg-[#f0f6f9] dark:bg-zinc-800 rounded-xl shadow-sm w-[50rem] h-auto my-auto p-6">
         <div className="flex justify-between">
           <span className="font-bold text-lg dark:text-zinc-100">Add Flood Data</span>
@@ -70,8 +71,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               value={date}
               onChange={(e) => setDate(e.target.value)}
               data-tip="Date of the flood"
-              className="input input-bordered border-zinc-600 focus:outline-none text-sm w-auto bg-gray-700 dark:bg-neutral-700 text-gray-300 dark:text-white"
-              style={{ colorScheme: "" }}
+              className="input input-bordered border-zinc-300 dark:border-neutral-600 focus:outline-none text-sm w-auto bg-white dark:bg-neutral-700 text-gray-600 dark:text-white" 
             />
           </div>
 
@@ -80,7 +80,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               value={barangay}
               onChange={(e) => setBarangay(e.target.value)}
               data-tip="Barangay"
-              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
+              className="sm-input text-black dark:text-white w-1/2 bg-white dark:bg-neutral-700 dark:border-neutral-600"
             >
               <option value="">Select Barangay</option>
               <option value="Alipaoy">Alipaoy</option>
@@ -100,7 +100,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
             <select
               value={severity}
               onChange={(e) => setSeverity(e.target.value)}
-              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
+              className="sm-input text-black dark:text-white w-1/2 bg-white dark:bg-neutral-700 dark:border-neutral-600"
             >
               <option value="">Select Severity</option>
               <option value="Low">Low</option>
@@ -116,7 +116,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               placeholder="Water Level (in meters)"
               value={waterLevel}
               onChange={(e) => setWaterLevel(parseFloat(e.target.value) || "")}
-              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
+              className="sm-input text-black dark:text-white w-1/2 bg-white dark:bg-neutral-700 dark:border-neutral-600"
             />
             <input
               type="number"
@@ -125,7 +125,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               onChange={(e) =>
                 setRainfallAmount(parseFloat(e.target.value) || "")
               }
-              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
+              className="sm-input text-black dark:text-white w-1/2 bg-white dark:bg-neutral-700 dark:border-neutral-600"
             />
           </div>
 
@@ -136,7 +136,7 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               placeholder="Casualties"
               value={casualties}
               onChange={(e) => setCasualties(parseInt(e.target.value) || "")}
-              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
+              className="sm-input text-black dark:text-white w-1/2 bg-white dark:bg-neutral-700 dark:border-neutral-600"
             />
 
             <input
@@ -144,14 +144,14 @@ const AddFloodData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
               placeholder="Damages (description)"
               value={damages}
               onChange={(e) => setDamages(e.target.value)}
-              className="sm-input text-black dark:text-white w-1/2 dark:bg-neutral-700 dark:border-neutral-600"
+              className="sm-input text-black dark:text-white w-1/2 bg-white dark:bg-neutral-700 dark:border-neutral-600"
             />
           </div>
 
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className={`btn mt-4 text-white mx-auto dark:bg-neutral-700 dark:text-white ${
+            className={`btn mt-4 text-white mx-auto bg-primary dark:bg-neutral-700 dark:text-white ${
               loading ? "btn-disabled" : "btn-primary"
             }`}
           >

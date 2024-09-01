@@ -47,7 +47,7 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
         value={formData.barangay || ''}
         onChange={handleChange}
         data-tip="Barangay"
-        className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2"
+        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
       >
         <option value="">Select Barangay</option>
         <option value="Alipaoy">Alipaoy</option>
@@ -69,14 +69,14 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
         name="date"
         value={formData.date || ''}
         onChange={handleChange}
-        className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2"
+        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
       />
 
       <select
         name="severity"
         value={formData.severity || ''}
         onChange={handleChange}
-        className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2"
+        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
       >
         <option value="">Select Severity</option>
         <option value="Low">Low</option>
@@ -89,7 +89,7 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
         name="waterLevel"
         value={formData.waterLevel || ''}
         onChange={handleChange}
-        className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2"
+        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
         placeholder="Water Level (m)"
       />
       <input
@@ -97,7 +97,7 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
         name="rainfallAmount"
         value={formData.rainfallAmount || ''}
         onChange={handleChange}
-        className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2"
+        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
         placeholder="Rainfall Amount (mm)"
       />
       <input
@@ -105,13 +105,13 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
         name="casualties"
         value={formData.casualties || ''}
         onChange={handleChange}
-        className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2"
+        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
         placeholder="Casualties"
       />
       <div className="flex gap-4 mr-0 ml-auto">
         <button
           type="button"
-          className="btn btn-outline rounded-sm text-white"
+          className="btn btn-outline rounded-sm dark:text-white text-zinc-600 hover:bg-black"
           onClick={onCancel}
           disabled={loading}
         >

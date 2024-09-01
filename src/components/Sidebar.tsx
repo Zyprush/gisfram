@@ -1,6 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Sidebar as UISidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
+import {
+  Sidebar as UISidebar,
+  SidebarBody,
+  SidebarLink,
+} from "@/components/ui/sidebar";
 import {
   IconArrowLeft,
   IconLayoutDashboard,
@@ -10,6 +14,8 @@ import {
   IconMap,
   IconMapPin,
   IconRipple,
+  IconSun,
+  IconMoon,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -17,6 +23,7 @@ import Image from "next/image";
 import { useSignOut } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase";
 import { getSetting } from "@/app/pages/settings/getSetting";
+import { useTheme } from "next-themes";
 
 const links = [
   {
@@ -27,7 +34,6 @@ const links = [
     ),
   },
   {
-    //this is temporary
     label: "Add data",
     href: "/pages/add-data",
     icon: (
@@ -75,6 +81,7 @@ export const Sidebar: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [brandName, setBrandName] = useState("GISFRAM");
   const [signOut] = useSignOut(auth);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const fetchBrandName = async () => {
@@ -97,9 +104,14 @@ export const Sidebar: React.FC = () => {
     }
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+    console.log('theme', theme)
+  };
+
   return (
     <UISidebar open={open} setOpen={setOpen}>
-      <SidebarBody className="justify-between gap-10">
+      <SidebarBody className="justify-between gap-10 bg-white dark:bg-neutral-900">
         <div className="flex flex-col flex-1 overflow-y-auto">
           {open ? <Logo brandName={brandName} /> : <LogoIcon />}
           <div className="mt-8 flex flex-col gap-2">
@@ -118,7 +130,17 @@ export const Sidebar: React.FC = () => {
             />
           </div>
         </div>
-        <div>
+        <div className="flex flex-col items-center gap-4">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full border border-neutral-200 dark:border-white/[0.2] dark:bg-gray-900 text-zinc-700 dark:text-zinc-100 hover:bg-gray-400 dark:hover:bg-gray-800"
+          >
+            {theme === "dark" ? (
+              <IconSun className="h-5 w-5" />
+            ) : (
+              <IconMoon className="h-5 w-5" />
+            )}
+          </button>
           <SidebarLink
             link={{
               label: "Admin",
@@ -126,7 +148,7 @@ export const Sidebar: React.FC = () => {
               icon: (
                 <Image
                   src="/img/avatar.svg"
-                  className="h-7 w-7 flex-shrink-0 rounded-full"
+                  className="h-7 w-7 flex-shrink-0 rounded-full dark:bg-white"
                   width={50}
                   height={50}
                   alt="Avatar"
@@ -144,7 +166,7 @@ const Logo: React.FC<{ brandName: string }> = ({ brandName }) => {
   return (
     <Link
       href="/pages/dashboard"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+      className="font-normal flex space-x-2 items-center text-sm dark:text-white text-black py-1 relative z-20"
     >
       <Image
         src="/img/logo.png"
@@ -176,7 +198,7 @@ const LogoIcon: React.FC = () => {
         width={50}
         height={50}
         alt="Logo"
-      />    
+      />
     </Link>
   );
 };

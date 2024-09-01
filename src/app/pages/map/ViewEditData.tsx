@@ -127,8 +127,8 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
   if (!data) return <div>No data found</div>;
 
   return (
-    <div className="fixed top-0 bottom-0 right-0 left-0 w-full h-full bg-zinc-900 bg-opacity-80 py-6 flex p-20 flex-col justify-center items-center sm:py-12 z-50 text-zinc-700">
-      <div className="flex flex-col bg-[#f0f6f9] rounded-xl shadow-sm w-[70rem] h-full p-4 overflow-y-auto">
+    <div className="fixed top-0 bottom-0 right-0 left-0 w-full h-full bg-zinc-900 bg-opacity-80 dark:bg-zinc-800 dark:bg-opacity-80 py-6 flex p-20 flex-col justify-center items-center sm:py-12 z-50 text-zinc-700 dark:text-zinc-300">
+      <div className="flex flex-col bg-white dark:bg-zinc-800 rounded-xl shadow-sm w-[70rem] h-full p-4 overflow-y-auto border border-zinc-200 dark:border-neutral-700">
         <div className="flex justify-between">
           <span className="font-bold text-lg">
             {isEditing ? "Edit" : "View"} Household Data
@@ -162,7 +162,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               value={data.barangay}
               onChange={(e) => handleInputChange("barangay", e.target.value)}
               disabled={!isEditing}
-              className="select border-zinc-200 focus:outline-none"
+              className="select border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 focus:outline-none"
             >
               <option value="Alipaoy">Alipaoy</option>
               <option value="Barangay 5">Barangay 5</option>
@@ -183,13 +183,13 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               value={data.houseNo}
               onChange={(e) => handleInputChange("houseNo", e.target.value)}
               disabled={!isEditing}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
             />
             <select
               value={data.houseStruc}
               onChange={(e) => handleInputChange("houseStruc", e.target.value)}
               disabled={!isEditing}
-              className="select select-bordered border-zinc-200 focus:outline-none"
+              className="select select-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none"
             >
               <option value="concrete">Concrete</option>
               <option value="cement">Cement</option>
@@ -206,7 +206,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               value={data.headInfo.name}
               onChange={(e) => handleHeadInfoChange("name", e.target.value)}
               disabled={!isEditing}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
             />
             <input
               type="number"
@@ -216,13 +216,13 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                 handleHeadInfoChange("age", parseInt(e.target.value) || "")
               }
               disabled={!isEditing}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
             />
             <select
               value={data.headInfo.gender}
               onChange={(e) => handleHeadInfoChange("gender", e.target.value)}
               disabled={!isEditing}
-              className="select select-bordered border-zinc-200 focus:outline-none"
+              className="select select-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none"
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -233,7 +233,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               value={data.headInfo.contact}
               onChange={(e) => handleHeadInfoChange("contact", e.target.value)}
               disabled={!isEditing}
-              className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+              className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
             />
           </div>
 
@@ -249,7 +249,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   handleMemberChange(index, "name", e.target.value)
                 }
                 disabled={!isEditing}
-                className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+                className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
               />
               <input
                 type="number"
@@ -259,7 +259,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   handleMemberChange(index, "age", parseInt(e.target.value))
                 }
                 disabled={!isEditing}
-                className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+                className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
               />
               <select
                 value={member.gender}
@@ -267,7 +267,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   handleMemberChange(index, "gender", e.target.value)
                 }
                 disabled={!isEditing}
-                className="select select-bordered border-zinc-200 focus:outline-none"
+                className="select select-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none"
               >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -280,7 +280,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   handleMemberChange(index, "contact", e.target.value)
                 }
                 disabled={!isEditing}
-                className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+                className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
               />
               <label className="label cursor-pointer">
                 <input

@@ -96,26 +96,26 @@ const FloodData = () => {
     <Layout>
       <Authenticator />
       <div className="flex flex-1 h-screen">
-        <div className="p-2 md:p-8 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
+        <div className="p-2 md:p-8 border border-neutral-200 dark:border-neutral-700 bg-zinc-100 dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
           <div className="flex gap-4 mb-4 items-center">
             <input
               type="date"
               value={filters.from}
               onChange={(e) => setFilters({ ...filters, from: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-xs"
+              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300"
               placeholder="From"
             />
             <input
               type="date"
               value={filters.to}
               onChange={(e) => setFilters({ ...filters, to: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-xs"
+              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300"
               placeholder="To"
             />
             <select
               value={filters.barangay}
               onChange={(e) => setFilters({ ...filters, barangay: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-xs"
+              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300"
             >
               <option value="">All Barangays</option>
               <option value="Alipaoy">Alipaoy</option>
@@ -134,7 +134,7 @@ const FloodData = () => {
             <button
               onClick={fetchFloodData}
               disabled={loading}
-              className={`btn btn-sm border-4 my-auto rounded-sm ${
+              className={`btn btn-sm border-4 my-auto rounded-sm text-white ${
                 loading ? "btn-disabled" : "btn-primary"
               }`}
             >
@@ -150,10 +150,10 @@ const FloodData = () => {
               onSave={handleEditSave}
             />
           ) : (
-            <div className="p-3 rounded-md bg-zinc-800 border border-zinc-700">
+            <div className="p-3 rounded-xl bg-white dark:bg-opacity-50 dark:bg-zinc-800 border dark:border-zinc-700 bg-opacity-50">
             <table className="table-auto w-full">
               <thead>
-                <tr className="text-sm text-neutral-700 dark:text-neutral-200 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
+                <tr className="text-sm text-neutral-600 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
                   <th className="p-2">Barangay</th>
                   <th className="p-2">Date</th>
                   <th className="p-2">Severity</th>
@@ -167,7 +167,7 @@ const FloodData = () => {
                 {floodData.map((data) => (
                   <tr
                     key={data.id}
-                    className="text-xs text-neutral-700 dark:text-neutral-200"
+                    className="text-xs text-neutral-600 dark:text-neutral-300"
                   >
                     <td className="p-2">{data.barangay}</td>
                     <td className="p-2">{data.date}</td>
@@ -178,7 +178,7 @@ const FloodData = () => {
                     <td className="p-2 flex gap-4">
                       <button
                         onClick={() => setEditId(data.id)}
-                        className="text-white btn btn-xs btn-outline rounded-sm"
+                        className="dark:text-white btn text-zinc-500 hover:bg-black btn-xs btn-outline rounded-sm"
                       >
                         Edit
                       </button>

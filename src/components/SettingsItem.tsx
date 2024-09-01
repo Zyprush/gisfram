@@ -59,7 +59,7 @@ const SettingsItem = ({ name, title }: { name: string; title: string }) => {
   };
 
   return (
-    <div className="p-4 flex flex-col bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 min-w-60">
+    <div className="p-4 flex flex-col bg-white text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-lg dark:border shadow-sm dark:border-neutral-700 h-full min-w-60 dark:bg-opacity-40">
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-bold">{title}</h2>
         {!inputVisible && !loading && (
@@ -85,14 +85,20 @@ const SettingsItem = ({ name, title }: { name: string; title: string }) => {
           ) : (
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col items-center gap-4"
+              className="flex flex-col items-center gap-4 w-full"
             >
-              <input
-                type="text"
+              <textarea
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                className="input input-bordered dark:bg-neutral-800 text-zinc-900 dark:text-white w-full"
+                className="dark:bg-neutral-800 text-zinc-900 dark:text-white w-full"
                 placeholder={`Enter ${title.toLowerCase()}`}
+                rows={1}
+                style={{ resize: "none", overflow: "hidden" }}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = "auto"; // Reset the height
+                  target.style.height = `${target.scrollHeight}px`; // Set height based on scroll height
+                }}
               />
               <div className="flex gap-2">
                 <button

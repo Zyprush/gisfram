@@ -100,7 +100,12 @@ const PaluanMapData: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewEditData]);
 
-  if (!isLoaded) return <div><Loading/></div>;
+  if (!isLoaded)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (!event.latLng) return;
@@ -128,12 +133,12 @@ const PaluanMapData: React.FC = () => {
       {viewEditData && (
         <ViewEditData id={id} setViewEditData={setViewEditData} />
       )}
-      <div className="text-zinc-700 absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex items-center p-2 gap-3">
-        <div className="flex gap-2 items-center bg-white rounded-lg shadow-sm w-auto p-2">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex items-center p-2 gap-3">
+        <div className="flex gap-2 items-center bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto p-2 border border-zinc-200 dark:border-neutral-700">
           <select
             value={barangayFilter}
             onChange={(e) => setBarangayFilter(e.target.value)}
-            className="select border-zinc-200 focus:outline-none"
+            className="select bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-700 text-zinc-700 dark:text-zinc-300 focus:outline-none"
           >
             <option value="">Select Barangay</option>
             <option value="Alipaoy">Alipaoy</option>
@@ -154,14 +159,14 @@ const PaluanMapData: React.FC = () => {
             placeholder="Head of Family"
             value={nameSearch}
             onChange={(e) => setNameSearch(e.target.value)}
-            className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+            className="input input-bordered bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
           />
           <input
             type="text"
             placeholder="House Number"
             value={houseNumberSearch}
             onChange={(e) => setHouseNumberSearch(e.target.value)}
-            className="input input-bordered border-zinc-200 focus:outline-none text-sm"
+            className="input input-bordered bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
           />
           <button
             onClick={handleFilterSubmit}
