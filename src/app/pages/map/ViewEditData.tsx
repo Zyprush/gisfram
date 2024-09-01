@@ -129,26 +129,26 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
   return (
     <div className="fixed top-0 bottom-0 right-0 left-0 w-full h-full bg-zinc-900 bg-opacity-80 dark:bg-zinc-800 dark:bg-opacity-80 py-6 flex p-20 flex-col justify-center items-center sm:py-12 z-50 text-zinc-700 dark:text-zinc-300">
       <div className="flex flex-col bg-white dark:bg-zinc-800 rounded-xl shadow-sm w-[70rem] h-full p-4 overflow-y-auto border border-zinc-200 dark:border-neutral-700">
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-4">
           <span className="font-bold text-lg">
             {isEditing ? "Edit" : "View"} Household Data
           </span>
-          <div>
+          <div className="flex justify-between gap-4">
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className="btn btn-sm btn-secondary mr-2"
+              className="btn btn-sm btn-outline hover:bg-black mr-2"
             >
               {isEditing ? "Cancel Edit" : "Edit"}
             </button>
             <button
               onClick={handleDelete}
-              className="btn btn-sm btn-error mr-2"
+              className="btn btn-outline btn-sm rounded-md hover:bg-black text-error"
             >
               Delete
             </button>
             <button
               onClick={() => setViewEditData(false)}
-              className="btn btn-sm btn-primary"
+              className="btn btn-sm btn-primary text-white"
             >
               Close
             </button>
@@ -238,7 +238,17 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
           </div>
 
           {/* Member info */}
-          <span className="font-bold">Household Members</span>
+          <div className="flex justify-between items-center">
+            <span className="font-bold">Household Members</span>
+            {isEditing && (
+              <button
+                onClick={addMember}
+                className="btn btn-outline btn-sm text-zinc-700 hover:bg-black dark:text-white"
+              >
+                Add Member
+              </button>
+            )}
+          </div>
           {data.member.map((member: any, index: number) => (
             <div className="flex gap-3" key={index}>
               <input
@@ -292,7 +302,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   disabled={!isEditing}
                   className="checkbox checkbox-primary"
                 />
-                <span className="label-text text-xs">PWD</span>
+                <span className="label-text text-xs ml-1 font-semibold">PWD</span>
               </label>
               <label className="label cursor-pointer">
                 <input
@@ -304,28 +314,23 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   disabled={!isEditing}
                   className="checkbox checkbox-primary"
                 />
-                <span className="label-text text-xs">Indigenous</span>
+                <span className="label-text text-xs ml-1 font-semibold">Indigenous</span>
               </label>
               {isEditing && (
                 <button
                   onClick={() => deleteMember(index)}
-                  className="btn btn-sm btn-error"
+                  className="btn btn-outline btn-sm rounded-md text-error my-auto"
                 >
                   Remove
                 </button>
               )}
             </div>
           ))}
-          {isEditing && (
-            <button onClick={addMember} className="btn btn-secondary mt-2">
-              Add Member
-            </button>
-          )}
         </div>
 
         {/* Submit Button */}
         {isEditing && (
-          <button onClick={handleSubmit} className="btn btn-primary mt-4">
+          <button onClick={handleSubmit} className="btn btn-primary mt-4 px-5 text-white mx-auto">
             Submit
           </button>
         )}
