@@ -37,6 +37,7 @@ interface HouseholdData {
   barangay: string;
   head: { name: string };
   houseNo: string;
+  memberTotal: number;
 }
 
 const PaluanMapData: React.FC = () => {
@@ -197,7 +198,7 @@ const PaluanMapData: React.FC = () => {
           <Marker
             key={household.id}
             position={household.position}
-            title={`House NO: ${household.houseNo}\nHead: ${household.head.name}\nBarangay: ${household.barangay}`}
+            title={`House NO: ${household.houseNo}\nHead: ${household.head}\nBarangay: ${household.barangay}\nTotal Member: ${household.memberTotal}`}
             // icon="/home.svg" // Add this line to use the SVG icon
             onClick={() => {
               setId(household.id);

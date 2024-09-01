@@ -66,33 +66,39 @@ const SimulationMap: React.FC = () => {
       alert("Please add at least one polygon before simulating.");
       return;
     }
-
+  
     try {
+      // Fetch households from Firestore
       const householdsRef = collection(db, "households");
       const querySnapshot = await getDocs(householdsRef);
       const households = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      })) as { id: string; position: { lat: number; lng: number } }[];
-
+      })) as { id: string; position: { lat: number; lng: number }; memberTotal: number }[];
+  
+      // Filter households inside the polygons
       const results = households.filter((household) => {
         const position = new google.maps.LatLng(
           household.position.lat,
           household.position.lng
         );
-
+  
         return polygons.some((polygonCoords) => {
           const polygon = new google.maps.Polygon({ paths: polygonCoords });
           return google.maps.geometry.poly.containsLocation(position, polygon);
         });
       });
-
+  
+      // Calculate total number of people affected
+      const totalAffected = results.reduce((sum, household) => sum + (household.memberTotal || 0), 0);
+  
       console.log("Households inside the polygons:", results);
-      alert(`${results.length} households found inside the polygons.`);
+      alert(`${results.length} households affected. Total people affected: ${totalAffected}`);
     } catch (error) {
       console.error("Error fetching households:", error);
     }
   };
+  
 
   if (!isLoaded)
     return (
