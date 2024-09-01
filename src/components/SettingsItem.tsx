@@ -65,9 +65,9 @@ const SettingsItem = ({ name, title }: { name: string; title: string }) => {
         {!inputVisible && !loading && (
           <button
             onClick={() => setInputVisible(true)}
-            className="text-white"
+            className="dark:text-white"
           >
-            <IconPencil />
+            <IconPencil/>
           </button>
         )}
       </div>

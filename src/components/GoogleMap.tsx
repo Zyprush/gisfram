@@ -111,8 +111,6 @@ const GoogleMapComponent: React.FC = () => {
         }}
         options={{ fullscreenControl: false }}
       >
-        {/* // tempporary disable */}
-
         <Polyline
           path={paluanCoords}
           options={{ strokeColor: "#FF0000", strokeWeight: 3 }}

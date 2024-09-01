@@ -1,9 +1,7 @@
-"use client";
 import React, { useState, useRef, useEffect } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
-  Polyline,
   Marker,
 } from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/add-data/paluanCoords";
@@ -26,11 +24,11 @@ const mapContainerStyle = {
   borderRadius: "10px",
 };
 
-const center = { lat: 13.397099, lng: 120.459089 }; //fix the map certered
+const center = { lat: 13.397099, lng: 120.459089 }; // Fix the map center
 
 const options = {
   mapTypeId: "roadmap" as google.maps.MapTypeId,
-  zoom: 11.6, //fix the zoom
+  zoom: 11.6, // Fix the zoom
 };
 
 interface HouseholdData {
@@ -97,7 +95,6 @@ const PaluanMapData: React.FC = () => {
 
   useEffect(() => {
     fetchFilteredData(); // Fetch data initially
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewEditData]);
 
   if (!isLoaded)
@@ -196,19 +193,12 @@ const PaluanMapData: React.FC = () => {
         }}
         options={{ fullscreenControl: false }}
       >
-        {/*
-        // tempporary disable
-        
-        <Polyline
-          path={paluanCoords}
-          options={{ strokeColor: "#FF0000", strokeWeight: 3 }}
-        />
-        */}
         {data.map((household) => (
           <Marker
             key={household.id}
             position={household.position}
-            title={`House NO: ${household.houseNo}\nHead: ${household.head}\nBarangay: ${household.barangay}`}
+            title={`House NO: ${household.houseNo}\nHead: ${household.head.name}\nBarangay: ${household.barangay}`}
+            // icon="/home.svg" // Add this line to use the SVG icon
             onClick={() => {
               setId(household.id);
               setViewEditData(true);

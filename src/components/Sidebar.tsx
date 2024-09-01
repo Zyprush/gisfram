@@ -12,10 +12,11 @@ import {
   IconChartHistogram,
   IconAlertTriangle,
   IconMap,
-  IconMapPin,
+  IconHelpOctagon,
   IconRipple,
   IconSun,
   IconMoon,
+  IconMapPin,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -30,49 +31,56 @@ const links = [
     label: "Dashboard",
     href: "/pages/dashboard",
     icon: (
-      <IconLayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconLayoutDashboard className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Add data",
     href: "/pages/add-data",
     icon: (
-      <IconMap className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconMap className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Map Data",
     href: "/pages/map",
     icon: (
-      <IconMapPin className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconMapPin className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+    ),
+  },
+  {
+    label: "Barangay",
+    href: "/pages/barangay",
+    icon: (
+      <IconHelpOctagon className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Hazard",
     href: "/pages/hazard",
     icon: (
-      <IconAlertTriangle className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconAlertTriangle className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Flood Data",
     href: "/pages/flood",
     icon: (
-      <IconRipple className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconRipple className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Analysis",
     href: "/pages/analysis",
     icon: (
-      <IconChartHistogram className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconChartHistogram className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Settings",
     href: "/pages/settings",
     icon: (
-      <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconSettings className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
 ];
@@ -106,7 +114,6 @@ export const Sidebar: React.FC = () => {
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
-    console.log('theme', theme)
   };
 
   return (
@@ -123,7 +130,7 @@ export const Sidebar: React.FC = () => {
                 label: "Logout",
                 href: "#",
                 icon: (
-                  <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+                  <IconArrowLeft className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
                 ),
               }}
               onClick={handleLogout}
@@ -133,7 +140,7 @@ export const Sidebar: React.FC = () => {
         <div className="flex flex-col items-center gap-4">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full border border-neutral-200 dark:border-white/[0.2] dark:bg-gray-900 text-zinc-700 dark:text-zinc-100 hover:bg-gray-400 dark:hover:bg-gray-800"
+            className="p-2 rounded-full border border-neutral-200 dark:border-white/[0.2] dark:bg-gray-900 text-zinc-500 dark:text-zinc-100 ml-0 mr-auto"
           >
             {theme === "dark" ? (
               <IconSun className="h-5 w-5" />
@@ -141,21 +148,23 @@ export const Sidebar: React.FC = () => {
               <IconMoon className="h-5 w-5" />
             )}
           </button>
-          <SidebarLink
-            link={{
-              label: "Admin",
-              href: "#",
-              icon: (
-                <Image
-                  src="/img/avatar.svg"
-                  className="h-7 w-7 flex-shrink-0 rounded-full dark:bg-white"
-                  width={50}
-                  height={50}
-                  alt="Avatar"
-                />
-              ),
-            }}
-          />
+          <div className="ml-0 mr-auto ">
+            <SidebarLink
+              link={{
+                label: "Admin",
+                href: "#",
+                icon: (
+                  <Image
+                    src="/img/avatar.svg"
+                    className="h-7 w-7 flex-shrink-0 rounded-full dark:bg-white"
+                    width={50}
+                    height={50}
+                    alt="Avatar"
+                  />
+                ),
+              }}
+            />
+          </div>
         </div>
       </SidebarBody>
     </UISidebar>

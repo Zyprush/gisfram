@@ -20,16 +20,16 @@ const Settings = () => {
                   <IconSettings className="text-zinc-600 dark:text-zinc-200"/>
                 </span>
               </span>
-              <p className="mt-auto mb-0 text-sm text-zinc-500 dark:text-zinc-300">Chnage your password here</p>
+              <p className="mt-auto mb-0 text-sm text-zinc-500 dark:text-zinc-300">Change your password here</p>
             </Link>
             <Link href={"/pages/boundary"} className="p-4 flex flex-col bg-white text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-lg dark:border shadow-sm dark:border-neutral-700 h-full min-w-60 dark:bg-opacity-40">
               <span className="flex font-semibold justify-between mt-1">
                 <h1>Boundary</h1>
-                <span className="text-white">
+                <span  className="dark:text-white">
                   <IconSettings />
                 </span>
               </span>
-              <p className="mt-auto mb-0 text-sm text-zinc-300">Change boundary of the map</p>
+              <p className="mt-auto mb-0 text-sm text-zinc-500 dark:text-zinc-300">Change boundary of the map</p>
             </Link>
           </div>
           <SettingsItem title="About Us" name="aboutUs" />
