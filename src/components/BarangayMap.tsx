@@ -118,7 +118,7 @@ const BarangayMap: React.FC = () => {
             placeholder="Search Barangay"
             value={barangayName}
             onChange={(e) => setBarangayName(e.target.value)}
-            className="p-2 rounded"
+            className="p-2 rounded text-sm"
           />
           <button
             onClick={handleSearch}

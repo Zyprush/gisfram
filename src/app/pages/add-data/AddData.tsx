@@ -121,6 +121,7 @@ const AddData: React.FC<AddDataProps> = ({ setAddData, marker }) => {
         barangay,
         houseNo,
         head: headName,
+        memberTotal: members.length + 1,
         headInfo: {
           name: headName,
           age: headAge,

@@ -38,11 +38,22 @@ body {
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none; 
+  -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
 input[type="number"] {
   appearance: textfield;
+}
+
+.custom-bg {
+  background-color: #e5e5f7;
+  opacity: 0.6;
+  background-image: repeating-radial-gradient(
+      circle at 0 0,
+      transparent 0,
+      #e5e5f7 14px
+    ),
+    repeating-linear-gradient(#25640355, #256403);
 }

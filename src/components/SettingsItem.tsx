@@ -4,7 +4,7 @@ import { db } from "@/firebase"; // Adjust the path to your Firebase config
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { IconPencil } from "@tabler/icons-react";
 
-const SettingsItem = ({ name, title }: { name: string; title: string }) => {
+const SettingsItem = ({ name, title,row }: { name: string; title: string; row:number }) => {
   const [value, setValue] = useState<string>("");
   const [inputVisible, setInputVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -59,13 +59,13 @@ const SettingsItem = ({ name, title }: { name: string; title: string }) => {
   };
 
   return (
-    <div className="p-4 flex flex-col bg-white text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-lg dark:border shadow-sm dark:border-neutral-700 h-full min-w-60 dark:bg-opacity-40">
+    <div className="p-4 flex flex-col bg-white text-zinc-600 dark:text-zinc-300 dark:bg-neutral-800 rounded-lg dark:border shadow-sm dark:border-neutral-700 dark:border-opacity-50 min-w-60 dark:bg-opacity-30">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-bold">{title}</h2>
+        <h2 className="font-bold text-lg">{title}</h2>
         {!inputVisible && !loading && (
           <button
             onClick={() => setInputVisible(true)}
-            className="dark:text-white"
+            className="p-1 border text-zinc-600 dark:text-zinc-200 bg-zinc-100 bg-opacity-40 dark:bg-zinc-800 border-zinc-500 rounded-md dark:border-zinc-400 border-opacity-30 dark:border-opacity-30"
           >
             <IconPencil/>
           </button>
@@ -90,15 +90,9 @@ const SettingsItem = ({ name, title }: { name: string; title: string }) => {
               <textarea
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                className="dark:bg-neutral-800 text-zinc-900 dark:text-white w-full"
+                className="dark:bg-neutral-800 text-zinc-900 text-sm p-2 rounded-sm dark:text-white w-full resize-none"
                 placeholder={`Enter ${title.toLowerCase()}`}
-                rows={1}
-                style={{ resize: "none", overflow: "hidden" }}
-                onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement;
-                  target.style.height = "auto"; // Reset the height
-                  target.style.height = `${target.scrollHeight}px`; // Set height based on scroll height
-                }}
+                rows={row}
               />
               <div className="flex gap-2">
                 <button

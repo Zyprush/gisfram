@@ -71,14 +71,14 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
       window.alert("Please fill in all required fields for the household.");
       return;
     }
-
+  
     if (!data.headInfo.name || !data.headInfo.age || !data.headInfo.gender) {
       window.alert(
         "Please fill in all required fields for the head of the household."
       );
       return;
     }
-
+  
     for (const member of data.member) {
       if (!member.name || !member.age || !member.gender) {
         window.alert(
@@ -87,13 +87,23 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
         return;
       }
     }
-
+  
     setLoading(true);
     try {
       const docRef = doc(db, "households", id);
-      await updateDoc(docRef, data);
+      
+      // Calculate the number of members
+      const memberTotal = data.member.length + 1;
+      
+      // Update the document with the member total
+      await updateDoc(docRef, {
+        ...data,
+        memberTotal // Include this field in the update
+      });
+      
       setIsEditing(false);
-      window.alert("Data updated successfully!");
+  
+      window.alert(`Data updated successfully! Total members: ${memberTotal}`);
     } catch (e) {
       console.error("Error updating document: ", e);
       window.alert("Error updating data. Please try again.");
@@ -101,6 +111,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
       setLoading(false);
     }
   };
+  
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(

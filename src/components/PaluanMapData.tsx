@@ -130,8 +130,8 @@ const PaluanMapData: React.FC = () => {
       {viewEditData && (
         <ViewEditData id={id} setViewEditData={setViewEditData} />
       )}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex items-center p-2 gap-3">
-        <div className="flex gap-2 items-center bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto p-2 border border-zinc-200 dark:border-neutral-700">
+      <div className="absolute top-1 left-1/2 transform -translate-x-1/2 z-10 flex items-center p-2 gap-3">
+        <div className="flex gap-2 items-center bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto p-2 px-3 border border-zinc-200 dark:border-neutral-700 text-sm">
           <select
             value={barangayFilter}
             onChange={(e) => setBarangayFilter(e.target.value)}
@@ -167,7 +167,7 @@ const PaluanMapData: React.FC = () => {
           />
           <button
             onClick={handleFilterSubmit}
-            className="bg-primary text-white p-1 rounded text-sm py-4 px-6"
+            className="bg-primary text-white p-1 rounded text-sm py-3.5 px-6"
           >
             Search
           </button>
