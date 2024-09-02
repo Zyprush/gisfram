@@ -29,7 +29,7 @@ export default function Page() {
     event.preventDefault();
     try {
       await signInUserWithEmailAndPassword(email, password);
-      router.push("/pages/dashboard");
+      router.push("/pages/map");
     } catch (error: any) {
       if (error instanceof FirebaseError) {
         // Define custom error messages based on Firebase error codes

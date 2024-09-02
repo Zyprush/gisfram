@@ -14,7 +14,7 @@ export const LoggedIn: React.FC = () => {
     const userCheck = async () => {
       if (user) {
         try {
-          router.push('/pages/dashboard')
+          router.push('/pages/map')
         } catch (error) {
           console.error('Error fetching user data:', error);
         }

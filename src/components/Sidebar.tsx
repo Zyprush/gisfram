@@ -28,27 +28,28 @@ import { getSetting } from "@/app/pages/settings/getSetting";
 import { useTheme } from "next-themes";
 
 const links = [
+  // {
+  //   label: "Dashboard",
+  //   href: "/pages/dashboard",
+  //   icon: (
+  //     <IconLayoutDashboard className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+  //   ),
+  // },
   {
-    label: "Dashboard",
-    href: "/pages/dashboard",
+    label: "Map Data",
+    href: "/pages/map",
     icon: (
-      <IconLayoutDashboard className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconMap className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Add data",
     href: "/pages/add-data",
     icon: (
-      <IconMap className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-    ),
-  },
-  {
-    label: "Map Data",
-    href: "/pages/map",
-    icon: (
       <IconMapPin className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
+
   {
     label: "Barangay",
     href: "/pages/barangay",
@@ -148,7 +149,7 @@ export const Sidebar: React.FC = () => {
         <div className="flex flex-col items-center gap-4">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full border border-neutral-200 dark:border-white/[0.2] dark:bg-gray-900 text-zinc-500 dark:text-zinc-100 ml-0 mr-auto"
+            className="p-2 rounded-full border border-neutral-200 dark:border-white/[0.2] dark:bg-zinc-800 dark:bg-opacity-45 text-zinc-500 dark:text-zinc-100 -ml-1 mr-auto"
           >
             {theme === "dark" ? (
               <IconSun className="h-5 w-5" />
@@ -156,7 +157,7 @@ export const Sidebar: React.FC = () => {
               <IconMoon className="h-5 w-5" />
             )}
           </button>
-          <div className="ml-0 mr-auto ">
+          <div className="ml-0 mr-auto">
             <SidebarLink
               link={{
                 label: "Admin",
