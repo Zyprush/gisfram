@@ -6,18 +6,17 @@ import {
   SidebarLink,
 } from "@/components/ui/sidebar";
 import {
-  IconArrowLeft,
-  IconLayoutDashboard,
+  IconOutbound,
   IconSettings,
-  IconChartHistogram,
   IconAlertTriangle,
   IconMap,
   IconHelpOctagon,
-  IconRipple,
+  IconCloud,
   IconSun,
   IconMoon,
-  IconMapPin,
+  IconTablePlus,
   IconCreditCard,
+  IconChartBarPopular,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -46,7 +45,7 @@ const links = [
     label: "Add data",
     href: "/pages/add-data",
     icon: (
-      <IconMapPin className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconTablePlus className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
 
@@ -75,14 +74,14 @@ const links = [
     label: "Flood Data",
     href: "/pages/flood",
     icon: (
-      <IconRipple className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconCloud className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Analysis",
     href: "/pages/analysis",
     icon: (
-      <IconChartHistogram className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconChartBarPopular className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
     ),
   },
   {
@@ -139,7 +138,7 @@ export const Sidebar: React.FC = () => {
                 label: "Logout",
                 href: "#",
                 icon: (
-                  <IconArrowLeft className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+                  <IconOutbound className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
                 ),
               }}
               onClick={handleLogout}

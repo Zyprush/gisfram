@@ -113,21 +113,21 @@ const SimulationMap: React.FC = () => {
         <div className="flex gap-2 items-center bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto p-2 px-3 border border-zinc-200 dark:border-neutral-700 text-sm">
           <button
             onClick={clearPolygons}
-            className="bg-primary text-white p-1 rounded text-sm py-3.5 px-6"
+            className="btn btn-sm btn-primary text-white rounded text-sm"
           >
             Clear
           </button>
 
           <button
             onClick={finishPolygon}
-            className="bg-primary text-white p-1 rounded text-sm py-3.5 px-6"
+            className="btn btn-sm btn-primary text-white rounded text-sm"
           >
             Add Polygon
           </button>
 
           <button
             onClick={handleSimulate}
-            className="bg-primary text-white p-1 rounded text-sm py-3.5 px-6"
+            className="btn btn-sm btn-primary text-white rounded text-sm"
           >
             Simulate
           </button>

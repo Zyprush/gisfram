@@ -8,10 +8,7 @@ import {
 } from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/add-data/paluanCoords";
 import {
-  IconBrowserPlus,
   IconFocusCentered,
-  IconHome,
-  IconRipple,
 } from "@tabler/icons-react";
 import AddData from "@/app/pages/add-data/AddData";
 import Loading from "./Loading";
@@ -74,25 +71,25 @@ const GoogleMapComponent: React.FC = () => {
 <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex p-3 px-4 rounded-xl gap-3 bg-white shadow dark:bg-neutral-900 dark:shadow-lg">
   {marker && (
     <button
-      className="bg-primary text-white p-2 text-sm rounded tooltip tooltip-bottom flex gap-2 items-center dark:bg-primary-dark"
+      className="btn btn-sm btn-primary space-x-1"
       data-tip="Add a Household"
       onClick={() => setShowAddData(true)}
     >
-      <IconHome /> Household
+      Add Household
     </button>
   )}
   {marker && (
     <button
-      className="bg-primary text-white p-2 rounded tooltip tooltip-bottom flex gap-2 items-center text-sm dark:bg-primary-dark"
+      className="btn btn-sm btn-primary space-x-1"
       data-tip="Add Flood Record"
       onClick={() => setShowAddFloodRecord(true)}
     >
-      <IconRipple /> Flood Record
+      Add Flood Record
     </button>
   )}
   <button
     onClick={handlePanToCenter}
-    className="bg-primary text-white p-1 rounded tooltip tooltip-bottom px-2 dark:bg-primary-dark"
+    className="btn-primary text-white btn-sm btn px-1"
     data-tip="Return to Paluan"
   >
     <IconFocusCentered />

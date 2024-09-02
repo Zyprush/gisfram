@@ -134,7 +134,7 @@ const FloodData = () => {
             <button
               onClick={fetchFloodData}
               disabled={loading}
-              className={`btn btn-sm border-4 my-auto rounded-sm text-white ${
+              className={`btn btn-sm my-auto text-white ${
                 loading ? "btn-disabled" : "btn-primary"
               }`}
             >

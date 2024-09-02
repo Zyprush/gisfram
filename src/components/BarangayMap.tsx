@@ -118,17 +118,17 @@ const BarangayMap: React.FC = () => {
             placeholder="Search Barangay"
             value={barangayName}
             onChange={(e) => setBarangayName(e.target.value)}
-            className="p-2 rounded text-sm text-zinc-600"
+            className="p-2 rounded text-sm text-zinc-600 dark:text-zinc-300"
           />
           <button
             onClick={handleSearch}
-            className="bg-primary text-white p-2 rounded tooltip tooltip-bottom flex gap-2 items-center text-sm dark:bg-primary-dark"
+            className="btn btn-sm btn-primary text-white"
           >
             Search
           </button>
           <button
             onClick={handlePanToCenter}
-            className="bg-primary text-white p-1 rounded tooltip tooltip-bottom px-2 dark:bg-primary-dark"
+            className="btn-primary text-white px-1 btn btn-sm tooltip tooltip-bottom "
             data-tip="Return to Paluan"
           >
             <IconFocusCentered />

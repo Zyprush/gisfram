@@ -136,7 +136,7 @@ const PaluanMapData: React.FC = () => {
           <select
             value={barangayFilter}
             onChange={(e) => setBarangayFilter(e.target.value)}
-            className="select bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-700 text-zinc-700 dark:text-zinc-300 focus:outline-none"
+            className="select select-sm bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-600 text-zinc-700 dark:text-zinc-300 focus:outline-none"
           >
             <option value="">Select Barangay</option>
             <option value="Alipaoy">Alipaoy</option>
@@ -157,18 +157,18 @@ const PaluanMapData: React.FC = () => {
             placeholder="Head of Family"
             value={nameSearch}
             onChange={(e) => setNameSearch(e.target.value)}
-            className="input input-bordered bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
+            className="input input-sm input-bordered bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-600 text-zinc-700 dark:text-white focus:outline-none text-sm"
           />
           <input
             type="text"
             placeholder="House Number"
             value={houseNumberSearch}
             onChange={(e) => setHouseNumberSearch(e.target.value)}
-            className="input input-bordered bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
+            className="input input-sm input-bordered bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-600 text-zinc-700 dark:text-white focus:outline-none text-sm"
           />
           <button
             onClick={handleFilterSubmit}
-            className="bg-primary text-white p-1 rounded text-sm py-3.5 px-6"
+            className="btn btn-sm btn-primary text-white rounded text-sm"
           >
             Search
           </button>
