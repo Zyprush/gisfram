@@ -33,7 +33,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-900">
+    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-black">
       <BgParticles /> {/* Use the BgParticles component */}
       <SignedIn>
         <LoggedIn />
@@ -66,7 +66,7 @@ export default function Home() {
       </SignedIn>
       <SignedOut>
         <div className="text-center z-10">
-          <div className="flex gap-5 mx-auto">
+          <div className="flex gap-5 mx-auto md:flex-row flex-col flex-col-reverse">
             <Image
               src="/img/logo.png"
               alt="Logo"
@@ -76,8 +76,8 @@ export default function Home() {
               draggable="false"
             />
             <span className="flex flex-col justify-start items-start max-w-[30rem] my-auto p-5 bg-zinc-950 bg-opacity-55 rounded-lg border border-zinc-800">
-              <p className="text-xl uppercase font-semibold"> {brandName}</p>
-              <p className="text-xs text-left">{about}</p>
+              <p className="text-2xl uppercase font-semibold"> {brandName}</p>
+              <p className="text-xs text-left mt-4">{about}</p>
               <Link
                 href="/pages/sign-in"
                 className="btn btn-outline text-white hover:bg-white hover:text-black font-bold mt-10 mx-auto"
