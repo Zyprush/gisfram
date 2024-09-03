@@ -11,6 +11,7 @@ import { SignedOut } from "@/components/signed-out";
 import { SignedIn } from "@/components/signed-in";
 import { LoggedIn } from "@/components/LoggedIn";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import BgParticles from "@/components/BgParticles";
 
 export default function Page() {
   const router = useRouter();
@@ -62,9 +63,10 @@ export default function Page() {
   return (
     <section>
       <div className="flex h-screen bg-primary items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-8">
-        <div className="xl:mx-auto xl:w-full shadow-md p-4 xl:max-w-sm 2xl:max-w-md bg-white">
+        <BgParticles/>
+        <div className="xl:mx-auto xl:w-full shadow-md p-4 max-w-[23rem] bg-white z-10 pt-5 pb-10">
           <div className="mb-2 flex justify-center"></div>
-          <h2 className="text-center text-2xl font-bold leading-tight text-black">
+          <h2 className="text-center text-2xl font-bold leading-tight text-primary">
             Sign in
           </h2>
           <form className="mt-8" method="POST" onSubmit={onSubmit}>
@@ -110,7 +112,7 @@ export default function Page() {
               <div>
                 <SignedOut>
                   <button
-                    className="inline-flex w-full items-center justify-center rounded-md bg-secondary px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-secondary/80"
+                    className="btn btn-primary w-full rounded-none text-white"
                     type="submit"
                   >
                     Sign In
@@ -119,7 +121,7 @@ export default function Page() {
                 <SignedIn>
                   <LoggedIn />
                   <button
-                    className="inline-flex w-full items-center justify-center rounded-md bg-secondary px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-secondary/80"
+                    className="btn btn-primary w-full rounded-none text-white"
                     type="submit"
                   >
                     Signing In

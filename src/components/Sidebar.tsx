@@ -27,13 +27,6 @@ import { getSetting } from "@/app/pages/settings/getSetting";
 import { useTheme } from "next-themes";
 
 const links = [
-  // {
-  //   label: "Dashboard",
-  //   href: "/pages/dashboard",
-  //   icon: (
-  //     <IconLayoutDashboard className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-  //   ),
-  // },
   {
     label: "Map Data",
     href: "/pages/map",
