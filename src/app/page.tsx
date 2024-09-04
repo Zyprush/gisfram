@@ -66,7 +66,7 @@ export default function Home() {
       </SignedIn>
       <SignedOut>
         <div className="text-center z-10">
-          <div className="flex gap-5 mx-auto md:flex-row flex-col flex-col-reverse">
+          <div className="flex gap-5 mx-auto md:flex-row flex-col-reverse">
             <Image
               src="/img/logo.png"
               alt="Logo"
