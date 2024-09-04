@@ -62,7 +62,7 @@ export default function Page() {
 
   return (
     <section>
-      <div className="flex h-screen bg-primary items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-8">
+      <div className="flex h-screen bg-gray-950 items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-8">
         <BgParticles/>
         <div className="xl:mx-auto xl:w-full shadow-md p-4 max-w-[23rem] bg-white z-10 pt-5 pb-10">
           <div className="mb-2 flex justify-center"></div>

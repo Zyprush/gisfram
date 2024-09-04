@@ -57,3 +57,7 @@ input[type="number"] {
     ),
     repeating-linear-gradient(#25640355, #256403);
 }
+
+.border-shadow {
+  filter: drop-shadow(5px 5px 0px #fff);
+}

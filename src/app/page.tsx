@@ -33,7 +33,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gray-900">
+    <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-gradient-radial bg-gray-950">
       <BgParticles /> {/* Use the BgParticles component */}
       <SignedIn>
         <LoggedIn />
@@ -72,12 +72,12 @@ export default function Home() {
               alt="Logo"
               width={500}
               height={500}
-              className="mx-auto"
+              className="mx-auto border-shadow"
               draggable="false"
             />
-            <span className="flex flex-col justify-start items-start max-w-[30rem] my-auto p-5 bg-zinc-950 bg-opacity-55 rounded-lg border border-zinc-800">
-              <p className="text-xl uppercase font-semibold"> {brandName}</p>
-              <p className="text-xs text-left">{about}</p>
+            <span className="flex flex-col justify-start items-start max-w-[30rem] my-auto p-6 bg-zinc-950 bg-opacity-80 rounded-lg border border-zinc-800">
+              <p className="text-xl uppercase font-semibold text-white dark:text-white"> {brandName}</p>
+              <p className="text-xs mt-4 text-white dark:text-white text-justify">{about}</p>
               <Link
                 href="/pages/sign-in"
                 className="btn btn-outline text-white hover:bg-white hover:text-black font-bold mt-10 mx-auto"
