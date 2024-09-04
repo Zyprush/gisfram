@@ -31,14 +31,14 @@ const links = [
     label: "Map Data",
     href: "/pages/map",
     icon: (
-      <IconMap className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconMap className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
   {
     label: "Add data",
     href: "/pages/add-data",
     icon: (
-      <IconTablePlus className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconTablePlus className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
 
@@ -46,42 +46,42 @@ const links = [
     label: "Barangay",
     href: "/pages/barangay",
     icon: (
-      <IconHelpOctagon className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconHelpOctagon className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
   {
     label: "Hazard",
     href: "/pages/hazard",
     icon: (
-      <IconAlertTriangle className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconAlertTriangle className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
   {
     label: "Simulate",
     href: "/pages/simulate",
     icon: (
-      <IconCreditCard className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconCreditCard className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
   {
     label: "Flood Data",
     href: "/pages/flood",
     icon: (
-      <IconCloud className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconCloud className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
   {
     label: "Analysis",
     href: "/pages/analysis",
     icon: (
-      <IconChartBarPopular className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconChartBarPopular className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
   {
     label: "Settings",
     href: "/pages/settings",
     icon: (
-      <IconSettings className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      <IconSettings className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
 ];
@@ -119,7 +119,7 @@ export const Sidebar: React.FC = () => {
 
   return (
     <UISidebar open={open} setOpen={setOpen}>
-      <SidebarBody className="justify-between gap-10 bg-white dark:bg-neutral-900">
+      <SidebarBody className="justify-between gap-10 bg-base dark:bg-neutral-900">
         <div className="flex flex-col flex-1 overflow-y-auto">
           {open ? <Logo brandName={brandName} /> : <LogoIcon />}
           <div className="mt-8 flex flex-col gap-2">
@@ -131,7 +131,7 @@ export const Sidebar: React.FC = () => {
                 label: "Logout",
                 href: "#",
                 icon: (
-                  <IconOutbound className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+                  <IconOutbound className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.5} />
                 ),
               }}
               onClick={handleLogout}
@@ -157,7 +157,7 @@ export const Sidebar: React.FC = () => {
                 icon: (
                   <Image
                     src="/img/avatar.svg"
-                    className="h-7 w-7 flex-shrink-0 rounded-full dark:bg-white"
+                    className="h-7 w-7 flex-shrink-0 rounded-full dark:bg-base"
                     width={50}
                     height={50}
                     alt="Avatar"
