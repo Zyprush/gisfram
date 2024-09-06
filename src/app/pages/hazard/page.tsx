@@ -4,6 +4,7 @@ import { Authenticator } from "@/components/Authenthicator";
 import HazardMap from "@/components/HazardMap";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
+import MapData from "@/components/NewMapData";
 import { useEffect, useState } from "react";
 
 
@@ -23,7 +24,7 @@ const Hazard = () => {
                     {isLoading ? (
                         <Loading />
                     ) : (
-                        <HazardMap />
+                        <MapData />
                     )}
                 </div>
             </div>
