@@ -54,43 +54,20 @@ const AddFloodMap: React.FC = () => {
     const selectedBarangay = e.target.value;
     setBarangayName(selectedBarangay);
 
-    switch (selectedBarangay) {
-      case "alipaoy":
-        setBoundary(alipaoy);
-        break;
-      case "bagongSilangPob":
-        setBoundary(bagongSilangPob);
-        break;
-      case "handangTumulongPob":
-        setBoundary(handangTumulongPob);
-        break;
-      case "lumangbayan":
-        setBoundary(lumangbayan);
-        break;
-      case "mananao":
-        setBoundary(mananao);
-        break;
-      case "mapaladPob":
-        setBoundary(mapaladPob);
-        break;
-      case "marikit":
-        setBoundary(marikit);
-        break;
-      case "PagAsaNgBayanPob":
-        setBoundary(PagAsaNgBayanPob);
-        break;
-      case "sanJosePob":
-        setBoundary(sanJosePob);
-        break;
-      case "silahisNgPagAsaPob":
-        setBoundary(silahisNgPagAsaPob);
-        break;
-      case "tubili":
-        setBoundary(tubili);
-        break;
-      default:
-        setBoundary(paluanCoords);
-    }
+    const barangayBoundaries = {
+      "alipaoy": alipaoy,
+      "bagongSilangPob": bagongSilangPob,
+      "handangTumulongPob": handangTumulongPob,
+      "lumangbayan": lumangbayan,
+      "mananao": mananao,
+      "mapaladPob": mapaladPob,
+      "marikit": marikit,
+      "PagAsaNgBayanPob": PagAsaNgBayanPob,
+      "sanJosePob": sanJosePob,
+      "silahisNgPagAsaPob": silahisNgPagAsaPob,
+      "tubili": tubili,
+    };
+    setBoundary(barangayBoundaries[selectedBarangay as keyof typeof barangayBoundaries] || paluanCoords);
   };
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {

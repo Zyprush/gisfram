@@ -4,10 +4,10 @@ import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
 interface ViewEditDataProps {
   id: string;
-  setViewEditData: React.Dispatch<React.SetStateAction<boolean>>;
+  setViewHouse: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
+const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
@@ -58,7 +58,11 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
       pwd: false,
       indigenous: false,
     };
-    setData({ ...data, member: [...data.member, newMember] });
+
+    setData({
+      ...data,
+      member: [...(data?.member || []), newMember], // Ensure member is an array
+    });
   };
 
   const deleteMember = (index: number) => {
@@ -71,14 +75,14 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
       window.alert("Please fill in all required fields for the household.");
       return;
     }
-  
+
     if (!data.headInfo.name || !data.headInfo.age || !data.headInfo.gender) {
       window.alert(
         "Please fill in all required fields for the head of the household."
       );
       return;
     }
-  
+
     for (const member of data.member) {
       if (!member.name || !member.age || !member.gender) {
         window.alert(
@@ -87,22 +91,19 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
         return;
       }
     }
-  
+
     setLoading(true);
     try {
       const docRef = doc(db, "households", id);
-      
-      // Calculate the number of members
-      const memberTotal = data.member.length + 1;
-      
+      const memberTotal = data.member.length;
       // Update the document with the member total
       await updateDoc(docRef, {
         ...data,
-        memberTotal // Include this field in the update
+        memberTotal, // Include this field in the update
       });
-      
+
       setIsEditing(false);
-  
+      setViewHouse(""); // Close the modal after submit
       window.alert(`Data updated successfully! Total members: ${memberTotal}`);
     } catch (e) {
       console.error("Error updating document: ", e);
@@ -111,7 +112,6 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
       setLoading(false);
     }
   };
-  
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
@@ -123,7 +123,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
         const docRef = doc(db, "households", id);
         await deleteDoc(docRef);
         window.alert("Record deleted successfully!");
-        setViewEditData(false); // Close the modal after deletion
+        setViewHouse(""); // Close the modal after deletion
       } catch (e) {
         console.error("Error deleting document: ", e);
         window.alert("Error deleting data. Please try again.");
@@ -158,7 +158,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               Delete
             </button>
             <button
-              onClick={() => setViewEditData(false)}
+              onClick={() => setViewHouse("")}
               className="btn btn-sm btn-primary text-white"
             >
               Close
@@ -169,38 +169,19 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
         {/* Main info */}
         <div className="flex flex-col gap-4 mt-4">
           <div className="flex gap-3">
-            <select
-              value={data.barangay}
-              onChange={(e) => handleInputChange("barangay", e.target.value)}
-              disabled={!isEditing}
-              className="select border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 focus:outline-none"
-            >
-              <option value="Alipaoy">Alipaoy</option>
-              <option value="Barangay 5">Barangay 5</option>
-              <option value="Barangay 2">Barangay 2</option>
-              <option value="Harrison">Harrison</option>
-              <option value="Lumangbayan">Lumangbayan</option>
-              <option value="Mananao">Mananao</option>
-              <option value="Barangay 1">Barangay 1</option>
-              <option value="Marikit">Marikit</option>
-              <option value="Barangay 4">Barangay 4</option>
-              <option value="Barangay 6">Barangay 6</option>
-              <option value="Barangay 3">Barangay 3</option>
-              <option value="Tubili">Tubili</option>
-            </select>
             <input
               type="number"
               placeholder="House No"
               value={data.houseNo}
               onChange={(e) => handleInputChange("houseNo", e.target.value)}
               disabled={!isEditing}
-              className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
+              className="sn-input"
             />
             <select
               value={data.houseStruc}
               onChange={(e) => handleInputChange("houseStruc", e.target.value)}
               disabled={!isEditing}
-              className="select select-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none"
+              className="sn-select"
             >
               <option value="concrete">Concrete</option>
               <option value="cement">Cement</option>
@@ -217,7 +198,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               value={data.headInfo.name}
               onChange={(e) => handleHeadInfoChange("name", e.target.value)}
               disabled={!isEditing}
-              className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
+              className="sn-input"
             />
             <input
               type="number"
@@ -227,13 +208,13 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                 handleHeadInfoChange("age", parseInt(e.target.value) || "")
               }
               disabled={!isEditing}
-              className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
+              className="sn-input"
             />
             <select
               value={data.headInfo.gender}
               onChange={(e) => handleHeadInfoChange("gender", e.target.value)}
               disabled={!isEditing}
-              className="select select-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none"
+              className="sn-select"
             >
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -244,7 +225,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               value={data.headInfo.contact}
               onChange={(e) => handleHeadInfoChange("contact", e.target.value)}
               disabled={!isEditing}
-              className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
+              className="sn-input"
             />
           </div>
 
@@ -260,7 +241,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
               </button>
             )}
           </div>
-          {data.member.map((member: any, index: number) => (
+          {data.member?.map((member: any, index: number) => (
             <div className="flex gap-3" key={index}>
               <input
                 type="text"
@@ -270,7 +251,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   handleMemberChange(index, "name", e.target.value)
                 }
                 disabled={!isEditing}
-                className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
+                className="sn-input"
               />
               <input
                 type="number"
@@ -280,7 +261,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   handleMemberChange(index, "age", parseInt(e.target.value))
                 }
                 disabled={!isEditing}
-                className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
+                className="sn-input"
               />
               <select
                 value={member.gender}
@@ -288,7 +269,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   handleMemberChange(index, "gender", e.target.value)
                 }
                 disabled={!isEditing}
-                className="select select-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none"
+                className="sn-select"
               >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -301,7 +282,7 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                   handleMemberChange(index, "contact", e.target.value)
                 }
                 disabled={!isEditing}
-                className="input input-bordered border-zinc-200 dark:border-neutral-700 bg-white dark:bg-zinc-700 text-zinc-700 dark:text-white focus:outline-none text-sm"
+                className="sn-input"
               />
               <label className="label cursor-pointer">
                 <input
@@ -311,9 +292,11 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                     handleMemberChange(index, "pwd", e.target.checked)
                   }
                   disabled={!isEditing}
-                  className="checkbox checkbox-primary"
+                  className="checkbox checkbox-primary checbox-xs"
                 />
-                <span className="label-text text-xs ml-1 font-semibold">PWD</span>
+                <span className="label-text text-xs ml-1 font-semibold">
+                  PWD
+                </span>
               </label>
               <label className="label cursor-pointer">
                 <input
@@ -323,9 +306,11 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
                     handleMemberChange(index, "indigenous", e.target.checked)
                   }
                   disabled={!isEditing}
-                  className="checkbox checkbox-primary"
+                  className="checkbox checkbox-primary checbox-xs"
                 />
-                <span className="label-text text-xs ml-1 font-semibold">Indigenous</span>
+                <span className="label-text text-xs ml-1 font-semibold">
+                  Indigenous
+                </span>
               </label>
               {isEditing && (
                 <button
@@ -341,7 +326,10 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
 
         {/* Submit Button */}
         {isEditing && (
-          <button onClick={handleSubmit} className="btn btn-primary mt-4 px-5 text-white mx-auto">
+          <button
+            onClick={handleSubmit}
+            className="btn btn-primary mt-4 px-5 text-white mx-auto"
+          >
             Submit
           </button>
         )}
@@ -350,4 +338,4 @@ const ViewEditData: React.FC<ViewEditDataProps> = ({ id, setViewEditData }) => {
   );
 };
 
-export default ViewEditData;
+export default ViewEditHouse;
