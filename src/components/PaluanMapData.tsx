@@ -58,9 +58,7 @@ const PaluanMapData: React.FC = () => {
   const fetchFilteredData = async () => {
     try {
       let householdsQuery: Query<DocumentData> = collection(db, "households");
-      // Dynamically build the query based on filters
       const queryConstraints = [];
-
       if (barangayFilter) {
         queryConstraints.push(where("barangay", "==", barangayFilter));
       }
@@ -192,7 +190,14 @@ const PaluanMapData: React.FC = () => {
         onLoad={(map) => {
           mapRef.current = map;
         }}
-        options={{ fullscreenControl: false }}
+        options={{
+          fullscreenControl: false,
+          mapTypeControl: true, // Set to true to enable map type control
+          mapTypeControlOptions: {
+            position: google.maps.ControlPosition.TOP_RIGHT,
+            // style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+          },
+        }}
       >
         {data.map((household) => (
           <Marker

@@ -73,7 +73,7 @@ const links = [
 ];
 
 export const Sidebar: React.FC = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [brandName, setBrandName] = useState("GISFRAM");
   const [signOut] = useSignOut(auth);
   const { theme, setTheme } = useTheme();

@@ -3,8 +3,9 @@ import React, { useState, useRef } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
-  Polyline,
+  Polygon,
   Marker,
+  Polyline,
 } from "@react-google-maps/api";
 import { IconFocusCentered } from "@tabler/icons-react";
 import {
@@ -21,7 +22,7 @@ import {
   tubili,
 } from "./barangayCoord";
 import { paluanCoords } from "@/app/pages/map/paluanCoords";
-import AddHouse from "@/app/pages/add-house/AddHouse";
+import AddFlood from "@/app/pages/add-flood/AddFlood";
 
 const mapContainerStyle = {
   width: "100%",
@@ -31,7 +32,7 @@ const mapContainerStyle = {
 
 const center = { lat: 13.397099, lng: 120.459089 };
 
-const AddHouseMap: React.FC = () => {
+const AddFloodMap: React.FC = () => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
     libraries: ["geometry"],
@@ -40,10 +41,8 @@ const AddHouseMap: React.FC = () => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const [barangayName, setBarangayName] = useState<string>("");
   const [boundary, setBoundary] = useState<any>(paluanCoords);
-  const [addHouse, setAddHouse] = useState<boolean>(false);
-  const [marker, setMarker] = useState<google.maps.LatLng | undefined>(
-    undefined
-  );
+  const [addFlood, setAddFlood] = useState<boolean>(false);
+  const [polygon, setPolygon] = useState<google.maps.LatLng[]>([]);
 
   const handlePanToCenter = () => {
     if (mapRef.current) {
@@ -97,14 +96,18 @@ const AddHouseMap: React.FC = () => {
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (!event.latLng) return;
     const clickedLocation = event.latLng;
-    const polygon = new google.maps.Polygon({ paths: boundary });
-    if (!google.maps.geometry.poly.containsLocation(clickedLocation, polygon)) {
+    const polygonShape = new google.maps.Polygon({ paths: boundary });
+
+    // Check if the clicked location is within the selected barangay's boundary
+    if (!google.maps.geometry.poly.containsLocation(clickedLocation, polygonShape)) {
       alert("Action outside Boundary is not allowed!");
       return;
     }
-    if (addHouse) {
+
+    if (addFlood) {
       if (boundary !== paluanCoords) {
-        setMarker(clickedLocation);
+        // Add clicked location to the polygon coordinates
+        setPolygon((prev) => [...prev, clickedLocation]);
       } else {
         alert("Please select a Barangay!");
       }
@@ -112,20 +115,21 @@ const AddHouseMap: React.FC = () => {
   };
 
   const handleCancel = () => {
-    setAddHouse(false);
+    setAddFlood(false);
     setBoundary(paluanCoords);
     setBarangayName("");
-    setMarker(undefined);
+    setPolygon([]);
   };
+
   return (
     <div className="relative">
-      {addHouse && (
+      {addFlood && (
         <div className="absolute top-2 left-2 right-auto transform z-10 p-3 px-4 rounded-xl gap-3 bg-white shadow-2xl dark:bg-neutral-900 dark:shadow-lg flex flex-col">
           <select
             value={barangayName}
             onChange={handleSelect}
             className="sn-select mr-auto"
-            disabled={!!marker}
+            disabled={polygon.length > 0}
           >
             <option value="">Select Barangay</option>
             <option value="alipaoy">Alipaoy</option>
@@ -140,18 +144,19 @@ const AddHouseMap: React.FC = () => {
             <option value="silahisNgPagAsaPob">Silahis Ng Pag-Asa Pob</option>
             <option value="tubili">Tubili</option>
           </select>
-          
-          {marker ? (
-            <AddHouse
+
+          {polygon.length > 2 && (
+            <AddFlood
               barangay={barangayName}
-              marker={marker}
+              polygon={polygon}
               handleCancel={handleCancel}
             />
-          ) : null}
+          )}
         </div>
       )}
+
       <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 flex p-3 px-4 rounded-xl gap-3 bg-white shadow dark:bg-neutral-900 dark:shadow-lg">
-        {addHouse ? (
+        {addFlood ? (
           <button
             onClick={handleCancel}
             className="btn-outline dark:text-white text-neutral hover:bg-neutral btn btn-sm"
@@ -160,11 +165,11 @@ const AddHouseMap: React.FC = () => {
           </button>
         ) : (
           <button
-            onClick={() => setAddHouse(true)}
+            onClick={() => setAddFlood(true)}
             className="btn-primary text-white btn btn-sm tooltip tooltip-bottom"
             data-tip="Return to Paluan"
           >
-            Add Household
+            Add Flood
           </button>
         )}
 
@@ -176,6 +181,7 @@ const AddHouseMap: React.FC = () => {
           <IconFocusCentered />
         </button>
       </div>
+
       {isLoaded && (
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
@@ -196,20 +202,31 @@ const AddHouseMap: React.FC = () => {
           }}
         >
           {boundary && (
-            <>
-              <Polyline
-                path={boundary}
-                options={{
-                  strokeColor: "#FF0000",
-                }}
-              />
-            </>
+            <Polyline
+              path={boundary}
+              options={{
+                strokeColor: "#FF0000",
+              }}
+            />
           )}
-          {marker && <Marker position={marker} />}
+
+          {polygon.length > 0 && (
+            <Polygon
+              path={polygon.map((point) => ({
+                lat: point.lat(),
+                lng: point.lng(),
+              }))}
+              options={{
+                strokeColor: "#0000FF",
+                fillColor: "#0000FF",
+                fillOpacity: 0.4,
+              }}
+            />
+          )}
         </GoogleMap>
       )}
     </div>
   );
 };
 
-export default AddHouseMap;
+export default AddFloodMap;
