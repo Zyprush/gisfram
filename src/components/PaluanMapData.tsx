@@ -3,20 +3,15 @@ import {
   GoogleMap,
   useJsApiLoader,
   Marker,
+  Polyline,
 } from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/add-flood/paluanCoords";
 import { IconFocusCentered } from "@tabler/icons-react";
-import {
-  getDocs,
-  collection,
-  query,
-  where,
-  DocumentData,
-  Query,
-} from "firebase/firestore";
-import { db } from "@/firebase"; // Make sure to import your Firestore instance
-import ViewEditData from "@/app/pages/map/ViewEditData";
 import Loading from "./Loading";
+import { 
+  alipaoy, bagongSilangPob, handangTumulongPob, lumangbayan, mananao, 
+  mapaladPob, marikit, PagAsaNgBayanPob, sanJosePob, silahisNgPagAsaPob, tubili 
+} from "./barangayCoord";
 
 const mapContainerStyle = {
   width: "100%",
@@ -24,93 +19,73 @@ const mapContainerStyle = {
   borderRadius: "10px",
 };
 
-const center = { lat: 13.397099, lng: 120.459089 }; // Fix the map center
+const center = { lat: 13.397099, lng: 120.459089 };
 
 const options = {
   mapTypeId: "roadmap" as google.maps.MapTypeId,
-  zoom: 11.6, // Fix the zoom
+  zoom: 11.6,
 };
 
-interface HouseholdData {
-  id: string;
-  position: { lat: number; lng: number };
-  barangay: string;
-  head: { name: string };
-  houseNo: string;
-  memberTotal: number;
-}
-
 const PaluanMapData: React.FC = () => {
-  const [data, setData] = useState<HouseholdData[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [barangayFilter, setBarangayFilter] = useState<string>("");
-  const [id, setId] = useState<string>("");
-  const [viewEditData, setViewEditData] = useState<boolean>(false);
-  const [nameSearch, setNameSearch] = useState<string>("");
-  const [houseNumberSearch, setHouseNumberSearch] = useState<string>(""); // Add state for house number filter
+  const [boundary, setBoundary] = useState<any>(paluanCoords);
+  const [barangayName, setBarangayName] = useState<string>("");
   const mapRef = useRef<google.maps.Map | null>(null);
-
+  
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
     libraries: ["geometry"],
   });
 
-  const fetchFilteredData = async () => {
-    try {
-      let householdsQuery: Query<DocumentData> = collection(db, "households");
-      const queryConstraints = [];
-      if (barangayFilter) {
-        queryConstraints.push(where("barangay", "==", barangayFilter));
-      }
+  const handleSelect = (e: any) => {
+    const selectedBarangay = e.target.value;
+    setBarangayName(selectedBarangay);
 
-      if (nameSearch) {
-        queryConstraints.push(
-          where("head", ">=", nameSearch),
-          where("head", "<=", nameSearch + "\uf8ff")
-        );
-      }
-
-      if (houseNumberSearch) {
-        queryConstraints.push(where("houseNo", "==", houseNumberSearch));
-      }
-
-      // Apply the constraints to the query
-      if (queryConstraints.length > 0) {
-        householdsQuery = query(householdsQuery, ...queryConstraints);
-      }
-
-      const querySnapshot = await getDocs(householdsQuery);
-      const fetchedData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as HouseholdData[];
-
-      setData(fetchedData);
-    } catch (e) {
-      console.error("Error fetching documents: ", e);
-      setError("Error fetching data");
+    switch (selectedBarangay) {
+      case "alipaoy":
+        setBoundary(alipaoy);
+        break;
+      case "bagongSilangPob":
+        setBoundary(bagongSilangPob);
+        break;
+      case "handangTumulongPob":
+        setBoundary(handangTumulongPob);
+        break;
+      case "lumangbayan":
+        setBoundary(lumangbayan);
+        break;
+      case "mananao":
+        setBoundary(mananao);
+        break;
+      case "mapaladPob":
+        setBoundary(mapaladPob);
+        break;
+      case "marikit":
+        setBoundary(marikit);
+        break;
+      case "PagAsaNgBayanPob":
+        setBoundary(PagAsaNgBayanPob);
+        break;
+      case "sanJosePob":
+        setBoundary(sanJosePob);
+        break;
+      case "silahisNgPagAsaPob":
+        setBoundary(silahisNgPagAsaPob);
+        break;
+      case "tubili":
+        setBoundary(tubili);
+        break;
+      default:
+        setBoundary(paluanCoords);
     }
   };
-
-  useEffect(() => {
-    fetchFilteredData(); // Fetch data initially
-  }, [viewEditData]);
-
-  if (!isLoaded)
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (!event.latLng) return;
     const clickedLocation = event.latLng;
-    const polygon = new google.maps.Polygon({ paths: paluanCoords });
-    if (google.maps.geometry.poly.containsLocation(clickedLocation, polygon)) {
-      // setMarker(clickedLocation);
-    } else {
-      alert("Action outside Paluan is not allowed!");
+    const polygonShape = new google.maps.Polygon({ paths: boundary });
+
+    if (!google.maps.geometry.poly.containsLocation(clickedLocation, polygonShape)) {
+      alert("Action outside the selected barangay boundary is not allowed!");
     }
   };
 
@@ -120,65 +95,37 @@ const PaluanMapData: React.FC = () => {
     }
   };
 
-  const handleFilterSubmit = () => {
-    fetchFilteredData();
-  };
+  if (!isLoaded) return <Loading />;
 
   return (
-    <>
-      {viewEditData && (
-        <ViewEditData id={id} setViewEditData={setViewEditData} />
-      )}
-      <div className="absolute top-1 left-1/2 transform -translate-x-1/2 z-10 flex items-center p-2 gap-3">
-        <div className="flex gap-2 items-center bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto p-2 px-3 border border-zinc-200 dark:border-neutral-700 text-sm">
+    <div className="relative">
+      <div className="absolute left-2 top-2 z-10 flex items-center gap-3">
+        <div className="flex gap-2 items-center bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto p-2 px-3 text-sm">
           <select
-            value={barangayFilter}
-            onChange={(e) => setBarangayFilter(e.target.value)}
-            className="select select-sm bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-600 text-zinc-700 dark:text-zinc-300 focus:outline-none"
+            value={barangayName}
+            onChange={handleSelect}
+            className="sn-select mr-auto"
           >
             <option value="">Select Barangay</option>
-            <option value="Alipaoy">Alipaoy</option>
-            <option value="Barangay 5">Barangay 5</option>
-            <option value="Barangay 2">Barangay 2</option>
-            <option value="Harrison">Harrison</option>
-            <option value="Lumangbayan">Lumangbayan</option>
-            <option value="Mananao">Mananao</option>
-            <option value="Barangay 1">Barangay 1</option>
-            <option value="Marikit">Marikit</option>
-            <option value="Barangay 4">Barangay 4</option>
-            <option value="Barangay 6">Barangay 6</option>
-            <option value="Barangay 3">Barangay 3</option>
-            <option value="Tubili">Tubili</option>
+            <option value="alipaoy">Alipaoy</option>
+            <option value="bagongSilangPob">Bagong Silang Pob</option>
+            <option value="handangTumulongPob">Handang Tumulong Pob</option>
+            <option value="lumangbayan">Lumangbayan</option>
+            <option value="mananao">Mananao</option>
+            <option value="mapaladPob">Mapalad Pob</option>
+            <option value="marikit">Marikit</option>
+            <option value="PagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
+            <option value="sanJosePob">San Jose Pob</option>
+            <option value="silahisNgPagAsaPob">Silahis Ng Pag-Asa Pob</option>
+            <option value="tubili">Tubili</option>
           </select>
-          <input
-            type="text"
-            placeholder="Head of Family"
-            value={nameSearch}
-            onChange={(e) => setNameSearch(e.target.value)}
-            className="input input-sm input-bordered bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-600 text-zinc-700 dark:text-white focus:outline-none text-sm"
-          />
-          <input
-            type="text"
-            placeholder="House Number"
-            value={houseNumberSearch}
-            onChange={(e) => setHouseNumberSearch(e.target.value)}
-            className="input input-sm input-bordered bg-white dark:bg-zinc-700 border-zinc-200 dark:border-neutral-600 text-zinc-700 dark:text-white focus:outline-none text-sm"
-          />
           <button
-            onClick={handleFilterSubmit}
-            className="btn btn-sm btn-primary text-white rounded text-sm"
+            onClick={handlePanToCenter}
+            className="btn-primary text-white px-1 btn btn-sm"
           >
-            Search
+            <IconFocusCentered />
           </button>
         </div>
-
-        <button
-          onClick={handlePanToCenter}
-          className="bg-primary text-white p-1 rounded tooltip tooltip-bottom"
-          data-tip="Return to Paluan"
-        >
-          <IconFocusCentered />
-        </button>
       </div>
 
       <GoogleMap
@@ -192,29 +139,24 @@ const PaluanMapData: React.FC = () => {
         }}
         options={{
           fullscreenControl: false,
-          mapTypeControl: true, // Set to true to enable map type control
+          mapTypeControl: true,
           mapTypeControlOptions: {
             position: google.maps.ControlPosition.TOP_RIGHT,
-            // style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
           },
         }}
       >
-        {data.map((household) => (
-          <Marker
-            key={household.id}
-            position={household.position}
-            title={`House NO: ${household.houseNo}\nHead: ${household.head}\nBarangay: ${household.barangay}\nTotal Member: ${household.memberTotal}`}
-            // icon="/home.svg" // Add this line to use the SVG icon
-            onClick={() => {
-              setId(household.id);
-              setViewEditData(true);
+        {boundary && (
+          <Polyline
+            path={boundary}
+            options={{
+              strokeColor: "#FF0000",
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
             }}
           />
-        ))}
+        )}
       </GoogleMap>
-
-      {error && <div>Error: {error}</div>}
-    </>
+    </div>
   );
 };
 
