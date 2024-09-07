@@ -1,6 +1,6 @@
 "use client";
 import { Authenticator } from "@/components/Authenthicator";
-import BarangayMap from "@/components/BarangayMap";
+import FloodMap from "@/components/FloodMap";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
 import { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ const Map = () => {
                     {isLoading ? (
                         <Loading />
                     ) : (
-                        <BarangayMap />
+                        <FloodMap />
                     )}
                 </div>
             </div>

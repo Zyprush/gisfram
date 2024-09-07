@@ -6,13 +6,13 @@ import {
   Polyline,
   Marker,
 } from "@react-google-maps/api";
-import { paluanCoords } from "@/app/pages/add-data/paluanCoords";
+import { paluanCoords } from "@/app/pages/add-flood/paluanCoords";
 import {
   IconFocusCentered,
 } from "@tabler/icons-react";
-import AddData from "@/app/pages/add-data/AddData";
+import AddData from "@/app/pages/add-flood/AddData";
 import Loading from "./Loading";
-import AddFloodData from "@/app/pages/add-data/AddFloodData";
+import AddFloodData from "@/app/pages/add-flood/AddFloodData";
 
 const mapContainerStyle = {
   width: "100%",
@@ -27,7 +27,7 @@ const options = {
   zoom: 11.6, //fix the zoom
 };
 
-const GoogleMapComponent: React.FC = () => {
+const FloodMap: React.FC = () => {
   const [marker, setMarker] = useState<google.maps.LatLng>();
   const [showAddData, setShowAddData] = useState<boolean>(false);
   const [showAddFloodRecord, setShowAddFloodRecord] = useState<boolean>(false);
@@ -64,7 +64,6 @@ const GoogleMapComponent: React.FC = () => {
 
   return (
     <>
-      {showAddData && <AddData setAddData={setShowAddData} marker={marker} />}
       {showAddFloodRecord && (
         <AddFloodData setAddData={setShowAddFloodRecord} marker={marker} />
       )}
@@ -119,4 +118,4 @@ const GoogleMapComponent: React.FC = () => {
   );
 };
 
-export default GoogleMapComponent;
+export default FloodMap;

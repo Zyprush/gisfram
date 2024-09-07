@@ -1,7 +1,6 @@
 "use client";
-
 import { Authenticator } from "@/components/Authenthicator";
-import GoogleMap from "@/components/GoogleMap";
+import AddHouseMap from "@/components/AddHouseMap";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
 import { useEffect, useState } from "react";
@@ -21,7 +20,7 @@ const Map = () => {
                     {isLoading ? (
                         <Loading />
                     ) : (
-                        <GoogleMap />
+                        <AddHouseMap />
                     )}
                 </div>
             </div>

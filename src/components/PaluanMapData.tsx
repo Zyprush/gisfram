@@ -4,7 +4,7 @@ import {
   useJsApiLoader,
   Marker,
 } from "@react-google-maps/api";
-import { paluanCoords } from "@/app/pages/add-data/paluanCoords";
+import { paluanCoords } from "@/app/pages/add-flood/paluanCoords";
 import { IconFocusCentered } from "@tabler/icons-react";
 import {
   getDocs,

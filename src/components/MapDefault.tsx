@@ -5,7 +5,7 @@ import {
   useJsApiLoader,
   Polyline,
 } from "@react-google-maps/api";
-import { paluanCoords } from "@/app/pages/add-data/paluanCoords";
+import { paluanCoords } from "@/app/pages/add-flood/paluanCoords";
 
 const mapContainerStyle = {
   width: "100%",

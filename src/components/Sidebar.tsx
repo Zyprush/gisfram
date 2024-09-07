@@ -35,38 +35,25 @@ const links = [
     ),
   },
   {
-    label: "Add data",
-    href: "/pages/add-data",
+    label: "Add Household",
+    href: "/pages/add-house",
     icon: (
       <IconTablePlus className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
-  // {
-  //   label: "Barangay",
-  //   href: "/pages/barangay",
-  //   icon: (
-  //     <IconHelpOctagon className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
-  //   ),
-  // },
+  {
+    label: "Add Flood",
+    href: "/pages/add-flood",
+    icon: (
+      < IconCloud className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
+    ),
+  },
+
   {
     label: "Hazard",
     href: "/pages/hazard",
     icon: (
       <IconAlertTriangle className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
-    ),
-  },
-  // {
-  //   label: "Simulate",
-  //   href: "/pages/simulate",
-  //   icon: (
-  //     <IconCreditCard className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
-  //   ),
-  // },
-  {
-    label: "Flood Data",
-    href: "/pages/flood",
-    icon: (
-      <IconCloud className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
   {
