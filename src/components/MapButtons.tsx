@@ -7,7 +7,7 @@ interface ZoomOutButtonProps {
 }
 
 export const ZoomOutButton: React.FC<ZoomOutButtonProps> = ({ onZoomOut }) => (
-  <div className="absolute top-4 right-4 z-50">
+  <div className="absolute top-16 right-4 z-50 mt-1 mr-1">
     <button
       onClick={onZoomOut}
       className="bg-white text-black border px-2 py-2 rounded shadow-md hover:bg-gray-300"
@@ -28,7 +28,7 @@ export const GeoJsonMenu: React.FC<GeoJsonMenuProps> = ({
   selectedFiles,
   onSelectFile,
 }) => (
-  <div className="absolute top-16 right-4 z-50">
+  <div className="absolute top-28 mr-1 mt-1 right-4 z-50">
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="bg-white text-black font-weight-bold border px-2 py-[7px] rounded hover:bg-gray-300 ">
