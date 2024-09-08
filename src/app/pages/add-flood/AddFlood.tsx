@@ -17,6 +17,7 @@ const AddFlood: React.FC<AddDataProps> = ({
   const [waterLevel, setWaterLevel] = useState<number | "">("");
   const [rainfallAmount, setRainfallAmount] = useState<number | "">("");
   const [casualties, setCasualties] = useState<number | "">("");
+  const [cause, setCause] = useState<string>("");
   const [damages, setDamages] = useState<string>("");
 
   const [loading, setLoading] = useState(false);
@@ -42,6 +43,7 @@ const AddFlood: React.FC<AddDataProps> = ({
         severity,
         waterLevel: waterLevel || "undefined",
         rainfallAmount: rainfallAmount || "undefined",
+        cause: cause || "undefined",
         casualties: casualties || 0,
         damages,
       };
@@ -141,10 +143,10 @@ const AddFlood: React.FC<AddDataProps> = ({
 
         <div className="flex gap-3">
           <input
-            type="number"
+            type="text"
             placeholder="Cause of Flood"
-            value={casualties}
-            onChange={(e) => setCasualties(parseInt(e.target.value) || "")}
+            value={cause}
+            onChange={(e) => setCause(e.target.value)}
             className="sn-input w-full"
           />
         </div>

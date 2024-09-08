@@ -95,7 +95,7 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
     setLoading(true);
     try {
       const docRef = doc(db, "households", id);
-      const memberTotal = data.member.length;
+      const memberTotal = data.member.length + 1;
       // Update the document with the member total
       await updateDoc(docRef, {
         ...data,

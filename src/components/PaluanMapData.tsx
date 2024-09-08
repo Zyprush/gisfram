@@ -1,29 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-  GoogleMap,
-  useJsApiLoader,
-  Marker,
-  Polyline,
-} from "@react-google-maps/api";
+import React, { useState, useRef } from "react";
+import { GoogleMap, useJsApiLoader, Marker, Polyline, Polygon } from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/add-flood/paluanCoords";
 import { IconFocusCentered } from "@tabler/icons-react";
 import Loading from "./Loading";
-import {
-  alipaoy,
-  bagongSilangPob,
-  handangTumulongPob,
-  lumangbayan,
-  mananao,
-  mapaladPob,
-  marikit,
-  PagAsaNgBayanPob,
-  sanJosePob,
-  silahisNgPagAsaPob,
-  tubili,
-} from "./barangayCoord";
-import { db } from "@/firebase";
-import { query, collection, where, onSnapshot } from "firebase/firestore";
+import { alipaoy, bagongSilangPob, handangTumulongPob, lumangbayan, mananao, mapaladPob, marikit, PagAsaNgBayanPob, sanJosePob, silahisNgPagAsaPob, tubili } from "./barangayCoord";
 import ViewEditHouse from "@/app/pages/add-flood/ViewEditHouse";
+import AnalysisModal from "@/app/pages/map/AnalysisModal";
+import useFetchHouseholds from "@/hooks/useFetchHouseholds";
+import useFetchFloods from "@/hooks/useFetchFloods"; // Import your custom hook
 
 const mapContainerStyle = {
   width: "100%",
@@ -41,9 +25,13 @@ const options = {
 const PaluanMapData: React.FC = () => {
   const [boundary, setBoundary] = useState<any>(paluanCoords);
   const [house, setHouse] = useState<boolean>(false);
+  const [flood, setFlood] = useState<boolean>(false); // Added flood state
+  const [analysis, setAnalysis] = useState<boolean>(false);
   const [viewHouse, setViewHouse] = useState<string>("");
   const [barangayName, setBarangayName] = useState<string>("");
-  const [households, setHouseholds] = useState<any[]>([]); // Store fetched household data
+  const [year, setYear] = useState<string>(""); // Added year state
+  const households = useFetchHouseholds(barangayName, house);
+  const floods = useFetchFloods(barangayName, year, flood); // Fetch floods data
   const mapRef = useRef<google.maps.Map | null>(null);
 
   const { isLoaded } = useJsApiLoader({
@@ -68,8 +56,7 @@ const PaluanMapData: React.FC = () => {
       tubili,
     };
     setBoundary(
-      barangayBoundaries[selectedBarangay as keyof typeof barangayBoundaries] ||
-        paluanCoords
+      barangayBoundaries[selectedBarangay as keyof typeof barangayBoundaries] || paluanCoords
     );
   };
 
@@ -91,39 +78,11 @@ const PaluanMapData: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (house) {
-      const fetchHouseholdData = async () => {
-        try {
-          const ref = collection(db, "households");
-          const q =
-            barangayName === ""
-              ? query(ref)
-              : query(ref, where("barangay", "==", barangayName));
-          const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const fetchedHouseholds = querySnapshot.docs.map((doc) => ({
-              ...doc.data(),
-              id: doc.id,
-            }));
-            setHouseholds(fetchedHouseholds); // Set the fetched household data
-          });
-          // Clean up the listener on unmount
-          return () => unsubscribe();
-        } catch (error) {
-          console.error("Error fetching household data:", error);
-        }
-      };
-      fetchHouseholdData();
-    }
-  }, [barangayName, house]);
-
   if (!isLoaded) return <Loading />;
 
   return (
     <div className="relative">
-      {viewHouse && (
-        <ViewEditHouse id={viewHouse} setViewHouse={setViewHouse} />
-      )}
+      {viewHouse && <ViewEditHouse id={viewHouse} setViewHouse={setViewHouse} />}
       <div className="flex gap-2 items-center absolute left-2 top-2 z-10 bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto p-4 text-sm flex-col text-zinc-700 dark:text-zinc-200">
         <div className="flex gap-4 justify-start mr-auto ml-0">
           <label className="flex items-center">
@@ -131,25 +90,30 @@ const PaluanMapData: React.FC = () => {
               type="checkbox"
               checked={house}
               onChange={(e) => setHouse(e.target.checked)}
-              className="checkbox checkbox-sm checkbox-secondary"
+              className="checkbox checkbox-xs checkbox-secondary rounded-md"
             />
-            <span className="ml-2 text-sm font-semibold">Household</span>
+            <span className="ml-1 text-xs font-semibold">Household</span>
           </label>
           <label className="flex items-center">
             <input
               type="checkbox"
-              className="checkbox checkbox-sm checkbox-secondary"
-              // Flood checkbox remains for later use
+              checked={flood} // Bind the flood checkbox to state
+              onChange={(e) => setFlood(e.target.checked)}
+              className="checkbox checkbox-xs checkbox-secondary rounded-md"
             />
-            <span className="ml-2 text-sm font-semibold">Flood</span>
+            <span className="ml-1 text-xs font-semibold">Flood</span>
+          </label>
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-xs checkbox-secondary rounded-md"
+              onChange={(e) => setAnalysis(e.target.checked)}
+            />
+            <span className="ml-1 text-xs font-semibold">Analysis</span>
           </label>
         </div>
-        <div className="flex gap-2">
-          <select
-            value={barangayName}
-            onChange={handleSelect}
-            className="sn-select mr-auto"
-          >
+        <div className="flex gap-2 ml-0 mr-auto">
+          <select value={barangayName} onChange={handleSelect} className="sn-select mr-auto ">
             <option value="">Select Barangay</option>
             <option value="alipaoy">Alipaoy</option>
             <option value="bagongSilangPob">Bagong Silang Pob</option>
@@ -163,13 +127,19 @@ const PaluanMapData: React.FC = () => {
             <option value="silahisNgPagAsaPob">Silahis Ng Pag-Asa Pob</option>
             <option value="tubili">Tubili</option>
           </select>
-          <button
-            onClick={handlePanToCenter}
-            className="btn-primary text-white px-1 btn btn-sm"
-          >
+          <input
+            type="number"
+            placeholder="Year"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            className="sn-input w-20"
+          />
+          <button onClick={handlePanToCenter} className="btn-primary text-white px-1 btn btn-sm">
             <IconFocusCentered />
           </button>
         </div>
+        {/* TODO:affected sa baha */}
+        {analysis && <AnalysisModal barangay={barangayName} />}
       </div>
 
       <GoogleMap
@@ -189,7 +159,6 @@ const PaluanMapData: React.FC = () => {
           },
         }}
       >
-        {/* Draw the barangay boundary */}
         {boundary && (
           <Polyline
             path={boundary}
@@ -200,8 +169,6 @@ const PaluanMapData: React.FC = () => {
             }}
           />
         )}
-
-        {/* Display household markers if "house" is checked */}
         {house &&
           households.length > 0 &&
           households.map((household, index) => (
@@ -211,12 +178,26 @@ const PaluanMapData: React.FC = () => {
                 lat: household.position.lat,
                 lng: household.position.lng,
               }}
-              onClick={() => setViewHouse(household.id)} // This sets the household ID to view
-              title={`house no: ${household.houseNo.toString()}\nhead name: ${
-                household.head
-              }\nmember: ${household.memberTotal}`}
+              onClick={() => setViewHouse(household.id)}
+              title={`house no: ${household.houseNo.toString()}\nhead name: ${household.head}\nmember: ${household.memberTotal}`}
             />
           ))}
+        {flood ?
+          floods.length > 0 &&
+          floods.map((floodData, index) => (
+            <Polygon
+              key={index}
+              paths={floodData.position}
+              options={{
+                fillColor: "#0000FF",
+                fillOpacity: 0.35,
+                strokeColor: "#0000FF",
+                strokeOpacity: 0.45,
+                strokeWeight: 2,
+              }}
+              onClick={() => console.log(`Flood details: ${floodData}`)} // Optional: Handle polygon click
+            />
+          )): null}
       </GoogleMap>
     </div>
   );
