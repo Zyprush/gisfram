@@ -7,10 +7,10 @@ interface ZoomOutButtonProps {
 }
 
 export const ZoomOutButton: React.FC<ZoomOutButtonProps> = ({ onZoomOut }) => (
-  <div className="absolute top-16 right-4 z-50 mt-1 mr-1">
+  <div className="absolute top-16 right-8 z-50 mt-1 mr-1">
     <button
       onClick={onZoomOut}
-      className="bg-white text-black border px-2 py-2 rounded shadow-md hover:bg-gray-300"
+      className="bg-white dark:bg-zinc-800 dark:text-zinc-300 text-black px-2 py-2 rounded shadow-md hover:bg-gray-300"
     >
       <IconArrowBack />
     </button>
@@ -28,10 +28,10 @@ export const GeoJsonMenu: React.FC<GeoJsonMenuProps> = ({
   selectedFiles,
   onSelectFile,
 }) => (
-  <div className="absolute top-28 mr-1 mt-1 right-4 z-50">
+  <div className="absolute top-28 mr-1 mt-1 right-8 z-50">
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="bg-white text-black font-weight-bold border px-2 py-[7px] rounded hover:bg-gray-300 ">
+        <Menu.Button className="bg-white shadow-xl dark:bg-zinc-800 dark:text-zinc-300 text-black font-weight-bold px-2 py-[7px] rounded hover:bg-gray-300 ">
           <IconRipple />
         </Menu.Button>
       </div>
@@ -44,7 +44,7 @@ export const GeoJsonMenu: React.FC<GeoJsonMenuProps> = ({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-left bg-white text-black divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-left bg-white dark:text-zinc-300 dark:bg-zinc-800 text-black divide-y divide-gray-100 rounded-md ring-1 shadow-xl ring-black ring-opacity-5 focus:outline-none">
           <div className="py-1">
             {geoJsonFiles.map((file) => (
               <Menu.Item key={file.file}>
