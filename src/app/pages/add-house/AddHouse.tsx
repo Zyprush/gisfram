@@ -57,7 +57,7 @@ const AddHouse: React.FC<AddDataProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
-
+  
     const requiredFields = [
       { field: houseNo, msg: "Please enter a House Number." },
       { field: houseStruc, msg: "Please select a House Structure." },
@@ -65,7 +65,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       { field: headAge, msg: "Please enter the Head of Household Age." },
       { field: headGender, msg: "Please select the Head of Household Gender." },
     ];
-
+  
     for (const { field, msg } of requiredFields) {
       if (!field) {
         setLoading(false);
@@ -73,7 +73,7 @@ const AddHouse: React.FC<AddDataProps> = ({
         return;
       }
     }
-
+  
     for (let i = 0; i < members.length; i++) {
       const member = members[i];
       const memberRequired = ["name", "age", "gender"];
@@ -85,7 +85,24 @@ const AddHouse: React.FC<AddDataProps> = ({
         }
       }
     }
-
+  
+    // Initialize the counts
+    let femaleCount = 0;
+    let pwdCount = 0;
+    let indigenouseCount = 0;
+  
+    // Count the head of household
+    if (headGender === "Female") femaleCount++;
+    if (headPwd) pwdCount++;
+    if (headIndigenous) indigenouseCount++;
+  
+    // Count the members
+    members.forEach((member) => {
+      if (member.gender === "Female") femaleCount++;
+      if (member.pwd) pwdCount++;
+      if (member.indigenous) indigenouseCount++;
+    });
+  
     const householdData = {
       position: { lat: marker?.lat(), lng: marker?.lng() },
       date: new Date().toISOString(),
@@ -102,14 +119,17 @@ const AddHouse: React.FC<AddDataProps> = ({
         gender: headGender,
       },
       houseStruc,
+      femaleCount, 
+      pwdCount,
+      indigenouseCount,
       members,
     };
-
+  
     try {
       const docRef = await addDoc(collection(db, "households"), householdData);
       console.log("Document written with ID: ", docRef.id);
-      handleCancel()
-      alert("Household data submitted!")
+      handleCancel();
+      alert("Household data submitted!");
     } catch (e) {
       console.error("Error adding document: ", e);
       alert("Error adding document");
@@ -117,6 +137,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="bg-[#f0f6f9] bg-opacity-55 shadow text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-xl p-4 w-auto">

@@ -1,13 +1,32 @@
 import React, { useState, useRef } from "react";
-import { GoogleMap, useJsApiLoader, Marker, Polyline, Polygon } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker,
+  Polyline,
+  Polygon,
+} from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/add-flood/paluanCoords";
 import { IconFocusCentered } from "@tabler/icons-react";
 import Loading from "./Loading";
-import { alipaoy, bagongSilangPob, handangTumulongPob, lumangbayan, mananao, mapaladPob, marikit, PagAsaNgBayanPob, sanJosePob, silahisNgPagAsaPob, tubili } from "./barangayCoord";
+import {
+  alipaoy,
+  bagongSilangPob,
+  handangTumulongPob,
+  lumangbayan,
+  mananao,
+  mapaladPob,
+  marikit,
+  PagAsaNgBayanPob,
+  sanJosePob,
+  silahisNgPagAsaPob,
+  tubili,
+} from "./barangayCoord";
 import ViewEditHouse from "@/app/pages/add-flood/ViewEditHouse";
 import AnalysisModal from "@/app/pages/map/AnalysisModal";
 import useFetchHouseholds from "@/hooks/useFetchHouseholds";
 import useFetchFloods from "@/hooks/useFetchFloods"; // Import your custom hook
+import DataModal from "@/app/pages/map/DataModal";
 
 const mapContainerStyle = {
   width: "100%",
@@ -23,6 +42,7 @@ const options = {
 };
 
 const PaluanMapData: React.FC = () => {
+  const currentYear = new Date().getFullYear();
   const [boundary, setBoundary] = useState<any>(paluanCoords);
   const [house, setHouse] = useState<boolean>(false);
   const [flood, setFlood] = useState<boolean>(false); // Added flood state
@@ -56,7 +76,8 @@ const PaluanMapData: React.FC = () => {
       tubili,
     };
     setBoundary(
-      barangayBoundaries[selectedBarangay as keyof typeof barangayBoundaries] || paluanCoords
+      barangayBoundaries[selectedBarangay as keyof typeof barangayBoundaries] ||
+        paluanCoords
     );
   };
 
@@ -82,7 +103,9 @@ const PaluanMapData: React.FC = () => {
 
   return (
     <div className="relative">
-      {viewHouse && <ViewEditHouse id={viewHouse} setViewHouse={setViewHouse} />}
+      {viewHouse && (
+        <ViewEditHouse id={viewHouse} setViewHouse={setViewHouse} />
+      )}
       <div className="flex gap-2 items-center absolute left-2 top-2 z-10 bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto p-4 text-sm flex-col text-zinc-700 dark:text-zinc-200">
         <div className="flex gap-4 justify-start mr-auto ml-0">
           <label className="flex items-center">
@@ -113,7 +136,11 @@ const PaluanMapData: React.FC = () => {
           </label>
         </div>
         <div className="flex gap-2 ml-0 mr-auto">
-          <select value={barangayName} onChange={handleSelect} className="sn-select mr-auto ">
+          <select
+            value={barangayName}
+            onChange={handleSelect}
+            className="sn-select mr-auto "
+          >
             <option value="">Select Barangay</option>
             <option value="alipaoy">Alipaoy</option>
             <option value="bagongSilangPob">Bagong Silang Pob</option>
@@ -129,17 +156,35 @@ const PaluanMapData: React.FC = () => {
           </select>
           <input
             type="number"
-            placeholder="Year"
+            placeholder="Flood year filter"
+            value={year}
+             onChange={(e) => setYear(e.target.value)}
+            className="sn-input w-40"
+          />
+          {/* <select
             value={year}
             onChange={(e) => setYear(e.target.value)}
-            className="sn-input w-20"
-          />
-          <button onClick={handlePanToCenter} className="btn-primary text-white px-1 btn btn-sm">
+            className="border border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-1 text-xs"
+          >
+            <option value="all">All Years</option>
+            {Array.from({ length: 10 }, (_, i) => currentYear - i).map(
+              (year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              )
+            )}
+          </select> */}
+          <button
+            onClick={handlePanToCenter}
+            className="btn-primary text-white px-1 btn btn-sm"
+          >
             <IconFocusCentered />
           </button>
         </div>
         {/* TODO:affected sa baha */}
         {analysis && <AnalysisModal barangay={barangayName} />}
+        {analysis && <DataModal barangay={barangayName} />}
       </div>
 
       <GoogleMap
@@ -179,25 +224,28 @@ const PaluanMapData: React.FC = () => {
                 lng: household.position.lng,
               }}
               onClick={() => setViewHouse(household.id)}
-              title={`house no: ${household.houseNo.toString()}\nhead name: ${household.head}\nmember: ${household.memberTotal}`}
+              title={`house no: ${household.houseNo.toString()}\nhead name: ${
+                household.head
+              }\nmember: ${household.memberTotal}`}
             />
           ))}
-        {flood ?
-          floods.length > 0 &&
-          floods.map((floodData, index) => (
-            <Polygon
-              key={index}
-              paths={floodData.position}
-              options={{
-                fillColor: "#0000FF",
-                fillOpacity: 0.35,
-                strokeColor: "#0000FF",
-                strokeOpacity: 0.45,
-                strokeWeight: 2,
-              }}
-              onClick={() => console.log(`Flood details: ${floodData}`)} // Optional: Handle polygon click
-            />
-          )): null}
+        {flood
+          ? floods.length > 0 &&
+            floods.map((floodData, index) => (
+              <Polygon
+                key={index}
+                paths={floodData.position}
+                options={{
+                  fillColor: "#0000FF",
+                  fillOpacity: 0.35,
+                  strokeColor: "#0000FF",
+                  strokeOpacity: 0.45,
+                  strokeWeight: 2,
+                }}
+                onClick={() => console.log(`Flood details: ${floodData}`)} // Optional: Handle polygon click
+              />
+            ))
+          : null}
       </GoogleMap>
     </div>
   );

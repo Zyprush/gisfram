@@ -75,33 +75,70 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
       window.alert("Please fill in all required fields for the household.");
       return;
     }
-
+  
     if (!data.headInfo.name || !data.headInfo.age || !data.headInfo.gender) {
       window.alert(
         "Please fill in all required fields for the head of the household."
       );
       return;
     }
-
-    for (const member of data.member) {
-      if (!member.name || !member.age || !member.gender) {
+  
+    if (
+      data.member &&
+      typeof data.member === "object" &&
+      !Array.isArray(data.member)
+    ) {
+      data.member = [data.member];
+    }
+  
+    for (const mem of data.member || []) {
+      if (!mem.name || !mem.age || !mem.gender) {
         window.alert(
           "Please fill in all required fields for each household member."
         );
         return;
       }
     }
-
+  
+    // Define counts before conditionally assigning them
+    let memberTotal = 0;
+    let femaleCount = 0;
+    let pwdCount = 0;
+    let indigenousCount = 0;
+  
+    // Calculate counts
+    console.log("data.member", data.member);
+  
+    if (data.member && Array.isArray(data.member)) {
+      memberTotal = data.member.length + 1; // Including the head of household
+      femaleCount =
+        data.member.filter((m: any) => m.gender === "Female").length +
+        (data.headInfo.gender === "Female" ? 1 : 0); // Count head if female
+      pwdCount =
+        data.member.filter((m: any) => m.pwd).length +
+        (data.headInfo.pwd ? 1 : 0);
+      indigenousCount =
+        data.member.filter((m: any) => m.indigenous).length +
+        (data.headInfo.indigenous ? 1 : 0);
+    } else {
+      memberTotal = 1; // Only the head of household is included
+      femaleCount = data.headInfo.gender === "Female" ? 1 : 0;
+      pwdCount = data.headInfo.pwd ? 1 : 0;
+      indigenousCount = data.headInfo.indigenous ? 1 : 0;
+    }
+  
     setLoading(true);
     try {
       const docRef = doc(db, "households", id);
-      const memberTotal = data.member.length + 1;
-      // Update the document with the member total
+      // Update the document with the member total and counts
       await updateDoc(docRef, {
         ...data,
-        memberTotal, // Include this field in the update
+        memberTotal,
+        femaleCount,
+        pwdCount,
+        indigenousCount, // Include these fields in the update
       });
-
+  
       setIsEditing(false);
       setViewHouse(""); // Close the modal after submit
       window.alert(`Data updated successfully! Total members: ${memberTotal}`);
@@ -112,6 +149,7 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
       setLoading(false);
     }
   };
+  
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
