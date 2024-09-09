@@ -9,8 +9,10 @@ import {
 import { FirebaseError } from "firebase/app";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Password = () => {
+  const router = useRouter();
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -45,7 +47,7 @@ const Password = () => {
         await reauthenticateWithCredential(user, credential);
         await updatePassword(user, newPassword);
         alert("Password updated successfully.");
-        // Handle successful password change
+        router.push("/pages/settings");
       } catch (error: any) {
         if (error instanceof FirebaseError) {
           const errorMessages: { [key: string]: string } = {
