@@ -34,7 +34,7 @@ export const SidebarProvider = ({
   children,
   open: openProp,
   setOpen: setOpenProp,
-  animate = true,
+  animate = false,
 }: {
   children: React.ReactNode;
   open?: boolean;
@@ -90,13 +90,10 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "h-full px-4 py-4 hidden  md:flex md:flex-col  bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0",
+          "h-full px-4 py-4 hidden  md:flex md:flex-col  bg-neutral-100 dark:bg-neutral-800 w-[60px] flex-shrink-0",
           className
         )}
-        animate={{
-          width: animate ? (open ? "200px" : "60px") : "200px",
-        }}
-        onMouseEnter={() => setOpen(true)}
+        onMouseEnter={() => setOpen(false)}
         onMouseLeave={() => setOpen(false)}
         {...props}
       >
@@ -178,15 +175,11 @@ export const SidebarLink = ({
     >
       {link.icon}
 
-      <motion.span
-        animate={{
-          display: animate ? (open ? "inline-block" : "none") : "inline-block",
-          opacity: animate ? (open ? 1 : 0) : 1,
-        }}
+      <span
         className="text-neutral-700 font-semibold dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-4 transition duration-150 whitespace-pre inline-block !p-0 !m-0 group-hover/sidebar:font-bold"
       >
         {link.label}
-      </motion.span>
+      </span>
     </Link>
   );
 };
