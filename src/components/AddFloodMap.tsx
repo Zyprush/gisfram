@@ -109,6 +109,7 @@ const AddFloodMap: React.FC = () => {
     setBoundary(paluanCoords);
     setBarangayName("");
     setPolygon([]);
+    setShowForm(false)
   };
   const handleUndoLast = () => {
     setPolygon((prev) => prev.slice(0, -1));
@@ -156,7 +157,7 @@ const AddFloodMap: React.FC = () => {
               onClick={handleUndoLast}
               className="rounded-md btn-sm text-xs text-white btn btn-error"
             >
-              Undo Last
+              Undo Flood
             </button>
           )}
         </div>

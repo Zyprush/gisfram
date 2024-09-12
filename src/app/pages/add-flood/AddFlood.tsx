@@ -73,7 +73,7 @@ const AddFlood: React.FC<AddDataProps> = ({
         </span>
         <button
           onClick={() => handleCancel()}
-          className="btn-primary btn btn-sm rounded-md dark:bg-neutral-700 dark:text-white"
+          className="btn-outline hover:bg-secondary btn btn-sm rounded-md text-neutral-700 dark:text-white"
         >
           Cancel
         </button>
@@ -149,11 +149,11 @@ const AddFlood: React.FC<AddDataProps> = ({
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className={`btn mt-4 text-white mx-auto bg-primary dark:bg-neutral-700 dark:text-white ${
-            loading ? "btn-disabled" : "btn-primary"
+          className={`btn mt-4 btn-primary text-white mx-auto bg-primary${
+            loading && "btn-disabled"
           }`}
         >
-          Save Flood Data
+          {loading ? "Loading..." : "Save Flood Data"}
         </button>
       </div>
     </div>

@@ -207,11 +207,8 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
             />
           </button>
           {isVisible && (
-            <div
-              ref={chartRef as LegacyRef<HTMLDivElement>}
-              className="flex gap-2 items-center absolute left-2 top-14 z-10 bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto p-4 text-sm flex-col text-zinc-700 dark:text-zinc-200 transition-all duration-300 ease-linear"
-            >
-              <div className="flex gap-4 justify-start mr-auto ml-0">
+            <div className="flex gap-2 items-center absolute left-2 top-14 z-10 bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto text-sm flex-col text-zinc-700 dark:text-zinc-200 transition-all duration-300 ease-linear">
+              <div className="flex gap-4 justify-start mr-auto ml-0 p-4">
                 <label className="flex items-center">
                   <input
                     type="checkbox"
@@ -240,7 +237,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                 </label>
               </div>
 
-              <div className="flex gap-2 ml-0 mr-auto">
+              <div className="flex gap-2 ml-0 mr-auto px-4">
                 <select
                   value={barangayName}
                   onChange={handleSelect}
@@ -293,9 +290,13 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                   </span>
                 </div>
               )}
-              {/* Modals */}
-              {analysis && <AnalysisModal barangay={barangayName} />}
-              {analysis && <DataModal barangay={barangayName} />}
+              <div
+                className="flex flex-col gap-5 mt-2 bg-inherit p-4"
+                ref={chartRef as LegacyRef<HTMLDivElement>}
+              >
+                {analysis && <AnalysisModal barangay={barangayName} />}
+                {analysis && <DataModal barangay={barangayName} />}
+              </div>
             </div>
           )}
         </div>
