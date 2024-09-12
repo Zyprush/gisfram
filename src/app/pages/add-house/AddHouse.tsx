@@ -11,16 +11,17 @@ interface AddDataProps {
 const AddHouse: React.FC<AddDataProps> = ({
   handleCancel,
   marker,
-  barangay
+  barangay,
 }) => {
   const [houseNo, setHouseNo] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
   const [headName, setHeadName] = useState("");
-  const [headAge, setHeadAge] = useState<number | "">("");
+  const [headAge, setHeadAge] = useState<number | "">();
   const [headPwd, setHeadPwd] = useState(false);
   const [headContact, setHeadContact] = useState<string | undefined>("");
   const [headIndigenous, setHeadIndigenous] = useState(false);
   const [headGender, setHeadGender] = useState("Male");
+  const [headPregnant, setHeadPregnant] = useState(false); // Added headPregnant state
   const [houseStruc, setHouseStruc] = useState("");
   const [members, setMembers] = useState<
     {
@@ -29,6 +30,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       pwd: boolean;
       contact?: string;
       indigenous: boolean;
+      pregnant: boolean;
       gender: string;
     }[]
   >([]);
@@ -41,31 +43,37 @@ const AddHouse: React.FC<AddDataProps> = ({
   const addMember = () =>
     setMembers([
       ...members,
-      { name: "", age: "", pwd: false, indigenous: false, gender: "Male" },
+      {
+        name: "",
+        age: 0,
+        pwd: false,
+        indigenous: false,
+        pregnant: false,
+        gender: "Male",
+      },
     ]);
 
-    const handleMemberChange = (index: number, field: string, value: any) => {
-      setMembers((prevMembers) =>
-        prevMembers.map((m, i) =>
-          i === index ? { ...m, [field]: value } : m
-        )
-      );
-    };
+  const handleMemberChange = (index: number, field: string, value: any) => {
+    setMembers((prevMembers) =>
+      prevMembers.map((m, i) => (i === index ? { ...m, [field]: value } : m))
+    );
+  };
 
   const deleteMember = (index: number) =>
     setMembers(members.filter((_, i) => i !== index));
 
   const handleSubmit = async () => {
     setLoading(true);
-  
+
     const requiredFields = [
       { field: houseNo, msg: "Please enter a House Number." },
       { field: houseStruc, msg: "Please select a House Structure." },
       { field: headName, msg: "Please enter the Head of Household Name." },
+      { field: headContact, msg: "Please enter the Head of Household Contact." },
       { field: headAge, msg: "Please enter the Head of Household Age." },
       { field: headGender, msg: "Please select the Head of Household Gender." },
     ];
-  
+
     for (const { field, msg } of requiredFields) {
       if (!field) {
         setLoading(false);
@@ -73,7 +81,7 @@ const AddHouse: React.FC<AddDataProps> = ({
         return;
       }
     }
-  
+
     for (let i = 0; i < members.length; i++) {
       const member = members[i];
       const memberRequired = ["name", "age", "gender"];
@@ -85,24 +93,30 @@ const AddHouse: React.FC<AddDataProps> = ({
         }
       }
     }
-  
+
     // Initialize the counts
     let femaleCount = 0;
     let pwdCount = 0;
-    let indigenouseCount = 0;
-  
+    let indigenousCount = 0;
+    let seniorCount = 0;
+    let pregnantCount = 0;
+
     // Count the head of household
     if (headGender === "Female") femaleCount++;
     if (headPwd) pwdCount++;
-    if (headIndigenous) indigenouseCount++;
-  
+    if (headIndigenous) indigenousCount++;
+    if (parseInt(String(headAge)) >= 60) seniorCount++; 
+    if (headPregnant) pregnantCount++; 
+
     // Count the members
     members.forEach((member) => {
       if (member.gender === "Female") femaleCount++;
       if (member.pwd) pwdCount++;
-      if (member.indigenous) indigenouseCount++;
+      if (member.indigenous) indigenousCount++;
+      if (parseInt(String(member.age)) >= 60) seniorCount++;
+      if (member.pregnant) pregnantCount++; // Add to pregnant count if member is pregnant
     });
-  
+
     const householdData = {
       position: { lat: marker?.lat(), lng: marker?.lng() },
       date: new Date().toISOString(),
@@ -116,15 +130,18 @@ const AddHouse: React.FC<AddDataProps> = ({
         pwd: headPwd,
         contact: headContact || "undefined",
         indigenous: headIndigenous,
+        pregnant: headPregnant,
         gender: headGender,
       },
       houseStruc,
-      femaleCount, 
+      femaleCount,
       pwdCount,
-      indigenouseCount,
+      indigenousCount,
+      seniorCount, // Include senior count
+      pregnantCount, // Include pregnant count
       members,
     };
-  
+
     try {
       const docRef = await addDoc(collection(db, "households"), householdData);
       console.log("Document written with ID: ", docRef.id);
@@ -137,13 +154,17 @@ const AddHouse: React.FC<AddDataProps> = ({
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="bg-[#f0f6f9] bg-opacity-55 shadow text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-xl p-4 w-auto">
       <div className="flex justify-between mb-2">
         <span className="font-bold text-sm">Add Household Data</span>
-        <button onClick={handleCancel} className="btn-outline text-primary dark:text-white btn btn-sm">cancel</button>
+        <button
+          onClick={handleCancel}
+          className="btn-outline text-primary dark:text-white btn btn-sm"
+        >
+          Cancel
+        </button>
       </div>
       <div className="flex flex-col gap-4">
         {/* Main info */}
@@ -180,7 +201,7 @@ const AddHouse: React.FC<AddDataProps> = ({
             type="number"
             placeholder="Age"
             value={headAge}
-            onChange={(e) => setHeadAge(parseInt(e.target.value) || "")}
+            onChange={(e) => setHeadAge(parseInt(e.target.value) || 0)}
             className="sn-select"
           />
           <select
@@ -193,7 +214,7 @@ const AddHouse: React.FC<AddDataProps> = ({
           </select>
           <input
             type="number"
-            placeholder="Contact (Optional)"
+            placeholder="Contact"
             value={headContact}
             onChange={(e) => setHeadContact(e.target.value)}
             className="sn-select"
@@ -216,88 +237,108 @@ const AddHouse: React.FC<AddDataProps> = ({
             />
             <span className="ml-2 text-sm">Indigenous</span>
           </label>
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={headPregnant} // Fixed onChange handler
+              onChange={(e) => setHeadPregnant(e.target.checked)}
+              className="checkbox checkbox-xs checkbox-primary"
+            />
+            <span className="ml-2 text-sm">Pregnant</span>
+          </label>
         </div>
         {/* Members */}
         <div className="flex justify-between items-center">
           <span className="font-bold text-sm">Members</span>
-          <button onClick={addMember} className="btn btn-primary btn-sm">
+          <button onClick={addMember} className="btn btn-xs btn-primary">
             Add Member
           </button>
         </div>
-        {members.map((member, index) => (
-          <div key={index} className="flex gap-3 mt-3">
-            <input
-              type="text"
-              placeholder={`Member ${index + 1} Name`}
-              value={member.name}
-              onChange={(e) =>
-                handleMemberChange(index, "name", e.target.value)
-              }
-              className="sn-input"
-            />
-            <input
-              type="number"
-              placeholder="Age"
-              value={member.age}
-              onChange={(e) =>
-                handleMemberChange(index, "age", parseInt(e.target.value))
-              }
-              className="sn-input"
-            />
-            <select
-              value={member.gender}
-              onChange={(e) =>
-                handleMemberChange(index, "gender", e.target.value)
-              }
-              className="sn-select"
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-            <input
-              type="number"
-              placeholder="Contact (Optional)"
-              value={member.contact}
-              onChange={(e) =>
-                handleMemberChange(index, "contact", e.target.value)
-              }
-              className="sn-input"
-            />
-            <label className="flex items-center">
+        {members.length > 0 &&
+          members.map((member, index) => (
+            <div key={index} className="flex gap-3">
               <input
-                type="checkbox"
-                checked={member.pwd}
+                type="text"
+                placeholder="Member Name"
+                value={member.name}
                 onChange={(e) =>
-                  handleMemberChange(index, "pwd", e.target.checked)
+                  handleMemberChange(index, "name", e.target.value)
                 }
-                className="checkbox checkbox-xs checkbox-primary"
+                className="sn-select"
               />
-              <span className="ml-2 text-xs">PWD</span>
-            </label>
-            <label className="flex items-center">
               <input
-                type="checkbox"
-                checked={member.indigenous}
+                type="number"
+                placeholder="Age"
+                value={member.age}
                 onChange={(e) =>
-                  handleMemberChange(index, "indigenous", e.target.checked)
+                  handleMemberChange(index, "age", parseInt(e.target.value))
                 }
-                className="checkbox checkbox-xs checkbox-primary"
+                className="sn-select"
               />
-              <span className="ml-2 text-xs">Indigenous</span>
-            </label>
-            <button
-              onClick={() => deleteMember(index)}
-              className="btn btn-error btn-xs text-white my-auto"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-        {/* Submit */}
+              <select
+                value={member.gender}
+                onChange={(e) =>
+                  handleMemberChange(index, "gender", e.target.value)
+                }
+                className="sn-select"
+              >
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Contact (Optional)"
+                value={member.contact}
+                onChange={(e) =>
+                  handleMemberChange(index, "contact", e.target.value)
+                }
+                className="sn-select"
+              />
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={member.pwd}
+                  onChange={(e) =>
+                    handleMemberChange(index, "pwd", e.target.checked)
+                  }
+                  className="checkbox checkbox-xs checkbox-primary"
+                />
+                <span className="ml-2 text-sm">PWD</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={member.indigenous}
+                  onChange={(e) =>
+                    handleMemberChange(index, "indigenous", e.target.checked)
+                  }
+                  className="checkbox checkbox-xs checkbox-primary"
+                />
+                <span className="ml-2 text-sm">Indigenous</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={member.pregnant}
+                  onChange={(e) =>
+                    handleMemberChange(index, "pregnant", e.target.checked)
+                  }
+                  className="checkbox checkbox-xs checkbox-primary"
+                />
+                <span className="ml-2 text-sm">Pregnant</span>
+              </label>
+              <button
+                onClick={() => deleteMember(index)}
+                className="btn btn-xs btn-error"
+              >
+                Delete
+              </button>
+            </div>
+          ))}
         <button
-          onClick={handleSubmit}
           disabled={loading}
-          className={`btn btn-primary mt-6 ${loading ? "loading" : ""}`}
+          onClick={handleSubmit}
+          className={`btn btn-sm btn-primary ${loading ? "loading" : ""}`}
         >
           Submit
         </button>

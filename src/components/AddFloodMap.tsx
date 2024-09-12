@@ -55,7 +55,7 @@ const AddFloodMap: React.FC = () => {
     if (mapRef.current) {
       const bounds = new google.maps.LatLngBounds();
       coordinates.forEach((coord) => bounds.extend(coord));
-      mapRef.current.fitBounds(bounds); // Automatically fits the boundary
+      mapRef.current.fitBounds(bounds);
     }
   };
 
@@ -81,8 +81,6 @@ const AddFloodMap: React.FC = () => {
       paluanCoords;
 
     setBoundary(selectedBoundary);
-
-    // Pan and zoom to the selected barangay
     panAndZoomToBarangay(selectedBoundary);
   };
 

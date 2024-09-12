@@ -35,11 +35,11 @@ const AddFlood: React.FC<AddDataProps> = ({
         lng: point.lng(),
       }));
 
-      let severity = "Low Flood Level";
+      let severity = "low";
       if (waterLevel && waterLevel > 0.5 && waterLevel <= 1.5) {
-        severity = "Moderate Flood Level";
+        severity = "moderate";
       } else if (waterLevel && waterLevel > 1.5) {
-        severity = "High Flood Level";
+        severity = "high";
       }
       const floodData = {
         position: polygonCoordinates,
