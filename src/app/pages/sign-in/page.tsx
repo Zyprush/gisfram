@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FirebaseError } from "firebase/app"; // Import FirebaseError
+import { FirebaseError } from "firebase/app";
 import { SignedOut } from "@/components/signed-out";
 import { SignedIn } from "@/components/signed-in";
 import { LoggedIn } from "@/components/LoggedIn";
@@ -15,12 +15,11 @@ import BgParticles from "@/components/BgParticles";
 
 export default function Page() {
   const router = useRouter();
-  const [signInUserWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
+
+  const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -29,32 +28,25 @@ export default function Page() {
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      await signInUserWithEmailAndPassword(email, password);
-      router.push("/pages/map");
+      await signInWithEmailAndPassword(email, password);
+      if (user) {
+        router.push("/pages/map");
+      }
     } catch (error: any) {
       if (error instanceof FirebaseError) {
-        // Define custom error messages based on Firebase error codes
+        // Error messages mapping
         const errorMessages: { [key: string]: string } = {
-          "auth/invalid-credential":
-            "Invalid email or password. Please try again.",
-          "auth/user-disabled":
-            "This account has been disabled. Please contact support.",
-          "auth/too-many-requests":
-            "Too many failed login attempts. Please try again later.",
-          "auth/wrong-password":
-            "The password is incorrect. Please try again.",
-          "auth/user-not-found":
-            "No user found with this email. Please check and try again.",
-          // Add more error codes and messages as needed
+          "auth/invalid-credential": "Invalid email or password. Please try again.",
+          "auth/user-disabled": "This account has been disabled. Please contact support.",
+          "auth/too-many-requests": "Too many failed login attempts. Please try again later.",
+          "auth/wrong-password": "The password is incorrect. Please try again.",
+          "auth/user-not-found": "No user found with this email. Please check and try again.",
         };
 
-        // Display the appropriate error message
-        toast.error(
-          errorMessages[error.code] ||
-          "An unexpected error occurred. Please try again."
-        );
+        // Display user-friendly error message
+        const message = errorMessages[error.code] || "An unexpected error occurred. Please try again.";
+        toast.error(message);
       } else {
-        // Display a generic error message for unexpected errors
         toast.error("An unexpected error occurred. Please try again.");
       }
     }
@@ -63,18 +55,14 @@ export default function Page() {
   return (
     <section>
       <div className="flex h-screen bg-gray-950 items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-8">
-        <BgParticles/>
+        <BgParticles />
         <div className="xl:mx-auto xl:w-full shadow-md p-4 max-w-[23rem] bg-white z-10 pt-5 pb-10">
           <div className="mb-2 flex justify-center"></div>
-          <h2 className="text-center text-2xl font-bold leading-tight text-primary">
-            Sign in
-          </h2>
+          <h2 className="text-center text-2xl font-bold leading-tight text-primary">Sign in</h2>
           <form className="mt-8" method="POST" onSubmit={onSubmit}>
             <div className="space-y-5">
               <div>
-                <label className="text-base font-medium text-gray-900">
-                  Email address
-                </label>
+                <label className="text-base font-medium text-gray-900">Email address</label>
                 <div className="mt-2">
                   <input
                     placeholder="Email"
@@ -87,9 +75,7 @@ export default function Page() {
               </div>
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="text-base font-medium text-gray-900">
-                    Password
-                  </label>
+                  <label className="text-base font-medium text-gray-900">Password</label>
                 </div>
                 <div className="mt-2 relative">
                   <input
@@ -111,28 +97,32 @@ export default function Page() {
 
               <div>
                 <SignedOut>
-                  <button
-                    className="btn btn-primary w-full rounded-none text-white"
-                    type="submit"
-                  >
+                  <button className="btn btn-primary w-full rounded-none text-white" type="submit">
                     Sign In
                   </button>
                 </SignedOut>
                 <SignedIn>
                   <LoggedIn />
-                  <button
-                    className="btn btn-primary w-full rounded-none text-white"
-                    type="submit"
-                  >
+                  <button className="btn btn-primary w-full rounded-none text-white" type="submit">
                     Signing In
                   </button>
                 </SignedIn>
               </div>
             </div>
           </form>
+          {loading && <p>Loading...</p>}
+          {/* Display error message based on FirebaseError, if present */}
+          {error && (
+            <p className="text-red-500 border border-red-500 text-sm font-semibold p-2 rounded-md mt-4 text-center">
+              {error?.code === "auth/invalid-credential" && "Invalid email or password. Please try again."}
+              {error?.code === "auth/user-disabled" && "This account has been disabled. Please contact support."}
+              {error?.code === "auth/too-many-requests" && "Too many failed login attempts. Please try again later."}
+              {error?.code === "auth/wrong-password" && "The password is incorrect. Please try again."}
+              {error?.code === "auth/user-not-found" && "No user found with this email. Please check and try again."}
+            </p>
+          )}
         </div>
       </div>
-      {/* Add ToastContainer to display toasts */}
       <ToastContainer />
     </section>
   );
