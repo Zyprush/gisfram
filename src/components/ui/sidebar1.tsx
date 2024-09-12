@@ -1,9 +1,9 @@
 "use client";
 import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
-import React, { useState, createContext, useContext, useEffect } from "react";
+import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconMenu2, IconX, IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
+import { IconMenu2, IconX } from "@tabler/icons-react";
 
 interface Links {
   label: string;
@@ -34,29 +34,17 @@ export const SidebarProvider = ({
   children,
   open: openProp,
   setOpen: setOpenProp,
-  animate = true,
+  animate = false,
 }: {
   children: React.ReactNode;
   open?: boolean;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   animate?: boolean;
 }) => {
-  const [openState, setOpenState] = useState(() => {
-    // Initialize state from localStorage if available
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('sidebarOpen');
-      return saved !== null ? JSON.parse(saved) : false;
-    }
-    return false;
-  });
-  
+  const [openState, setOpenState] = useState(false);
 
   const open = openProp !== undefined ? openProp : openState;
   const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
-
-  useEffect(() => {
-    localStorage.setItem('sidebarOpen', JSON.stringify(open));
-  }, [open]);
 
   return (
     <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>
@@ -98,25 +86,18 @@ export const DesktopSidebar = ({
   ...props
 }: React.ComponentProps<typeof motion.div>) => {
   const { open, setOpen, animate } = useSidebar();
-  
-  const toggleSidebar = () => {
-    setOpen(!open);
-  };
-
   return (
     <>
       <motion.div
         className={cn(
-          "relative h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 flex-shrink-0",
+          "h-full px-4 py-4 hidden  md:flex md:flex-col  bg-neutral-100 dark:bg-neutral-800 w-[60px] flex-shrink-0",
           className
         )}
-        animate={{
-          width: animate ? (open ? "200px" : "60px") : "60px",
-        }}
+        onMouseEnter={() => setOpen(false)}
+        onMouseLeave={() => setOpen(false)}
         {...props}
       >
         {children}
-        
       </motion.div>
     </>
   );
@@ -132,7 +113,7 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
+          "h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
         )}
         {...props}
       >
@@ -187,22 +168,18 @@ export const SidebarLink = ({
     <Link
       href={link.href}
       className={cn(
-        "flex items-center justify-start gap-2 group/sidebar py-2",
+        "flex items-center justify-start gap-2  group/sidebar py-2",
         className
       )}
       {...props}
     >
       {link.icon}
 
-      <motion.span
-        animate={{
-          display: animate ? (open ? "inline-block" : "none") : "inline-block",
-          opacity: animate ? (open ? 1 : 0) : 1,
-        }}
+      <span
         className="text-neutral-700 font-semibold dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-4 transition duration-150 whitespace-pre inline-block !p-0 !m-0 group-hover/sidebar:font-bold"
       >
         {link.label}
-      </motion.span>
+      </span>
     </Link>
   );
 };

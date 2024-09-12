@@ -17,6 +17,8 @@ import {
   IconTablePlus,
   IconCreditCard,
   IconChartBarPopular,
+  IconChevronLeft,
+  IconChevronRight,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -63,6 +65,28 @@ export const Sidebar: React.FC = () => {
   const [signOut] = useSignOut(auth);
   const { theme, setTheme } = useTheme();
 
+  // Retrieve the saved sidebar state from localStorage on mount
+  useEffect(() => {
+    const storedSidebarState = localStorage.getItem("sidebarOpen");
+    if (storedSidebarState !== null) {
+      setOpen(JSON.parse(storedSidebarState));
+    }
+    const fetchBrandName = async () => {
+      try {
+        const name = await getSetting("sysName");
+        if (name) setBrandName(name);
+      } catch (error) {
+        console.error("Error fetching brand name:", error);
+      }
+    };
+    fetchBrandName();
+  }, []);
+
+  // Save sidebar state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("sidebarOpen", JSON.stringify(open));
+  }, [open]);
+
   useEffect(() => {
     const fetchBrandName = async () => {
       try {
@@ -86,6 +110,9 @@ export const Sidebar: React.FC = () => {
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
+  };
+  const toggleSidebar = () => {
+    setOpen(!open);
   };
 
   return (
@@ -118,6 +145,16 @@ export const Sidebar: React.FC = () => {
               <IconSun className="h-5 w-5" />
             ) : (
               <IconMoon className="h-5 w-5" />
+            )}
+          </button>
+          <button
+            onClick={toggleSidebar}
+            className="p-2 rounded-full border border-neutral-200 dark:border-white/[0.2] dark:bg-zinc-800 dark:bg-opacity-45 text-zinc-500 dark:text-zinc-100 -ml-1 mr-auto"
+          >
+            {open ? (
+              <IconChevronLeft className="w-4 h-4 " />
+            ) : (
+              <IconChevronRight className="w-4 h-4" />
             )}
           </button>
           <div className="ml-0 mr-auto">
