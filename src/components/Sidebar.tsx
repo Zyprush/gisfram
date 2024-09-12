@@ -19,6 +19,7 @@ import {
   IconChartBarPopular,
   IconChevronLeft,
   IconChevronRight,
+  IconArchive,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -48,6 +49,13 @@ const links = [
     href: "/pages/add-flood",
     icon: (
       < IconCloud className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
+    ),
+  },
+  {
+    label: "Household",
+    href: "/pages/household",
+    icon: (
+      < IconArchive className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
     ),
   },
   {

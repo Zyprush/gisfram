@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { db } from "@/firebase";
-import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  addDoc,
+  collection,
+} from "firebase/firestore";
 
 interface ViewEditDataProps {
   id: string;
@@ -16,6 +23,7 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log("id", id);
         const docRef = doc(db, "households", id);
         const docSnap = await getDoc(docRef);
 
@@ -44,9 +52,9 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
   };
 
   const handleMemberChange = (index: number, field: string, value: any) => {
-    const newMembers = [...data.member];
+    const newMembers = [...data.members];
     newMembers[index] = { ...newMembers[index], [field]: value };
-    setData({ ...data, member: newMembers });
+    setData({ ...data, members: newMembers });
   };
 
   const addMember = () => {
@@ -57,17 +65,18 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
       contact: "",
       pwd: false,
       indigenous: false,
+      pregnant: false,
     };
 
     setData({
       ...data,
-      member: [...(data?.member || []), newMember], // Ensure member is an array
+      members: [...(data?.members || []), newMember], // Ensure member is an array
     });
   };
 
   const deleteMember = (index: number) => {
-    const newMembers = data.member.filter((_: any, i: number) => i !== index);
-    setData({ ...data, member: newMembers });
+    const newMembers = data.members.filter((_: any, i: number) => i !== index);
+    setData({ ...data, members: newMembers });
   };
 
   const handleSubmit = async () => {
@@ -75,23 +84,15 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
       window.alert("Please fill in all required fields for the household.");
       return;
     }
-  
+
     if (!data.headInfo.name || !data.headInfo.age || !data.headInfo.gender) {
       window.alert(
         "Please fill in all required fields for the head of the household."
       );
       return;
     }
-  
-    if (
-      data.member &&
-      typeof data.member === "object" &&
-      !Array.isArray(data.member)
-    ) {
-      data.member = [data.member];
-    }
-  
-    for (const mem of data.member || []) {
+    console.log("data.members", data.members);
+    for (const mem of data.members || []) {
       if (!mem.name || !mem.age || !mem.gender) {
         window.alert(
           "Please fill in all required fields for each household member."
@@ -99,49 +100,18 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
         return;
       }
     }
-  
-    // Define counts before conditionally assigning them
-    let memberTotal = 0;
-    let femaleCount = 0;
-    let pwdCount = 0;
-    let indigenousCount = 0;
-  
-    // Calculate counts
-    console.log("data.member", data.member);
-  
-    if (data.member && Array.isArray(data.member)) {
-      memberTotal = data.member.length + 1; // Including the head of household
-      femaleCount =
-        data.member.filter((m: any) => m.gender === "Female").length +
-        (data.headInfo.gender === "Female" ? 1 : 0); // Count head if female
-      pwdCount =
-        data.member.filter((m: any) => m.pwd).length +
-        (data.headInfo.pwd ? 1 : 0);
-      indigenousCount =
-        data.member.filter((m: any) => m.indigenous).length +
-        (data.headInfo.indigenous ? 1 : 0);
-    } else {
-      memberTotal = 1; // Only the head of household is included
-      femaleCount = data.headInfo.gender === "Female" ? 1 : 0;
-      pwdCount = data.headInfo.pwd ? 1 : 0;
-      indigenousCount = data.headInfo.indigenous ? 1 : 0;
-    }
-  
+
     setLoading(true);
     try {
       const docRef = doc(db, "households", id);
-      // Update the document with the member total and counts
+      console.log('data', data)
       await updateDoc(docRef, {
         ...data,
-        memberTotal,
-        femaleCount,
-        pwdCount,
-        indigenousCount, // Include these fields in the update
       });
-  
+
       setIsEditing(false);
       setViewHouse(""); // Close the modal after submit
-      window.alert(`Data updated successfully! Total members: ${memberTotal}`);
+      window.alert(`Data updated successfully!`);
     } catch (e) {
       console.error("Error updating document: ", e);
       window.alert("Error updating data. Please try again.");
@@ -149,16 +119,24 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
       setLoading(false);
     }
   };
-  
 
-  const handleDelete = async () => {
+  const handleArchive = async () => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this record? This action cannot be undone."
+      "Are you sure you want to archive this record? This action cannot be undone."
     );
     if (confirmDelete) {
       setLoading(true);
       try {
         const docRef = doc(db, "households", id);
+        const docSnap = await getDoc(docRef); // Fetch the document to archive its data
+
+        if (docSnap.exists()) {
+          await addDoc(collection(db, "archived", id), {
+            ...docSnap.data(),
+            archivedAt: new Date(),
+          });
+        }
+
         await deleteDoc(docRef);
         window.alert("Record deleted successfully!");
         setViewHouse(""); // Close the modal after deletion
@@ -190,10 +168,10 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
               {isEditing ? "Cancel Edit" : "Edit"}
             </button>
             <button
-              onClick={handleDelete}
+              onClick={handleArchive}
               className="btn btn-outline btn-sm rounded-md hover:bg-black text-error"
             >
-              Delete
+              Archive
             </button>
             <button
               onClick={() => setViewHouse("")}
@@ -265,6 +243,20 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
               disabled={!isEditing}
               className="sn-input"
             />
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                checked={data.headInfo.pregnant}
+                onChange={(e) =>
+                  handleHeadInfoChange("pregnant", e.target.checked)
+                }
+                disabled={!isEditing}
+                className="checkbox checkbox-primary checbox-xs"
+              />
+              <span className="label-text text-xs ml-1 font-semibold">
+                Pregnant
+              </span>
+            </label>
           </div>
 
           {/* Member info */}
@@ -279,7 +271,7 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
               </button>
             )}
           </div>
-          {data.member?.map((member: any, index: number) => (
+          {data.members?.map((member: any, index: number) => (
             <div className="flex gap-3" key={index}>
               <input
                 type="text"
@@ -296,7 +288,11 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
                 placeholder="Age"
                 value={member.age}
                 onChange={(e) =>
-                  handleMemberChange(index, "age", parseInt(e.target.value))
+                  handleMemberChange(
+                    index,
+                    "age",
+                    parseInt(e.target.value) || ""
+                  )
                 }
                 disabled={!isEditing}
                 className="sn-input"
@@ -325,35 +321,21 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
               <label className="label cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={member.pwd}
+                  checked={member.pregnant}
                   onChange={(e) =>
-                    handleMemberChange(index, "pwd", e.target.checked)
+                    handleMemberChange(index, "pregnant", e.target.checked)
                   }
                   disabled={!isEditing}
                   className="checkbox checkbox-primary checbox-xs"
                 />
                 <span className="label-text text-xs ml-1 font-semibold">
-                  PWD
-                </span>
-              </label>
-              <label className="label cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={member.indigenous}
-                  onChange={(e) =>
-                    handleMemberChange(index, "indigenous", e.target.checked)
-                  }
-                  disabled={!isEditing}
-                  className="checkbox checkbox-primary checbox-xs"
-                />
-                <span className="label-text text-xs ml-1 font-semibold">
-                  Indigenous
+                  Pregnant
                 </span>
               </label>
               {isEditing && (
                 <button
                   onClick={() => deleteMember(index)}
-                  className="btn btn-outline btn-sm rounded-md text-error my-auto"
+                  className="btn btn-sm btn-error text-white"
                 >
                   Remove
                 </button>
@@ -362,13 +344,12 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
           ))}
         </div>
 
-        {/* Submit Button */}
         {isEditing && (
           <button
             onClick={handleSubmit}
-            className="btn btn-primary mt-4 px-5 text-white mx-auto"
+            className="btn btn-primary mt-4 text-white"
           >
-            Submit
+            Save Changes
           </button>
         )}
       </div>

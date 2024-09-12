@@ -260,22 +260,23 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                   </option>
                   <option value="tubili">Tubili</option>
                 </select>
-                <input
-                  type="number"
-                  placeholder="Flood year filter"
+                <select
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
-                  className="sn-input w-40"
-                />
-                <button
-                  onClick={handlePanToCenter}
-                  className="btn-primary text-white px-1 btn btn-sm"
+                  className="sn-select w-40"
                 >
-                  <IconFocusCentered />
-                </button>
+                  <option value="">Flood Year</option>
+                  {Array.from({ length: 10 }, (_, i) => currentYear - i).map(
+                    (year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    )
+                  )}
+                </select>
               </div>
               {flood && (
-                <div className="flex gap-2 ml-0 mr-auto items-center">
+                <div className="flex gap-2 p-4 ml-0 mr-auto items-center">
                   <span className="text-zinc-700 dark:text-white font-extrabold">
                     Flood legend
                   </span>
@@ -291,7 +292,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                 </div>
               )}
               <div
-                className="flex flex-col gap-5 mt-2 bg-inherit p-4"
+                className="flex flex-col gap-5 bg-inherit p-4"
                 ref={chartRef as LegacyRef<HTMLDivElement>}
               >
                 {analysis && <AnalysisModal barangay={barangayName} />}
