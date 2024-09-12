@@ -149,7 +149,7 @@ export const Sidebar: React.FC = () => {
           </button>
           <button
             onClick={toggleSidebar}
-            className="absolute -right-4 bottom-36 text-black dark:text-white bg-white dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-full p-2 z-50"
+            className="p-2 rounded-full border border-neutral-200 dark:border-white/[0.2] dark:bg-zinc-800 dark:bg-opacity-45 text-zinc-500 dark:text-zinc-100 -ml-1 mr-auto"
           >
             {open ? (
               <IconChevronLeft className="w-4 h-4 " />

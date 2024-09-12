@@ -34,17 +34,29 @@ export const SidebarProvider = ({
   children,
   open: openProp,
   setOpen: setOpenProp,
-  animate = false,
+  animate = true,
 }: {
   children: React.ReactNode;
   open?: boolean;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   animate?: boolean;
 }) => {
-  const [openState, setOpenState] = useState(false);
+  const [openState, setOpenState] = useState(() => {
+    // Initialize state from localStorage if available
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebarOpen');
+      return saved !== null ? JSON.parse(saved) : false;
+    }
+    return false;
+  });
+  
 
   const open = openProp !== undefined ? openProp : openState;
   const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
+
+  useEffect(() => {
+    localStorage.setItem('sidebarOpen', JSON.stringify(open));
+  }, [open]);
 
   return (
     <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>
@@ -95,14 +107,12 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "h-full px-4 py-4 hidden  md:flex md:flex-col  bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0",
+          "relative h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 flex-shrink-0",
           className
         )}
         animate={{
-          width: animate ? (open ? "200px" : "60px") : "200px",
+          width: animate ? (open ? "200px" : "60px") : "60px",
         }}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
         {...props}
       >
         {children}
@@ -184,11 +194,15 @@ export const SidebarLink = ({
     >
       {link.icon}
 
-      <span
+      <motion.span
+        animate={{
+          display: animate ? (open ? "inline-block" : "none") : "inline-block",
+          opacity: animate ? (open ? 1 : 0) : 1,
+        }}
         className="text-neutral-700 font-semibold dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-4 transition duration-150 whitespace-pre inline-block !p-0 !m-0 group-hover/sidebar:font-bold"
       >
         {link.label}
-      </span>
+      </motion.span>
     </Link>
   );
 };
