@@ -11,7 +11,7 @@ interface AddDataProps {
 const AddHouse: React.FC<AddDataProps> = ({
   handleCancel,
   marker,
-  barangay,
+  barangay
 }) => {
   const [houseNo, setHouseNo] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
@@ -143,6 +143,7 @@ const AddHouse: React.FC<AddDataProps> = ({
     <div className="bg-[#f0f6f9] bg-opacity-55 shadow text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-xl p-4 w-auto">
       <div className="flex justify-between mb-2">
         <span className="font-bold text-sm">Add Household Data</span>
+        <button onClick={handleCancel} className="btn-outline text-primary dark:text-white btn btn-sm">cancel</button>
       </div>
       <div className="flex flex-col gap-4">
         {/* Main info */}
@@ -161,7 +162,7 @@ const AddHouse: React.FC<AddDataProps> = ({
           >
             <option value="">House Structure</option>
             <option value="concrete">Concrete</option>
-            <option value="cement">Cement</option>
+            <option value="light materials">Light Materials</option>
             <option value="mix">Mix</option>
           </select>
         </div>

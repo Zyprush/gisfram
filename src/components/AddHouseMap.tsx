@@ -38,9 +38,10 @@ const AddHouseMap: React.FC = () => {
   });
 
   const mapRef = useRef<google.maps.Map | null>(null);
+  const boundsRef = useRef<google.maps.LatLngBounds | null>(null); // New ref for bounds
+
   const [barangayName, setBarangayName] = useState<string>("");
   const [boundary, setBoundary] = useState<any>(paluanCoords);
-  const [addHouse, setAddHouse] = useState<boolean>(false);
   const [marker, setMarker] = useState<google.maps.LatLng | undefined>(
     undefined
   );
@@ -56,19 +57,31 @@ const AddHouseMap: React.FC = () => {
     setBarangayName(selectedBarangay);
 
     const barangayBoundaries = {
-      "alipaoy": alipaoy,
-      "bagongSilangPob": bagongSilangPob,
-      "handangTumulongPob": handangTumulongPob,
-      "lumangbayan": lumangbayan,
-      "mananao": mananao,
-      "mapaladPob": mapaladPob,
-      "marikit": marikit,
-      "PagAsaNgBayanPob": PagAsaNgBayanPob,
-      "sanJosePob": sanJosePob,
-      "silahisNgPagAsaPob": silahisNgPagAsaPob,
-      "tubili": tubili,
+      alipaoy: alipaoy,
+      bagongSilangPob: bagongSilangPob,
+      handangTumulongPob: handangTumulongPob,
+      lumangbayan: lumangbayan,
+      mananao: mananao,
+      mapaladPob: mapaladPob,
+      marikit: marikit,
+      PagAsaNgBayanPob: PagAsaNgBayanPob,
+      sanJosePob: sanJosePob,
+      silahisNgPagAsaPob: silahisNgPagAsaPob,
+      tubili: tubili,
     };
-    setBoundary(barangayBoundaries[selectedBarangay as keyof typeof barangayBoundaries] || paluanCoords);
+    const selectedBoundary =
+      barangayBoundaries[selectedBarangay as keyof typeof barangayBoundaries] ||
+      paluanCoords;
+
+    setBoundary(selectedBoundary);
+
+    // Set bounds to fit the selected barangay
+    if (mapRef.current && selectedBoundary.length > 0) {
+      const bounds = new google.maps.LatLngBounds();
+      selectedBoundary.forEach((coord: any) => bounds.extend(coord));
+      boundsRef.current = bounds;
+      mapRef.current.fitBounds(bounds);
+    }
   };
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
@@ -79,72 +92,56 @@ const AddHouseMap: React.FC = () => {
       alert("Action outside Boundary is not allowed!");
       return;
     }
-    if (addHouse) {
-      if (boundary !== paluanCoords) {
-        setMarker(clickedLocation);
-      } else {
-        alert("Please select a Barangay!");
-      }
+    if (boundary !== paluanCoords) {
+      setMarker(clickedLocation);
+    } else {
+      alert("Please select a Barangay!");
     }
   };
 
   const handleCancel = () => {
-    setAddHouse(false);
     setBoundary(paluanCoords);
     setBarangayName("");
     setMarker(undefined);
   };
+
   return (
     <div className="relative">
-      {addHouse && (
-        <div className="absolute top-2 left-2 right-auto transform z-10 p-3 px-4 rounded-xl gap-3 bg-white shadow-2xl dark:bg-neutral-900 dark:shadow-lg flex flex-col">
-          <select
-            value={barangayName}
-            onChange={handleSelect}
-            className="sn-select mr-auto"
-            disabled={!!marker}
-          >
-            <option value="">Select Barangay</option>
-            <option value="alipaoy">Alipaoy</option>
-            <option value="bagongSilangPob">Bagong Silang Pob</option>
-            <option value="handangTumulongPob">Handang Tumulong Pob</option>
-            <option value="lumangbayan">Lumangbayan</option>
-            <option value="mananao">Mananao</option>
-            <option value="mapaladPob">Mapalad Pob</option>
-            <option value="marikit">Marikit</option>
-            <option value="PagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
-            <option value="sanJosePob">San Jose Pob</option>
-            <option value="silahisNgPagAsaPob">Silahis Ng Pag-Asa Pob</option>
-            <option value="tubili">Tubili</option>
-          </select>
-          
-          {marker ? (
-            <AddHouse
-              barangay={barangayName}
-              marker={marker}
-              handleCancel={handleCancel}
-            />
-          ) : null}
+      {barangayName && (
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 p-3 px-4 rounded-xl gap-3 bg-white shadow-2xl dark:bg-neutral-900 dark:shadow-lg flex flex-col text-sm text-zinc-700 dark:text-white">
+          Please click on the map to add a marker
         </div>
       )}
-      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-10 flex p-3 px-4 rounded-xl gap-3 bg-white shadow dark:bg-neutral-900 dark:shadow-lg">
-        {addHouse ? (
-          <button
-            onClick={handleCancel}
-            className="btn-outline dark:text-white text-neutral hover:bg-neutral btn btn-sm"
-          >
-            Cancel
-          </button>
-        ) : (
-          <button
-            onClick={() => setAddHouse(true)}
-            className="btn-primary text-white btn btn-sm tooltip tooltip-bottom"
-            data-tip="Return to Paluan"
-          >
-            Add Household
-          </button>
-        )}
+      <div className="absolute top-2 left-2 right-auto transform z-10 p-3 px-4 rounded-xl gap-3 bg-white shadow-2xl dark:bg-neutral-900 dark:shadow-lg flex flex-col">
+        <select
+          value={barangayName}
+          onChange={handleSelect}
+          className="sn-select mr-auto"
+          disabled={!!marker}
+        >
+          <option value="">Select Barangay</option>
+          <option value="alipaoy">Alipaoy</option>
+          <option value="bagongSilangPob">Bagong Silang Pob</option>
+          <option value="handangTumulongPob">Handang Tumulong Pob</option>
+          <option value="lumangbayan">Lumangbayan</option>
+          <option value="mananao">Mananao</option>
+          <option value="mapaladPob">Mapalad Pob</option>
+          <option value="marikit">Marikit</option>
+          <option value="PagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
+          <option value="sanJosePob">San Jose Pob</option>
+          <option value="silahisNgPagAsaPob">Silahis Ng Pag-Asa Pob</option>
+          <option value="tubili">Tubili</option>
+        </select>
 
+        {marker ? (
+          <AddHouse
+            barangay={barangayName}
+            marker={marker}
+            handleCancel={handleCancel}
+          />
+        ) : null}
+      </div>
+      <div className="absolute top-14 right-2 z-20 flex p-2 px-2 rounded-xl gap-3 bg-white shadow dark:bg-neutral-900 dark:shadow-lg">
         <button
           onClick={handlePanToCenter}
           className="btn-primary text-white px-1 btn btn-sm tooltip tooltip-bottom"
@@ -168,8 +165,9 @@ const AddHouseMap: React.FC = () => {
             mapTypeControl: true, // Set to true to enable map type control
             mapTypeControlOptions: {
               position: google.maps.ControlPosition.TOP_RIGHT,
-              // style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+              style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
             },
+            mapTypeId: "satellite", // Set the default map type to satellite view
           }}
         >
           {boundary && (

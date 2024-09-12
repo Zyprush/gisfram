@@ -13,29 +13,34 @@ const AddFlood: React.FC<AddDataProps> = ({
   handleCancel,
 }) => {
   const [date, setDate] = useState<string>("");
-  const [severity, setSeverity] = useState<string>("");
+
   const [waterLevel, setWaterLevel] = useState<number | "">("");
   const [rainfallAmount, setRainfallAmount] = useState<number | "">("");
   const [casualties, setCasualties] = useState<number | "">("");
   const [cause, setCause] = useState<string>("");
-  const [damages, setDamages] = useState<string>("");
 
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (!barangay || !date || !severity) {
+    if (!barangay || !date || !cause) {
       setLoading(false);
       window.alert("Please fill in all required fields.");
       return;
     }
 
-    if (polygon && polygon.length > 0) {
+    if (polygon.length > 2) {
       const polygonCoordinates = polygon.map((point) => ({
         lat: point.lat(),
         lng: point.lng(),
       }));
 
+      let severity = "Low Flood Level";
+      if (waterLevel && waterLevel > 0.5 && waterLevel <= 1.5) {
+        severity = "Moderate Flood Level";
+      } else if (waterLevel && waterLevel > 1.5) {
+        severity = "High Flood Level";
+      }
       const floodData = {
         position: polygonCoordinates,
         date,
@@ -45,18 +50,17 @@ const AddFlood: React.FC<AddDataProps> = ({
         rainfallAmount: rainfallAmount || "undefined",
         cause: cause || "undefined",
         casualties: casualties || 0,
-        damages,
       };
 
       try {
         const docRef = await addDoc(collection(db, "floods"), floodData);
         handleCancel();
-        alert("Flood data has been successfully submitted")
+        alert("Flood data has been successfully submitted");
       } catch (e) {
         console.error("Error adding document: ", e);
       }
     } else {
-      console.error("Polygon data is missing or empty");
+      alert("Flood drawing or Polygon data is missing or empty!");
     }
     setLoading(false);
   };
@@ -79,7 +83,10 @@ const AddFlood: React.FC<AddDataProps> = ({
         {/* Basic Information */}
         <div className="flex gap-3">
           <div className="flex flex-col justify-start items-start gap-2 w-full">
-            <label htmlFor="date" className="dark:text-gray-200 text-sm font-bold">
+            <label
+              htmlFor="date"
+              className="dark:text-gray-200 text-sm font-bold"
+            >
               Date
             </label>
             <input
@@ -90,16 +97,6 @@ const AddFlood: React.FC<AddDataProps> = ({
               className="sn-input"
             />
           </div>
-          <select
-            value={severity}
-            onChange={(e) => setSeverity(e.target.value)}
-            className="sn-select mt-auto mb-0"
-          >
-            <option value="">Select Severity</option>
-            <option value="Low">Low</option>
-            <option value="Moderate">Moderate</option>
-            <option value="High">High</option>
-          </select>
         </div>
 
         {/* Environmental Data */}
@@ -124,31 +121,29 @@ const AddFlood: React.FC<AddDataProps> = ({
 
         {/* Impact Data */}
         <div className="flex gap-3">
-          <input
+          {/* <input
             type="number"
             placeholder="Casualties"
             value={casualties}
             onChange={(e) => setCasualties(parseInt(e.target.value) || "")}
             className="sn-input w-full"
-          />
-
-          <input
-            type="text"
-            placeholder="Damages (description)"
-            value={damages}
-            onChange={(e) => setDamages(e.target.value)}
-            className="sn-input w-full"
-          />
-        </div>
-
-        <div className="flex gap-3">
-          <input
-            type="text"
-            placeholder="Cause of Flood"
-            value={cause}
-            onChange={(e) => setCause(e.target.value)}
-            className="sn-input w-full"
-          />
+          /> */}
+          <div className="flex gap-3">
+            <select
+              value={cause}
+              onChange={(e) => setCause(e.target.value)}
+              className="sn-select w-full"
+            >
+              <option value="">Select Cause of Flood</option>
+              <option value="Tropical cyclones">
+                Tropical cyclones (typhoons)
+              </option>
+              <option value="Monsoon rains">Monsoon rains</option>
+              <option value="River overflow">River overflow</option>
+              <option value="Storm surges">Storm surges</option>
+              <option value="Dam releases">Dam releases</option>
+            </select>
+          </div>
         </div>
 
         <button

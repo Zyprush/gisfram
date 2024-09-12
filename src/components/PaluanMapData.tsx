@@ -267,10 +267,12 @@ const PaluanMapData: React.FC = () => {
           }}
           options={{
             fullscreenControl: false,
-            mapTypeControl: true,
+            mapTypeControl: true, // Set to true to enable map type control
             mapTypeControlOptions: {
               position: google.maps.ControlPosition.TOP_RIGHT,
+              style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
             },
+            mapTypeId: 'satellite', // Set the default map type to satellite view
           }}
         >
           {selectedFiles.map(
