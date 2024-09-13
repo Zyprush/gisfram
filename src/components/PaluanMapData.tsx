@@ -1,11 +1,6 @@
 "use client";
 
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  LegacyRef,
-} from "react";
+import React, { useState, useRef, useEffect, LegacyRef } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -231,7 +226,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                 </label>
               </div>
 
-              <div className="flex gap-2 ml-0 mr-auto px-4">
+              <div className="flex gap-2 ml-0 mr-auto px-4 pb-4">
                 <select
                   value={barangayName}
                   onChange={handleSelect}
@@ -270,7 +265,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                 </select>
               </div>
               {flood && (
-                <div className="flex gap-2 p-4 ml-0 mr-auto items-center">
+                <div className="flex gap-2 px-4 ml-0 mr-auto items-center">
                   <span className="text-zinc-700 dark:text-white font-extrabold">
                     Flood legend
                   </span>
@@ -285,13 +280,26 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                   </span>
                 </div>
               )}
-              <div
-                className="flex flex-col gap-5 bg-inherit p-2"
-                ref={chartRef as LegacyRef<HTMLDivElement>}
-              >
-                {analysis && <AnalysisModal barangay={barangayName} year={year} />}
-                {analysis && <DataModal barangay={barangayName} />}
-              </div>
+              {analysis && (
+                <div
+                  className="flex gap-3 bg-inherit p-4"
+                  ref={chartRef as LegacyRef<HTMLDivElement>}
+                >
+                  <div className="flex flex-col gap-3">
+                    <AnalysisModal
+                      barangay={barangayName}
+                      year={year}
+                      gender="Male"
+                    />
+                    <AnalysisModal
+                      barangay={barangayName}
+                      year={year}
+                      gender="Female"
+                    />
+                  </div>
+                  <DataModal barangay={barangayName} />
+                </div>
+              )}
             </div>
           )}
         </div>

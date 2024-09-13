@@ -4,6 +4,7 @@ import { db } from "@/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from "chart.js";
+import useFetchHouseholds from "@/hooks/useFetchHouseholds";
 
 // Register Chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
@@ -27,7 +28,7 @@ const DataModal = ({ barangay }: { barangay: string }) => {
   const [pwdCount, setPwdCount] = useState(0);
   const [seniorCount, setSeniorCount] = useState(0);
   const [totalPregnant, setTotalPregnant] = useState(0);
-  const [totalHousehold, setTotalHousehold] = useState(0);
+  const households = useFetchHouseholds(barangay, true); // Fetch households filtered by barangay
 
   useEffect(() => {
     const fetchHouseholdData = async () => {
@@ -41,11 +42,12 @@ const DataModal = ({ barangay }: { barangay: string }) => {
           : query(collection(db, "households"));
 
         const querySnapshot = await getDocs(q);
+        console.log('querySnapshot', querySnapshot)
+        console.log('households', households)
 
         let totalIndigenous = 0;
         let totalPWD = 0;
         let totalPregnant = 0;
-        let totalHouseholds = 0;
         let seniorCount = 0;
 
         querySnapshot.forEach((doc) => {
@@ -54,14 +56,12 @@ const DataModal = ({ barangay }: { barangay: string }) => {
           totalIndigenous += data.indigenousCount || 0;
           totalPWD += data.pwdCount || 0;
           totalPregnant += data.pregnantCount || 0;
-          totalHouseholds += 1; 
           seniorCount += data.seniorCount || 0;
         });
 
         setIndigenousCount(totalIndigenous);
         setPwdCount(totalPWD);
         setTotalPregnant(totalPregnant);
-        setTotalHousehold(totalHouseholds);
         setSeniorCount(seniorCount);
       } catch (error) {
         console.error("Error fetching household data: ", error);
@@ -80,7 +80,7 @@ const DataModal = ({ barangay }: { barangay: string }) => {
       {
         data: [indigenousCount, pwdCount, totalPregnant, seniorCount],
         backgroundColor: ['#FFCE56', '#36A2EB', '#FF6384', '#4BC0C0'],
-        hoverOffset: 4,
+        hoverOffset: 0,
       },
     ],
   };
@@ -110,9 +110,10 @@ const DataModal = ({ barangay }: { barangay: string }) => {
           <p>Loading...</p>
         </div>
       ) : (
-        <div className="flex-col p-5 bg-white dark:bg-zinc-900 rounded-lg dark:border dark:border-zinc-900 h-auto flex mr-auto ml-0 mx-auto items-start justify-start dark:text-zinc-400 text-zinc-600">
+        <div className="flex-col p-5 bg-zinc-100 shadow dark:bg-zinc-900 rounded-lg dark:border dark:border-zinc-900 h-auto flex mr-auto ml-0 mx-auto items-start justify-start dark:text-zinc-400 text-zinc-600">
           <span className="text-lg font-bold text-primary dark:text-zinc-300">
-            {barangay ? "Barangay" : "Paluan"} Status
+            {/* {barangay ? "Barangay" : "Paluan"} Status */}
+            Vulnerable Groups 
           </span>
           <div className="h-64 w-full mt-4">
             <Pie data={pieData} options={pieOptions} />

@@ -43,9 +43,10 @@ const isPointInPolygon = (
   return google.maps.geometry.poly.containsLocation(point, bounds);
 };
 
-const AnalysisModal: React.FC<{ barangay: string; year: string }> = ({
+const AnalysisModal: React.FC<{ barangay: string; year: string ; gender: string;}> = ({
   barangay,
   year,
+  gender
 }) => {
   const floods = useFetchFloods(barangay, year, true); // Fetch floods based on barangay and year
   const households = useFetchHouseholds(barangay, true); // Fetch households filtered by barangay
@@ -68,12 +69,17 @@ const AnalysisModal: React.FC<{ barangay: string; year: string }> = ({
           house.position.lng
         );
         if (isPointInPolygon(houseLatLng, polygon)) {
-          count++;
-          // Count head's age
-          incrementAgeGroup(ageCounts, house.headInfo.age);
-          affectedHeads.push(house.headInfo); // Collect headInfo for affected households
-          // Count members' ages
-          house.members.forEach((member: any) => incrementAgeGroup(ageCounts, member.age));
+          // Only count if the head is male
+          if (house.headInfo.gender === gender) {
+            count++;
+            incrementAgeGroup(ageCounts, house.headInfo.age); // Count head's age
+          }
+          // Only count male members' ages
+          house.members.forEach((member: any) => {
+            if (member.gender === gender) {
+              incrementAgeGroup(ageCounts, member.age);
+            }
+          });
         }
       });
     });
@@ -105,10 +111,10 @@ const AnalysisModal: React.FC<{ barangay: string; year: string }> = ({
     ],
     datasets: [
       {
-        label: "Affected Residents by Age Group",
+        label: `Affected ${gender} Residents by Age Group`,
         data: ageDistribution,
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: gender === "Female" ? "rgba(255, 105, 180, 0.6)" : "rgba(75, 192, 192, 0.6)",
+        borderColor: gender === "Female" ? "rgba(255, 105, 180, 1)" : "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
     ],
@@ -116,6 +122,7 @@ const AnalysisModal: React.FC<{ barangay: string; year: string }> = ({
 
   const options = {
     responsive: true,
+    indexAxis: 'y' as const,
     plugins: {
       legend: {
         display: true,
@@ -125,23 +132,9 @@ const AnalysisModal: React.FC<{ barangay: string; year: string }> = ({
 
   return (
     <div className="p-4 bg-gray-10 dark:bg-zinc-900 bg-white bg-opacity-200 rounded-lg shadow w-full">
-      <div className="text-sm">
-        <h2 className="text-lg font-bold">Affected Households {year}</h2>
-        <p>
-          <b className="text-lg">{floods.length}</b> Total floods
-        </p>
-        <p>
-          <b className="text-lg"> {households.length}</b> Total Households in {barangay || "selected area"}
-        </p>
-        <p>
-          <b className="text-lg">{affectedHouseholds}</b> Number of Households Affected by floods
-        </p>
-      </div>
-
-      <div className="mt-4">
+      <div className="">
         <Bar data={data} options={options} />
       </div>
-
     </div>
   );
 };
