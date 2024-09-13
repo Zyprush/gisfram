@@ -95,21 +95,25 @@ const AddHouse: React.FC<AddDataProps> = ({
     }
 
     // Initialize the counts
+    let maleCount = 0;
     let femaleCount = 0;
     let pwdCount = 0;
     let indigenousCount = 0;
     let seniorCount = 0;
     let pregnantCount = 0;
+    let memberCount = members.length +1;
 
     // Count the head of household
+    if (headGender === "Male") maleCount++;
     if (headGender === "Female") femaleCount++;
     if (headPwd) pwdCount++;
     if (headIndigenous) indigenousCount++;
-    if (parseInt(String(headAge)) >= 60) seniorCount++; 
-    if (headPregnant) pregnantCount++; 
+    if (parseInt(String(headAge)) >= 60) seniorCount++;
+    if (headPregnant) pregnantCount++;
 
     // Count the members
     members.forEach((member) => {
+      if (member.gender === "Male") maleCount++;
       if (member.gender === "Female") femaleCount++;
       if (member.pwd) pwdCount++;
       if (member.indigenous) indigenousCount++;
@@ -134,7 +138,8 @@ const AddHouse: React.FC<AddDataProps> = ({
         gender: headGender,
       },
       houseStruc,
-      femaleCount,
+      maleCount, // Include male count
+      femaleCount, // Include female count
       pwdCount,
       indigenousCount,
       seniorCount, // Include senior count

@@ -4,7 +4,6 @@ import React, {
   useState,
   useRef,
   useEffect,
-  forwardRef,
   LegacyRef,
 } from "react";
 import {
@@ -31,7 +30,6 @@ import {
   silahisNgPagAsaPob,
   tubili,
 } from "./barangayCoord";
-import ViewEditHouse from "@/app/pages/add-flood/ViewEditHouse";
 import AnalysisModal from "@/app/pages/map/AnalysisModal";
 import useFetchHouseholds from "@/hooks/useFetchHouseholds";
 import useFetchFloods from "@/hooks/useFetchFloods"; // Import your custom hook
@@ -61,7 +59,6 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
   const [house, setHouse] = useState<boolean>(false);
   const [flood, setFlood] = useState<boolean>(false); // Added flood state
   const [analysis, setAnalysis] = useState<boolean>(false);
-  const [viewHouse, setViewHouse] = useState<string>("");
   const [barangayName, setBarangayName] = useState<string>("");
   const [year, setYear] = useState<string>(""); // Added year state
   const households = useFetchHouseholds(barangayName, house);
@@ -192,9 +189,6 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
         onSelectFile={handleFileSelect}
       />
       <div className="relative">
-        {viewHouse && (
-          <ViewEditHouse id={viewHouse} setViewHouse={setViewHouse} />
-        )}
         <div>
           <button
             onClick={() => setIsVisible(!isVisible)}
@@ -292,10 +286,10 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                 </div>
               )}
               <div
-                className="flex flex-col gap-5 bg-inherit p-4"
+                className="flex flex-col gap-5 bg-inherit p-2"
                 ref={chartRef as LegacyRef<HTMLDivElement>}
               >
-                {analysis && <AnalysisModal barangay={barangayName} />}
+                {analysis && <AnalysisModal barangay={barangayName} year={year} />}
                 {analysis && <DataModal barangay={barangayName} />}
               </div>
             </div>
@@ -367,7 +361,6 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                     lat: household.position.lat,
                     lng: household.position.lng,
                   }}
-                  onClick={() => setViewHouse(household.id)}
                   title={`house no: ${household.houseNo.toString()}\nhead name: ${
                     household.head
                   }\nmember: ${household.memberTotal}`}

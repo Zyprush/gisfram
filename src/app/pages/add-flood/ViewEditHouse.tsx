@@ -20,10 +20,17 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
   const [data, setData] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  // State to hold counts
+  const [maleCount, setMaleCount] = useState(0);
+  const [femaleCount, setFemaleCount] = useState(0);
+  const [pwdCount, setPwdCount] = useState(0);
+  const [indigenousCount, setIndigenousCount] = useState(0);
+  const [seniorCount, setSeniorCount] = useState(0);
+  const [pregnantCount, setPregnantCount] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("id", id);
         const docRef = doc(db, "households", id);
         const docSnap = await getDoc(docRef);
 
@@ -42,6 +49,44 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
 
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    if (data) {
+      let male = 0;
+      let female = 0;
+      let pwd = 0;
+      let indigenous = 0;
+      let senior = 0;
+      let pregnant = 0;
+
+      // Include the head of the household in the counts
+      if (data.headInfo) {
+        if (data.headInfo.gender === "Male") male++;
+        if (data.headInfo.gender === "Female") female++;
+        if (data.headInfo.pwd) pwd++;
+        if (data.headInfo.indigenous) indigenous++;
+        if (data.headInfo.age >= 60) senior++;
+        if (data.headInfo.pregnant) pregnant++;
+      }
+
+      // Count the members
+      data.members?.forEach((member: any) => {
+        if (member.gender === "Male") male++;
+        if (member.gender === "Female") female++;
+        if (member.pwd) pwd++;
+        if (member.indigenous) indigenous++;
+        if (member.age >= 60) senior++;
+        if (member.pregnant) pregnant++;
+      });
+
+      setMaleCount(male);
+      setFemaleCount(female);
+      setPwdCount(pwd);
+      setIndigenousCount(indigenous);
+      setSeniorCount(senior);
+      setPregnantCount(pregnant);
+    }
+  }, [data]);
 
   const handleInputChange = (field: string, value: any) => {
     setData({ ...data, [field]: value });
@@ -91,6 +136,7 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
       );
       return;
     }
+
     console.log("data.members", data.members);
     for (const mem of data.members || []) {
       if (!mem.name || !mem.age || !mem.gender) {
@@ -104,9 +150,15 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
     setLoading(true);
     try {
       const docRef = doc(db, "households", id);
-      console.log('data', data)
       await updateDoc(docRef, {
         ...data,
+        maleCount,
+        femaleCount,
+        pwdCount,
+        indigenousCount,
+        seniorCount,
+        pregnantCount,
+        memberTotal: data.members.length +1
       });
 
       setIsEditing(false);

@@ -111,12 +111,12 @@ const handleArchive = async (householdId: string) => {
       <div className="flex flex-1 h-screen justify-start items-start">
         <Link className="btn btn-sm tex-white fixed top-5 right-8 btn-primary" href={"/pages/archive"}>Archive</Link>
       {viewHouse && <ViewEditHouse id={viewHouse} setViewHouse={setViewHouse} />}
-        <div className="p-4 md:p-10 border border-neutral-200 dark:border-neutral-700 bg-zinc-100 dark:bg-neutral-900 flex flex-col gap-8 flex-1 w-full h-full">
+        <div className="p-4 md:p-10 border border-neutral-200 dark:border-neutral-700 bg-zinc-100 dark:bg-neutral-900 flex flex-col gap-8 flex-1 w-full h-full overflow-x-scroll">
           <div className="flex gap-4">
             <select
               value={barangay}
               onChange={handleBarangayChange}
-              className="border border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-sm"
+              className="border border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-xs"
             >
               <option value="">All Barangays</option>
               <option value="Alipaoy">Alipaoy</option>
@@ -137,7 +137,7 @@ const handleArchive = async (householdId: string) => {
               value={searchTerm}
               onChange={handleSearchChange}
               placeholder="Search by head name or house number"
-              className="border border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-sm"
+              className="border border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-xs"
             />
           </div>
 
@@ -150,35 +150,32 @@ const handleArchive = async (householdId: string) => {
               {filteredHouseholds.length > 0 ? (
                 <table className="table-auto w-full text-left">
                   <thead>
-                    <tr>
-                      <th className="px-4 py-2">Barangay</th>
-                      <th className="px-4 py-2">House No.</th>
-                      <th className="px-4 py-2">Head of Household</th>
-                      <th className="px-4 py-2">Actions</th>
+                    <tr className="text-sm text-neutral-600 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
+                      <th className="p-2">Barangay</th>
+                      <th className="p-2">House No.</th>
+                      <th className="p-2">Head of Household</th>
+                      <th className="p-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredHouseholds.map((household) => (
-                      <tr key={household.id}>
-                        <td className="border px-4 py-2">
-                          {household.barangay}
-                        </td>
-                        <td className="border px-4 py-2">
-                          {household.houseNo}
-                        </td>
-                        <td className="border px-4 py-2">
-                          {household.headInfo.name}
-                        </td>
-                        <td className="border px-4 py-2">
+                      <tr
+                        key={household.id}
+                        className="text-xs text-neutral-600 dark:text-neutral-300"
+                      >
+                        <td className="p-2 capitalize">{household.barangay}</td>
+                        <td className="p-2">{household.houseNo}</td>
+                        <td className="p-2 capitalize">{household.headInfo.name}</td>
+                        <td className="p-2 flex gap-4">
                           <button
                             onClick={() => setViewHouse(household.id)}
-                            className="btn btn-sm btn-primary mr-2"
+                            className="dark:text-white btn text-zinc-500 hover:bg-black btn-xs btn-outline rounded-sm"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleArchive(household.id)}
-                            className="btn btn-sm btn-warning"
+                            className="text-white btn btn-xs btn-warning rounded-sm"
                           >
                             Archive
                           </button>
