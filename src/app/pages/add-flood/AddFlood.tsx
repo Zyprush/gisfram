@@ -4,7 +4,7 @@ import { collection, addDoc } from "firebase/firestore";
 interface AddDataProps {
   polygon: google.maps.LatLng[]; // Now correctly expects an array
   barangay: string;
-  handleCancel: () => void;
+  handleCancel: () => void; 
 }
 
 const AddFlood: React.FC<AddDataProps> = ({
