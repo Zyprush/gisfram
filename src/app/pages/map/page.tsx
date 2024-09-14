@@ -59,7 +59,7 @@ const Map = () => {
 
               {/* Map section */}
               <div >
-                <PaluanMapData mpRef={mapRef} chartRef={chartRef}/>
+                <PaluanMapData mpRef={mapRef} chartRef={chartRef} print={print}/>
               </div>
             </>
           )}

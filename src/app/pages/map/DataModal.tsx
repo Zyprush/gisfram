@@ -110,7 +110,7 @@ const DataModal = ({ barangay }: { barangay: string }) => {
           <p>Loading...</p>
         </div>
       ) : (
-        <div className="flex-col p-5 bg-zinc-100 shadow dark:bg-zinc-900 rounded-lg dark:border dark:border-zinc-900 h-auto flex mr-auto ml-0 mx-auto items-start justify-start dark:text-zinc-400 text-zinc-600">
+        <div className="flex-col p-5 bg-white shadow dark:bg-zinc-900 rounded-lg dark:border dark:border-zinc-900 h-auto flex mr-auto ml-0 mx-auto items-start justify-start dark:text-zinc-400 text-zinc-600">
           <span className="text-lg font-bold text-primary dark:text-zinc-300">
             {/* {barangay ? "Barangay" : "Paluan"} Status */}
             Vulnerable Groups 

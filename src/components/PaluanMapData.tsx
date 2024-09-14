@@ -30,10 +30,11 @@ import useFetchHouseholds from "@/hooks/useFetchHouseholds";
 import useFetchFloods from "@/hooks/useFetchFloods"; // Import your custom hook
 import DataModal from "@/app/pages/map/DataModal";
 import { GeoJsonMenu, ZoomOutButton } from "./MapButtons";
+import PrintHeader from "./PrintHeader";
 
 const mapContainerStyle = {
   width: "100%",
-  height: "100vh",
+  height: "100vh", // Fixed height to 500px
   borderRadius: "10px",
 };
 
@@ -46,9 +47,14 @@ const options = {
 interface PaluanMapDataProps {
   mpRef: React.RefObject<HTMLDivElement | null>;
   chartRef: React.RefObject<HTMLDivElement | null>; // Assuming the chart is a div, adjust if it's another element
+  print: boolean;
 }
 
-const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
+const PaluanMapData: React.FC<PaluanMapDataProps> = ({
+  mpRef,
+  chartRef,
+  print,
+}) => {
   const currentYear = new Date().getFullYear();
   const [boundary, setBoundary] = useState<any>(paluanCoords);
   const [house, setHouse] = useState<boolean>(false);
@@ -265,7 +271,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
                 </select>
               </div>
               {flood && (
-                <div className="flex gap-2 px-4 ml-0 mr-auto items-center">
+                <div className="flex gap-2 p-4 ml-0 mr-auto items-center">
                   <span className="text-zinc-700 dark:text-white font-extrabold">
                     Flood legend
                   </span>
@@ -282,126 +288,136 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({ mpRef, chartRef }) => {
               )}
               {analysis && (
                 <div
-                  className="flex gap-3 bg-inherit p-4"
+                  className="flex flex-col gap-3 bg-white dark:bg-zinc-800 p-4"
                   ref={chartRef as LegacyRef<HTMLDivElement>}
                 >
-                  <div className="flex flex-col gap-3">
-                    <AnalysisModal
-                      barangay={barangayName}
-                      year={year}
-                      gender="Male"
-                    />
-                    <AnalysisModal
-                      barangay={barangayName}
-                      year={year}
-                      gender="Female"
-                    />
+                  {print && <PrintHeader />}
+                  <div className="flex gap-3">
+                    <div className="flex flex-col gap-3">
+                      <AnalysisModal
+                        barangay={barangayName}
+                        year={year}
+                        gender="Male"
+                      />
+                      <AnalysisModal
+                        barangay={barangayName}
+                        year={year}
+                        gender="Female"
+                      />
+                    </div>
+                    <DataModal barangay={barangayName} />
                   </div>
-                  <DataModal barangay={barangayName} />
                 </div>
               )}
             </div>
           )}
         </div>
         <div ref={mpRef as LegacyRef<HTMLDivElement>}>
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={center}
-            zoom={options.zoom}
-            mapTypeId={options.mapTypeId}
-            onClick={handleMapClick}
-            onLoad={(map) => {
-              mapRef.current = map;
-            }}
-            options={{
-              fullscreenControl: false,
-              mapTypeControl: true, // Set to true to enable map type control
-              mapTypeControlOptions: {
-                position: google.maps.ControlPosition.TOP_RIGHT,
-                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-              },
-              mapTypeId: "satellite", // Set the default map type to satellite view
-            }}
-          >
-            {selectedFiles.map(
-              (file) =>
-                geoJsonData[file] && (
-                  <Data
-                    key={file}
-                    onLoad={(data) => {
-                      console.log(
-                        "Loading GeoJSON data onto map for file:",
-                        file
-                      );
-                      data.addGeoJson(geoJsonData[file]);
-                      data.setStyle({
-                        strokeColor: "#FF0000",
-                        fillColor: "#FF0000",
-                        strokeOpacity: 1.0,
-                        strokeWeight: 1.5,
-                        fillOpacity: 0.0,
-                        icon: {
-                          url: "/warning.svg",
-                          scaledSize: new google.maps.Size(20, 20),
-                          anchor: new google.maps.Point(15, 15),
-                        },
-                      });
-                    }}
-                  />
-                )
-            )}
-            {boundary && (
-              <Polyline
-                path={boundary}
-                options={{
-                  strokeColor: "#FF0000",
-                  strokeOpacity: 1.0,
-                  strokeWeight: 2,
-                }}
-              />
-            )}
-            {house &&
-              households.length > 0 &&
-              households.map((household, index) => (
-                <Marker
-                  key={index}
-                  position={{
-                    lat: household.position.lat,
-                    lng: household.position.lng,
+          {print && (
+            <div className="fixed z-50 top-0 w-full">
+              <PrintHeader />
+            </div>
+          )}
+          <div className="-z-40">
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              center={center}
+              zoom={options.zoom}
+              mapTypeId={options.mapTypeId}
+              onClick={handleMapClick}
+              onLoad={(map) => {
+                mapRef.current = map;
+              }}
+              options={{
+                fullscreenControl: false,
+                mapTypeControl: true, // Set to true to enable map type control
+                mapTypeControlOptions: {
+                  position: google.maps.ControlPosition.TOP_RIGHT,
+                  style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                },
+                mapTypeId: "satellite", // Set the default map type to satellite view
+              }}
+            >
+              {selectedFiles.map(
+                (file) =>
+                  geoJsonData[file] && (
+                    <Data
+                      key={file}
+                      onLoad={(data) => {
+                        console.log(
+                          "Loading GeoJSON data onto map for file:",
+                          file
+                        );
+                        data.addGeoJson(geoJsonData[file]);
+                        data.setStyle({
+                          strokeColor: "#FF0000",
+                          fillColor: "#FF0000",
+                          strokeOpacity: 1.0,
+                          strokeWeight: 1.5,
+                          fillOpacity: 0.0,
+                          icon: {
+                            url: "/warning.svg",
+                            scaledSize: new google.maps.Size(20, 20),
+                            anchor: new google.maps.Point(15, 15),
+                          },
+                        });
+                      }}
+                    />
+                  )
+              )}
+              {boundary && (
+                <Polyline
+                  path={boundary}
+                  options={{
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
                   }}
-                  title={`house no: ${household.houseNo.toString()}\nhead name: ${
-                    household.head
-                  }\nmember: ${household.memberTotal}`}
                 />
-              ))}
-            {flood
-              ? floods.length > 0 &&
-                floods.map((floodData, index) => (
-                  <Polygon
+              )}
+              {house &&
+                households.length > 0 &&
+                households.map((household, index) => (
+                  <Marker
                     key={index}
-                    paths={floodData.position}
-                    options={{
-                      fillColor:
-                        floodData.severity === "low"
-                          ? "#00CCFF"
-                          : floodData.severity === "moderate"
-                          ? "#ff960c"
-                          : "#fc1616",
-                      fillOpacity: 0.35,
-                      strokeColor:
-                        floodData.severity === "low"
-                          ? "#00CCFF"
-                          : floodData.severity === "moderate"
-                          ? "#ff960c"
-                          : "#ef0000",
-                      strokeOpacity: 0.45,
-                      strokeWeight: 2,
+                    position={{
+                      lat: household.position.lat,
+                      lng: household.position.lng,
                     }}
-                    onClick={() => console.log(`Flood details: ${floodData}`)} // Optional: Handle polygon click
+                    title={`house no: ${household.houseNo.toString()}\nhead name: ${
+                      household.head
+                    }\nmember: ${household.memberTotal}`}
                   />
-                ))
-              : null}
-          </GoogleMap>
+                ))}
+              {flood
+                ? floods.length > 0 &&
+                  floods.map((floodData, index) => (
+                    <Polygon
+                      key={index}
+                      paths={floodData.position}
+                      options={{
+                        fillColor:
+                          floodData.severity === "low"
+                            ? "#00CCFF"
+                            : floodData.severity === "moderate"
+                            ? "#ff960c"
+                            : "#fc1616",
+                        fillOpacity: 0.35,
+                        strokeColor:
+                          floodData.severity === "low"
+                            ? "#00CCFF"
+                            : floodData.severity === "moderate"
+                            ? "#ff960c"
+                            : "#ef0000",
+                        strokeOpacity: 0.45,
+                        strokeWeight: 2,
+                      }}
+                      onClick={() => console.log(`Flood details: ${floodData}`)} // Optional: Handle polygon click
+                    />
+                  ))
+                : null}
+            </GoogleMap>
+          </div>
         </div>
       </div>
     </>
