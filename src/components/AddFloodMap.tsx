@@ -23,6 +23,7 @@ import {
 } from "./barangayCoord";
 import { paluanCoords } from "@/app/pages/map/paluanCoords";
 import AddFlood from "@/app/pages/add-flood/AddFlood";
+import { harrison } from "./harrison";
 
 const mapContainerStyle = {
   width: "100%",
@@ -67,6 +68,7 @@ const AddFloodMap: React.FC = () => {
       alipaoy: alipaoy,
       bagongSilangPob: bagongSilangPob,
       handangTumulongPob: handangTumulongPob,
+      harrison: harrison,
       lumangbayan: lumangbayan,
       mananao: mananao,
       mapaladPob: mapaladPob,
@@ -109,7 +111,7 @@ const AddFloodMap: React.FC = () => {
     setBoundary(paluanCoords);
     setBarangayName("");
     setPolygon([]);
-    setShowForm(false)
+    setShowForm(false);
   };
   const handleUndoLast = () => {
     setPolygon((prev) => prev.slice(0, -1));
@@ -133,6 +135,7 @@ const AddFloodMap: React.FC = () => {
           <option value="alipaoy">Alipaoy</option>
           <option value="bagongSilangPob">Bagong Silang Pob</option>
           <option value="handangTumulongPob">Handang Tumulong Pob</option>
+          <option value="harrison">Harrison</option>
           <option value="lumangbayan">Lumangbayan</option>
           <option value="mananao">Mananao</option>
           <option value="mapaladPob">Mapalad Pob</option>

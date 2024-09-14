@@ -31,6 +31,7 @@ import useFetchFloods from "@/hooks/useFetchFloods"; // Import your custom hook
 import DataModal from "@/app/pages/map/DataModal";
 import { GeoJsonMenu, ZoomOutButton } from "./MapButtons";
 import PrintHeader from "./PrintHeader";
+import { harrison } from "./harrison";
 
 const mapContainerStyle = {
   width: "100%",
@@ -95,6 +96,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
       alipaoy,
       bagongSilangPob,
       handangTumulongPob,
+      harrison,
       lumangbayan,
       mananao,
       mapaladPob,
@@ -243,6 +245,9 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                   <option value="bagongSilangPob">Bagong Silang Pob</option>
                   <option value="handangTumulongPob">
                     Handang Tumulong Pob
+                  </option>
+                  <option value="harrison">
+                    Harrison
                   </option>
                   <option value="lumangbayan">Lumangbayan</option>
                   <option value="mananao">Mananao</option>

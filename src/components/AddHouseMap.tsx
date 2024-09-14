@@ -22,6 +22,7 @@ import {
 } from "./barangayCoord";
 import { paluanCoords } from "@/app/pages/map/paluanCoords";
 import AddHouse from "@/app/pages/add-house/AddHouse";
+import { harrison } from "./harrison";
 
 const mapContainerStyle = {
   width: "100%",
@@ -60,6 +61,7 @@ const AddHouseMap: React.FC = () => {
       alipaoy: alipaoy,
       bagongSilangPob: bagongSilangPob,
       handangTumulongPob: handangTumulongPob,
+      harrison: harrison,
       lumangbayan: lumangbayan,
       mananao: mananao,
       mapaladPob: mapaladPob,
@@ -123,6 +125,7 @@ const AddHouseMap: React.FC = () => {
           <option value="alipaoy">Alipaoy</option>
           <option value="bagongSilangPob">Bagong Silang Pob</option>
           <option value="handangTumulongPob">Handang Tumulong Pob</option>
+          <option value="harrison">Harrison</option>
           <option value="lumangbayan">Lumangbayan</option>
           <option value="mananao">Mananao</option>
           <option value="mapaladPob">Mapalad Pob</option>
