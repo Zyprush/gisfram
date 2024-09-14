@@ -187,9 +187,10 @@ const AddHouse: React.FC<AddDataProps> = ({
             className="sn-select"
           >
             <option value="">House Structure</option>
-            <option value="concrete">Concrete</option>
-            <option value="light materials">Light Materials</option>
-            <option value="mix">Mix</option>
+            <option value="Concrete">Concrete</option>
+            <option value="Lightweight Materials">Lightweight Materials</option>
+            <option value="Salvage">Salvage</option>
+            <option value="Mix">Mix</option>
           </select>
         </div>
         {/* Household leader */}
@@ -292,7 +293,7 @@ const AddHouse: React.FC<AddDataProps> = ({
               </select>
               <input
                 type="text"
-                placeholder="Contact (Optional)"
+                placeholder="Contact"
                 value={member.contact}
                 onChange={(e) =>
                   handleMemberChange(index, "contact", e.target.value)

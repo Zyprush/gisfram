@@ -251,9 +251,10 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
               disabled={!isEditing}
               className="sn-select"
             >
-              <option value="concrete">Concrete</option>
-              <option value="cement">Cement</option>
-              <option value="mix">Mix</option>
+              <option value="Concrete">Concrete</option>
+              <option value="Lightweight Materials">Lightweight Materials</option>
+              <option value="Salvage">Salvage</option>
+              <option value="Mix">Mix</option>
             </select>
           </div>
 
