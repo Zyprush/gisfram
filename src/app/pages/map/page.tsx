@@ -57,8 +57,7 @@ const Map = () => {
                 </div>
               )}
 
-              {/* Map section */}
-              <div>
+              <div className="h-full flex w-full">
                 <PaluanMapData mpRef={mapRef} chartRef={chartRef} print={print}/>
               </div>
             </>

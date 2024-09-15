@@ -3,7 +3,7 @@ import React from "react";
 
 const PrintHeader = () => {
   return (
-    <div className="flex items-center bg-white dark:bg-white justify-evenly w-full">
+    <div className="flex items-center h-auto mb-auto mt-0 bg-white dark:bg-white justify-evenly w-full">
       <div className="rounded-full overflow-hidden ml-10 w-[100px]">
         <Image src={"/img/paluan-logo.png"} alt="logo" height={200} width={200} />
       </div>

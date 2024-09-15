@@ -75,12 +75,8 @@ input[type="number"] {
   .print-header {
     display: flex;
   }
-}
-
-@media print {
-  .print-map-header {
-    display: flex;
-    top: 0;
-    z-index: 9999;
+  #map {
+    width: 100% !important;
+    height: 80% !important;
   }
 }

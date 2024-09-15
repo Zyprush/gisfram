@@ -33,6 +33,11 @@ import { GeoJsonMenu, ZoomOutButton } from "./MapButtons";
 import PrintHeader from "./PrintHeader";
 import { harrison } from "./harrison";
 
+const mapContainerStyle = {
+  width: "100%",
+  height: "100vh",
+};
+
 const center = { lat: 13.397099, lng: 120.459089 };
 
 const options = {
@@ -184,244 +189,246 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
   if (!isLoaded) return <Loading />;
 
   return (
-    <>
+    <div className="h-full flex w-full">
       <ZoomOutButton onZoomOut={handleCenterMap} />
       <GeoJsonMenu
         geoJsonFiles={geoJsonFiles}
         selectedFiles={selectedFiles}
         onSelectFile={handleFileSelect}
       />
-      <div className="relative">
-        <div>
-          <button
-            onClick={() => setIsVisible(!isVisible)}
-            className="absolute left-2 top-3 z-10 p-2 bg-white dark:bg-zinc-800  rounded shadow"
-          >
-            <IconChevronDown
-              className={`text-xl text-zinc-600 dark:text-zinc-300 transition-all duration-300 ${
-                isVisible ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-          {isVisible && (
-            <div className="flex gap-2 items-center absolute left-2 top-14 z-10 bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto text-sm flex-col text-zinc-700 dark:text-zinc-200 transition-all duration-300 ease-linear">
-              <div className="flex gap-4 justify-start mr-auto ml-0 p-4">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={house}
-                    onChange={(e) => setHouse(e.target.checked)}
-                    className="checkbox checkbox-xs checkbox-secondary rounded-md"
-                  />
-                  <span className="ml-1 text-xs font-semibold">Household</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={flood}
-                    onChange={(e) => setFlood(e.target.checked)}
-                    className="checkbox checkbox-xs checkbox-secondary rounded-md"
-                  />
-                  <span className="ml-1 text-xs font-semibold">Flood</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    className="checkbox checkbox-xs checkbox-secondary rounded-md"
-                    onChange={(e) => setAnalysis(e.target.checked)}
-                  />
-                  <span className="ml-1 text-xs font-semibold">Analysis</span>
-                </label>
-              </div>
-
-              <div className="flex gap-2 ml-0 mr-auto px-4 pb-4">
-                <select
-                  value={barangayName}
-                  onChange={handleSelect}
-                  className="sn-select mr-auto"
-                >
-                  <option value="">Select Barangay</option>
-                  <option value="alipaoy">Alipaoy</option>
-                  <option value="bagongSilangPob">Bagong Silang Pob</option>
-                  <option value="handangTumulongPob">
-                    Handang Tumulong Pob
-                  </option>
-                  <option value="harrison">Harrison</option>
-                  <option value="lumangbayan">Lumangbayan</option>
-                  <option value="mananao">Mananao</option>
-                  <option value="mapaladPob">Mapalad Pob</option>
-                  <option value="marikit">Marikit</option>
-                  <option value="PagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
-                  <option value="sanJosePob">San Jose Pob</option>
-                  <option value="silahisNgPagAsaPob">
-                    Silahis Ng Pag-Asa Pob
-                  </option>
-                  <option value="tubili">Tubili</option>
-                </select>
-                <select
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                  className="sn-select w-40"
-                >
-                  <option value="">Flood Year</option>
-                  {Array.from({ length: 10 }, (_, i) => currentYear - i).map(
-                    (year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    )
-                  )}
-                </select>
-              </div>
-              {flood && (
-                <div className="flex gap-2 p-4 ml-0 mr-auto items-center">
-                  <span className="text-zinc-700 dark:text-white font-extrabold">
-                    Flood legend
-                  </span>
-                  <span className="bg-[#00CCFF] p-2 py-1 text-xs rounded-sm font-semibold">
-                    low
-                  </span>
-                  <span className="bg-[#ff960c] p-2 py-1 text-xs rounded-sm font-semibold">
-                    moderate
-                  </span>
-                  <span className="bg-[#fc1616] p-2 py-1 text-xs rounded-sm font-semibold">
-                    high
-                  </span>
-                </div>
-              )}
-              {analysis && (
-                <div
-                  className="flex flex-col gap-3 bg-white dark:bg-zinc-800 p-4"
-                  ref={chartRef as LegacyRef<HTMLDivElement>}
-                >
-                  <div className="print-header hidden">
-                    <PrintHeader />
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="flex flex-col gap-3">
-                      <AnalysisModal
-                        barangay={barangayName}
-                        year={year}
-                        gender="Male"
-                      />
-                      <AnalysisModal
-                        barangay={barangayName}
-                        year={year}
-                        gender="Female"
-                      />
-                    </div>
-                    <DataModal barangay={barangayName} />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-        <div ref={mpRef as LegacyRef<HTMLDivElement>} className="flex flex-col">
-          {print && <PrintHeader />}
-          <div style={{ width: "100%", height: print ? "100vh" : "98vh" }}>
-            <GoogleMap
-              mapContainerStyle={mapContainerStyle}
-              center={center}
-              zoom={options.zoom}
-              mapTypeId={options.mapTypeId}
-              onClick={handleMapClick}
-              onLoad={(map) => {
-                mapRef.current = map;
-              }}
-              options={{
-                fullscreenControl: false,
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                  position: google.maps.ControlPosition.TOP_RIGHT,
-                  style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                },
-                mapTypeId: "satellite",
-              }}
-            >
-              {selectedFiles.map(
-                (file) =>
-                  geoJsonData[file] && (
-                    <Data
-                      key={file}
-                      onLoad={(data) => {
-                        console.log(
-                          "Loading GeoJSON data onto map for file:",
-                          file
-                        );
-                        data.addGeoJson(geoJsonData[file]);
-                        data.setStyle({
-                          strokeColor: "#FF0000",
-                          fillColor: "#FF0000",
-                          strokeOpacity: 1.0,
-                          strokeWeight: 1.5,
-                          fillOpacity: 0.0,
-                          icon: {
-                            url: "/warning.svg",
-                            scaledSize: new google.maps.Size(20, 20),
-                            anchor: new google.maps.Point(15, 15),
-                          },
-                        });
-                      }}
-                    />
-                  )
-              )}
-              {boundary && (
-                <Polyline
-                  path={boundary}
-                  options={{
-                    strokeColor: "#FF0000",
-                    strokeOpacity: 1.0,
-                    strokeWeight: 2,
-                  }}
+      <div className="relative w-full">
+        <button
+          onClick={() => setIsVisible(!isVisible)}
+          className="absolute left-2 top-3 z-10 p-2 bg-white dark:bg-zinc-800  rounded shadow"
+        >
+          <IconChevronDown
+            className={`text-xl text-zinc-600 dark:text-zinc-300 transition-all duration-300 ${
+              isVisible ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+        {isVisible && (
+          <div className="flex gap-2 items-center absolute left-2 top-14 z-10 bg-white dark:bg-zinc-800 rounded-lg shadow-sm w-auto text-sm flex-col text-zinc-700 dark:text-zinc-200 transition-all duration-300 ease-linear">
+            <div className="flex gap-4 justify-start mr-auto ml-0 p-4">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={house}
+                  onChange={(e) => setHouse(e.target.checked)}
+                  className="checkbox checkbox-xs checkbox-secondary rounded-md"
                 />
-              )}
-              {house &&
-                households.length > 0 &&
-                households.map((household, index) => (
-                  <Marker
-                    key={index}
-                    position={{
-                      lat: household.position.lat,
-                      lng: household.position.lng,
-                    }}
-                    title={`house no: ${household.houseNo.toString()}\nhead name: ${
-                      household.head
-                    }\nmember: ${household.memberTotal}`}
-                  />
-                ))}
-              {flood
-                ? floods.length > 0 &&
-                  floods.map((floodData, index) => (
-                    <Polygon
-                      key={index}
-                      paths={floodData.position}
-                      options={{
-                        fillColor:
-                          floodData.severity === "low"
-                            ? "#00CCFF"
-                            : floodData.severity === "moderate"
-                            ? "#ff960c"
-                            : "#fc1616",
-                        fillOpacity: 0.35,
-                        strokeColor:
-                          floodData.severity === "low"
-                            ? "#00CCFF"
-                            : floodData.severity === "moderate"
-                            ? "#ff960c"
-                            : "#ef0000",
-                        strokeOpacity: 0.45,
-                        strokeWeight: 2,
-                      }}
-                      onClick={() => console.log(`Flood details: ${floodData}`)} // Optional: Handle polygon click
+                <span className="ml-1 text-xs font-semibold">Household</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={flood}
+                  onChange={(e) => setFlood(e.target.checked)}
+                  className="checkbox checkbox-xs checkbox-secondary rounded-md"
+                />
+                <span className="ml-1 text-xs font-semibold">Flood</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-xs checkbox-secondary rounded-md"
+                  onChange={(e) => setAnalysis(e.target.checked)}
+                />
+                <span className="ml-1 text-xs font-semibold">Analysis</span>
+              </label>
+            </div>
+
+            <div className="flex gap-2 ml-0 mr-auto px-4 pb-4">
+              <select
+                value={barangayName}
+                onChange={handleSelect}
+                className="sn-select mr-auto"
+              >
+                <option value="">Select Barangay</option>
+                <option value="alipaoy">Alipaoy</option>
+                <option value="bagongSilangPob">Bagong Silang Pob</option>
+                <option value="handangTumulongPob">Handang Tumulong Pob</option>
+                <option value="harrison">Harrison</option>
+                <option value="lumangbayan">Lumangbayan</option>
+                <option value="mananao">Mananao</option>
+                <option value="mapaladPob">Mapalad Pob</option>
+                <option value="marikit">Marikit</option>
+                <option value="PagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
+                <option value="sanJosePob">San Jose Pob</option>
+                <option value="silahisNgPagAsaPob">
+                  Silahis Ng Pag-Asa Pob
+                </option>
+                <option value="tubili">Tubili</option>
+              </select>
+              <select
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                className="sn-select w-40"
+              >
+                <option value="">Flood Year</option>
+                {Array.from({ length: 10 }, (_, i) => currentYear - i).map(
+                  (year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  )
+                )}
+              </select>
+            </div>
+            {flood && (
+              <div className="flex gap-2 p-4 ml-0 mr-auto items-center">
+                <span className="text-zinc-700 dark:text-white font-extrabold">
+                  Flood legend
+                </span>
+                <span className="bg-[#00CCFF] p-2 py-1 text-xs rounded-sm font-semibold">
+                  low
+                </span>
+                <span className="bg-[#ff960c] p-2 py-1 text-xs rounded-sm font-semibold">
+                  moderate
+                </span>
+                <span className="bg-[#fc1616] p-2 py-1 text-xs rounded-sm font-semibold">
+                  high
+                </span>
+              </div>
+            )}
+            {analysis && (
+              <div
+                className="flex flex-col justify-start gap-3 bg-white dark:bg-zinc-800 p-4"
+                ref={chartRef as LegacyRef<HTMLDivElement>}
+              >
+                <div className="print-header hidden">
+                  <PrintHeader />
+                </div>
+                <div className="flex gap-3">
+                  <div className="flex flex-col gap-3">
+                    <AnalysisModal
+                      barangay={barangayName}
+                      year={year}
+                      gender="Male"
                     />
-                  ))
-                : null}
-            </GoogleMap>
+                    <AnalysisModal
+                      barangay={barangayName}
+                      year={year}
+                      gender="Female"
+                    />
+                  </div>
+                  <DataModal barangay={barangayName} />
+                </div>
+              </div>
+            )}
           </div>
+        )}
+        <div
+          className="h-full grid grid-cols-1 grid-rows-1 w-full gap-0"
+          ref={mpRef as LegacyRef<HTMLDivElement>}
+        >
+          <div className="print-header print:z-50">
+            <PrintHeader />
+          </div>
+          <div className="w-full h-full flex" id="map">
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            center={center}
+            zoom={options.zoom}
+            mapTypeId={options.mapTypeId}
+            onClick={handleMapClick}
+            onLoad={(map) => {
+              mapRef.current = map;
+            }}
+            options={{
+              fullscreenControl: false,
+              mapTypeControl: true, // Set to true to enable map type control
+              mapTypeControlOptions: {
+                position: google.maps.ControlPosition.TOP_RIGHT,
+                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+              },
+              mapTypeId: "satellite", // Set the default map type to satellite view
+            }}
+          >
+            {selectedFiles.map(
+              (file) =>
+                geoJsonData[file] && (
+                  <Data
+                    key={file}
+                    onLoad={(data) => {
+                      console.log(
+                        "Loading GeoJSON data onto map for file:",
+                        file
+                      );
+                      data.addGeoJson(geoJsonData[file]);
+                      data.setStyle({
+                        strokeColor: "#FF0000",
+                        fillColor: "#FF0000",
+                        strokeOpacity: 1.0,
+                        strokeWeight: 1.5,
+                        fillOpacity: 0.0,
+                        icon: {
+                          url: "/warning.svg",
+                          scaledSize: new google.maps.Size(20, 20),
+                          anchor: new google.maps.Point(15, 15),
+                        },
+                      });
+                    }}
+                  />
+                )
+            )}
+            {boundary && (
+              <Polyline
+                path={boundary}
+                options={{
+                  strokeColor: "#FF0000",
+                  strokeOpacity: 1.0,
+                  strokeWeight: 2,
+                }}
+              />
+            )}
+            {house &&
+              households.length > 0 &&
+              households.map((household, index) => (
+                <Marker
+                  key={index}
+                  position={{
+                    lat: household.position.lat,
+                    lng: household.position.lng,
+                  }}
+                  title={`house no: ${household.houseNo.toString()}\nhead name: ${
+                    household.head
+                  }\nmember: ${household.memberTotal}`}
+                />
+              ))}
+            {flood
+              ? floods.length > 0 &&
+                floods.map((floodData, index) => (
+                  <Polygon
+                    key={index}
+                    paths={floodData.position}
+                    options={{
+                      fillColor:
+                        floodData.severity === "low"
+                          ? "#00CCFF"
+                          : floodData.severity === "moderate"
+                          ? "#ff960c"
+                          : "#fc1616",
+                      fillOpacity: 0.35,
+                      strokeColor:
+                        floodData.severity === "low"
+                          ? "#00CCFF"
+                          : floodData.severity === "moderate"
+                          ? "#ff960c"
+                          : "#ef0000",
+                      strokeOpacity: 0.45,
+                      strokeWeight: 2,
+                    }}
+                    onClick={() => console.log(`Flood details: ${floodData}`)} // Optional: Handle polygon click
+                  />
+                ))
+              : null}
+          </GoogleMap>
+          </div>
+
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
