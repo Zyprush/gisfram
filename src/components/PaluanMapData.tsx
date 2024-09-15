@@ -37,6 +37,7 @@ const mapContainerStyle = {
   width: "100%",
   height: "100vh", // Fixed height to 500px
   borderRadius: "10px",
+  zIndex: 1,
 };
 
 const center = { lat: 13.397099, lng: 120.459089 };
@@ -246,9 +247,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                   <option value="handangTumulongPob">
                     Handang Tumulong Pob
                   </option>
-                  <option value="harrison">
-                    Harrison
-                  </option>
+                  <option value="harrison">Harrison</option>
                   <option value="lumangbayan">Lumangbayan</option>
                   <option value="mananao">Mananao</option>
                   <option value="mapaladPob">Mapalad Pob</option>
@@ -296,7 +295,9 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                   className="flex flex-col gap-3 bg-white dark:bg-zinc-800 p-4"
                   ref={chartRef as LegacyRef<HTMLDivElement>}
                 >
-                  {print && <PrintHeader />}
+                  <div className="print-header hidden">
+                    <PrintHeader />
+                  </div>
                   <div className="flex gap-3">
                     <div className="flex flex-col gap-3">
                       <AnalysisModal
@@ -317,13 +318,11 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
             </div>
           )}
         </div>
-        <div ref={mpRef as LegacyRef<HTMLDivElement>}>
-          {print && (
-            <div className="fixed z-50 top-0 w-full">
-              <PrintHeader />
-            </div>
-          )}
-          <div className="-z-40">
+        <div ref={mpRef as LegacyRef<HTMLDivElement>} className="flex">
+          <div className="print-header print:mb-40 hidden">
+            <PrintHeader />
+          </div>
+          <div>
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               center={center}

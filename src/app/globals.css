@@ -70,3 +70,17 @@ input[type="number"] {
 .border-shadow {
   filter: drop-shadow(5px 5px 0px #fff);
 }
+
+@media print {
+  .print-header {
+    display: flex;
+  }
+}
+
+@media print {
+  .print-map-header {
+    display: flex;
+    top: 0;
+    z-index: 9999;
+  }
+}
