@@ -33,13 +33,6 @@ import { GeoJsonMenu, ZoomOutButton } from "./MapButtons";
 import PrintHeader from "./PrintHeader";
 import { harrison } from "./harrison";
 
-const mapContainerStyle = {
-  width: "100%",
-  height: "100vh", // Fixed height to 500px
-  borderRadius: "10px",
-  zIndex: 1,
-};
-
 const center = { lat: 13.397099, lng: 120.459089 };
 
 const options = {
@@ -182,6 +175,12 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
     }
   };
 
+  const mapContainerStyle = {
+    width: "100%",
+    height: print ? "85vh" : "100%", // Adjust height based on print mode
+    borderRadius: print ? "0" : "10px",
+  };
+
   if (!isLoaded) return <Loading />;
 
   return (
@@ -318,11 +317,9 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
             </div>
           )}
         </div>
-        <div ref={mpRef as LegacyRef<HTMLDivElement>} className="flex">
-          <div className="print-header print:mb-40 hidden">
-            <PrintHeader />
-          </div>
-          <div>
+        <div ref={mpRef as LegacyRef<HTMLDivElement>} className="flex flex-col">
+          {print && <PrintHeader />}
+          <div style={{ width: "100%", height: print ? "100vh" : "98vh" }}>
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               center={center}
@@ -334,12 +331,12 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
               }}
               options={{
                 fullscreenControl: false,
-                mapTypeControl: true, // Set to true to enable map type control
+                mapTypeControl: true,
                 mapTypeControlOptions: {
                   position: google.maps.ControlPosition.TOP_RIGHT,
                   style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
                 },
-                mapTypeId: "satellite", // Set the default map type to satellite view
+                mapTypeId: "satellite",
               }}
             >
               {selectedFiles.map(
