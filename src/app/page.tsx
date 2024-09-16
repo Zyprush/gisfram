@@ -18,7 +18,7 @@ export default function Home() {
   );
   const [signOut] = useSignOut(auth);
 
-  useEffect(() => {
+  useEffect(() => { 
     const fetchBrandName = async () => {
       try {
         const name = await getSetting("sysName");
