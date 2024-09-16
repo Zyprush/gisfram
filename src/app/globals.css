@@ -68,7 +68,7 @@ input[type="number"] {
 }
 
 .border-shadow {
-  filter: drop-shadow(5px 5px 0px #fff);
+  filter: drop-shadow(2px 2px 0px #fff);
 }
 
 @media print {

@@ -18,7 +18,7 @@ export default function Home() {
   );
   const [signOut] = useSignOut(auth);
 
-  useEffect(() => { 
+  useEffect(() => {
     const fetchBrandName = async () => {
       try {
         const name = await getSetting("sysName");
@@ -66,18 +66,37 @@ export default function Home() {
       </SignedIn>
       <SignedOut>
         <div className="text-center z-10">
-          <div className="flex gap-5 mx-auto md:flex-row flex-col-reverse">
-            <Image
-              src="/img/logo.png"
-              alt="Logo"
-              width={500}
-              height={500}
-              className="mx-auto border-shadow"
-              draggable="false"
-            />
-            <span className="flex flex-col justify-start items-start max-w-[30rem] my-auto p-6 bg-zinc-950 bg-opacity-80 rounded-lg border border-zinc-800">
-              <p className="text-xl uppercase font-semibold text-white dark:text-white"> {brandName}</p>
-              <p className="text-xs mt-4 text-white dark:text-white text-justify">{about}</p>
+          <div className="flex gap-5 mx-auto flex-col">
+            <div className="flex gap-5 items-center mx-auto">
+              <Image
+                src={"/img/paluan-logo.png"}
+                alt="logo"
+                height={120}
+                width={120}
+              />
+              <Image
+                src="/img/logo.png"
+                alt="Logo"
+                width={150}
+                height={150}
+                className="border-shadow"
+                draggable="false"
+              />
+              <Image
+                src={"/img/ganado.png"}
+                alt="logo"
+                height={140}
+                width={140}
+              />
+            </div>
+
+            <span className="flex flex-col justify-start items-start max-w-[35rem] my-auto p-6 bg-zinc-950 bg-opacity-80 rounded-lg border border-zinc-800">
+              <p className="text-xl uppercase font-semibold text-white dark:text-white">
+                {brandName}
+              </p>
+              <p className="text-xs mt-4 text-white dark:text-white text-justify">
+                {about}
+              </p>
               <Link
                 href="/pages/sign-in"
                 className="btn btn-outline text-white hover:bg-white hover:text-black font-bold mt-10 mx-auto"
