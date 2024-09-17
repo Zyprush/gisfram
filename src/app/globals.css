@@ -37,10 +37,10 @@ body {
     @apply px-3 py-3 bg-gray-200 dark:bg-gray-700 bg-opacity-50 rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition ease-in-out duration-150 text-sm text-black dark:text-white;
   }
   .sn-select {
-    @apply border p-1 border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md text-sm
+    @apply border p-1 border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md text-sm;
   }
   .sn-input {
-    @apply input input-sm input-bordered bg-white border-zinc-200 dark:border-neutral-600 dark:bg-zinc-800 text-zinc-700 dark:text-white focus:outline-none text-sm rounded-md
+    @apply input input-sm input-bordered bg-white border-zinc-200 dark:border-neutral-600 dark:bg-zinc-800 text-zinc-700 dark:text-white focus:outline-none text-sm rounded-md;
   }
 }
 
@@ -70,6 +70,10 @@ input[type="number"] {
 .border-shadow {
   filter: drop-shadow(2px 2px 0px #fff);
 }
+#map {
+  width: 100% !important;
+  height: 100% !important;
+}
 
 @media print {
   .print-header {
@@ -77,6 +81,6 @@ input[type="number"] {
   }
   #map {
     width: 100% !important;
-    height: 80% !important;
+    height: 100% !important;
   }
 }

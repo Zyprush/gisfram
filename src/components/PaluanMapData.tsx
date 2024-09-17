@@ -322,7 +322,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
           className="h-full grid grid-cols-1 grid-rows-1 w-full gap-0"
           ref={mpRef as LegacyRef<HTMLDivElement>}
         >
-          <div className="print-header print:z-50">
+          <div className="print-header hidden print:z-50">
             <PrintHeader />
           </div>
           <div className="w-full h-full flex" id="map">
