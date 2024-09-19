@@ -8,18 +8,15 @@ import {
 import {
   IconOutbound,
   IconSettings,
-  IconAlertTriangle,
   IconMap,
-  IconHelpOctagon,
-  IconCloud,
+  IconFloatRight,
   IconSun,
   IconMoon,
   IconTablePlus,
-  IconCreditCard,
-  IconChartBarPopular,
   IconChevronLeft,
   IconChevronRight,
   IconArchive,
+  IconFloatCenter,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -34,35 +31,60 @@ const links = [
     label: "Map Data",
     href: "/pages/map",
     icon: (
-      <IconMap className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
+      <IconMap
+        className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        stroke={2.4}
+      />
     ),
   },
   {
     label: "Add Household",
     href: "/pages/add-house",
     icon: (
-      <IconTablePlus className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
+      <IconTablePlus
+        className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        stroke={2.4}
+      />
     ),
   },
   {
     label: "Add Flood",
     href: "/pages/add-flood",
     icon: (
-      < IconCloud className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
+      <IconFloatRight
+        className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        stroke={2.4}
+      />
     ),
   },
   {
     label: "Household",
     href: "/pages/household",
     icon: (
-      < IconArchive className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
+      <IconArchive
+        className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        stroke={2.4}
+      />
+    ),
+  },
+  {
+    label: "Flood",
+    href: "/pages/flood",
+    icon: (
+      <IconFloatCenter
+        className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        stroke={2.4}
+      />
     ),
   },
   {
     label: "Settings",
     href: "/pages/settings",
     icon: (
-      <IconSettings className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.4} />
+      <IconSettings
+        className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        stroke={2.4}
+      />
     ),
   },
 ];
@@ -137,7 +159,10 @@ export const Sidebar: React.FC = () => {
                 label: "Logout",
                 href: "#",
                 icon: (
-                  <IconOutbound className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0" stroke={2.5} />
+                  <IconOutbound
+                    className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+                    stroke={2.5}
+                  />
                 ),
               }}
               onClick={handleLogout}

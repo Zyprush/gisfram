@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { db } from "@/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 
@@ -23,7 +23,29 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+    
+    // Update the formData
     setFormData({ ...formData, [name]: value });
+
+    // Automatically update severity based on water level changes
+    if (name === "waterLevel") {
+      const waterLevel = parseFloat(value);
+      let severity = "";
+      
+      if (waterLevel <= 0.5) {
+        severity = "low";
+      } else if (waterLevel <= 1.5) {
+        severity = "moderate";
+      } else {
+        severity = "high";
+      }
+
+      // Set the calculated severity in the formData
+      setFormData((prevFormData: any) => ({
+        ...prevFormData,
+        severity,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,34 +64,21 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-1/2 mx-auto">
-      <select
-        name="barangay"
-        value={formData.barangay || ''}
-        onChange={handleChange}
-        data-tip="Barangay"
-        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
-      >
-        <option value="">Select Barangay</option>
-        <option value="Alipaoy">Alipaoy</option>
-        <option value="Barangay 5">Barangay 5</option>
-        <option value="Barangay 2">Barangay 2</option>
-        <option value="Harrison">Harrison</option>
-        <option value="Lumangbayan">Lumangbayan</option>
-        <option value="Mananao">Mananao</option>
-        <option value="Barangay 1">Barangay 1</option>
-        <option value="Marikit">Marikit</option>
-        <option value="Barangay 4">Barangay 4</option>
-        <option value="Barangay 6">Barangay 6</option>
-        <option value="Barangay 3">Barangay 3</option>
-        <option value="Tubili">Tubili</option>
-      </select>
-
       <input
         type="date"
         name="date"
         value={formData.date || ''}
         onChange={handleChange}
         className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
+      />
+
+      <input
+        type="number"
+        name="waterLevel"
+        value={formData.waterLevel || ''}
+        onChange={handleChange}
+        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
+        placeholder="Water Level (m)"
       />
 
       <select
@@ -83,15 +92,7 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
         <option value="Moderate">Moderate</option>
         <option value="High">High</option>
       </select>
-
-      <input
-        type="number"
-        name="waterLevel"
-        value={formData.waterLevel || ''}
-        onChange={handleChange}
-        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
-        placeholder="Water Level (m)"
-      />
+      
       <input
         type="number"
         name="rainfallAmount"
@@ -100,14 +101,7 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
         className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
         placeholder="Rainfall Amount (mm)"
       />
-      <input
-        type="number"
-        name="casualties"
-        value={formData.casualties || ''}
-        onChange={handleChange}
-        className="border text-zinc-600 dark:text-zinc-300 dark:bg-zinc-800 dark:bg-opacity-50 border-neutral-200 dark:border-neutral-700 rounded-md p-2 text-sm"
-        placeholder="Casualties"
-      />
+      
       <div className="flex gap-4 mr-0 ml-auto">
         <button
           type="button"

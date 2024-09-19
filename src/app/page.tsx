@@ -14,7 +14,7 @@ export default function Home() {
   const [user] = useAuthState(auth);
   const [brandName, setBrandName] = useState("GISFRAM");
   const [about, setAbout] = useState(
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque architecto ex, aperiam repudiandae distinctio eum quasi ab fugiat odio eligendi incidunt, voluptate, in quo autem ea et beatae nobis asperiores"
+    "Loading..."
   );
   const [signOut] = useSignOut(auth);
 

@@ -11,9 +11,10 @@ import {
   orderBy,
   doc,
 } from "firebase/firestore";
-import { Authenticator } from "@/components/Authenthicator";
 import { Layout } from "@/components/Layout";
 import EditFloodData from "./EditFloodData";
+import { Authenticator } from "@/components/Authenthicator";
+import { camelCaseToTitleCase } from "@/lib/string";
 
 const FloodData = () => {
   const [floodData, setFloodData] = useState<any[]>([]);
@@ -47,7 +48,7 @@ const FloodData = () => {
         conditions.push(where("barangay", "==", filters.barangay));
       }
 
-      // Query the collection with the applied filters
+      // Firebase requires fields used in 'where' to also be included in 'orderBy'
       const q = query(
         collection(db, "floods"),
         ...conditions,
@@ -68,9 +69,9 @@ const FloodData = () => {
     }
   };
 
+  // Effect to fetch flood data when filters change
   useEffect(() => {
     fetchFloodData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const handleDelete = async (id: string) => {
@@ -78,7 +79,7 @@ const FloodData = () => {
       setLoading(true);
       try {
         await deleteDoc(doc(db, "floods", id));
-        setFloodData(floodData.filter((item) => item.id !== id));
+        setFloodData(floodData.filter((item) => item.id !== id)); // Optimistic UI update
       } catch (error) {
         console.error("Error deleting document: ", error);
       } finally {
@@ -88,8 +89,8 @@ const FloodData = () => {
   };
 
   const handleEditSave = () => {
-    setEditId(null);
-    fetchFloodData(); // Refresh the data after saving
+    setEditId(null); // Close the edit mode
+    fetchFloodData(); // Refresh data after editing
   };
 
   return (
@@ -118,6 +119,7 @@ const FloodData = () => {
               className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300"
             >
               <option value="">All Barangays</option>
+              {/* Add barangay options */}
               <option value="Alipaoy">Alipaoy</option>
               <option value="Barangay 5">Barangay 5</option>
               <option value="Barangay 2">Barangay 2</option>
@@ -151,48 +153,46 @@ const FloodData = () => {
             />
           ) : (
             <div className="p-3 rounded-xl bg-white dark:bg-opacity-50 dark:bg-zinc-800 border dark:border-zinc-700 bg-opacity-50">
-            <table className="table-auto w-full">
-              <thead>
-                <tr className="text-sm text-neutral-600 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
-                  <th className="p-2">Barangay</th>
-                  <th className="p-2">Date</th>
-                  <th className="p-2">Severity</th>
-                  <th className="p-2">Water Level</th>
-                  <th className="p-2">Rainfall Amount</th>
-                  <th className="p-2">Casualties</th>
-                  <th className="p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {floodData.map((data) => (
-                  <tr
-                    key={data.id}
-                    className="text-xs text-neutral-600 dark:text-neutral-300"
-                  >
-                    <td className="p-2">{data.barangay}</td>
-                    <td className="p-2">{data.date}</td>
-                    <td className="p-2">{data.severity}</td>
-                    <td className="p-2">{data.waterLevel} m</td>
-                    <td className="p-2">{data.rainfallAmount} mm</td>
-                    <td className="p-2">{data.casualties}</td>
-                    <td className="p-2 flex gap-4">
-                      <button
-                        onClick={() => setEditId(data.id)}
-                        className="dark:text-white btn text-zinc-500 hover:bg-black btn-xs btn-outline rounded-sm"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(data.id)}
-                        className="text-white btn btn-xs btn-error rounded-sm"
-                      >
-                        Delete
-                      </button>
-                    </td>
+              <table className="table-auto w-full">
+                <thead>
+                  <tr className="text-sm text-neutral-600 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
+                    <th className="p-2">Barangay</th>
+                    <th className="p-2">Date</th>
+                    <th className="p-2">Severity</th>
+                    <th className="p-2">Water Level</th>
+                    <th className="p-2">Rainfall Amount</th>
+                    <th className="p-2">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {floodData.map((data) => (
+                    <tr
+                      key={data.id}
+                      className="text-xs text-neutral-600 dark:text-neutral-300"
+                    >
+                      <td className="p-2">{camelCaseToTitleCase(data.barangay)}</td>
+                      <td className="p-2">{data.date}</td>
+                      <td className="p-2">{data.severity}</td>
+                      <td className="p-2">{data.waterLevel} m</td>
+                      <td className="p-2">{data.rainfallAmount} mm</td>
+                      <td className="p-2 flex gap-4">
+                        <button
+                          onClick={() => setEditId(data.id)}
+                          className="dark:text-white btn text-zinc-500 hover:bg-black btn-xs btn-outline rounded-sm"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(data.id)}
+                          className="text-white btn btn-xs btn-error rounded-sm"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
