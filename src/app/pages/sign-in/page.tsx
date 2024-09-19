@@ -110,7 +110,7 @@ export default function Page() {
               </div>
             </div>
           </form>
-          {loading && <p>Loading...</p>}
+          {loading && <p className="p-2 border text-primary border-primary mt-3 text-center">Loading...</p>}
           {/* Display error message based on FirebaseError, if present */}
           {error && (
             <p className="text-red-500 border border-red-500 text-sm font-semibold p-2 rounded-md mt-4 text-center">

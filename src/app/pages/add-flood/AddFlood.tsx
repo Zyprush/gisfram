@@ -1,25 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { db } from "@/firebase"; // Ensure you have configured Firebase and Firestore
 import { collection, addDoc } from "firebase/firestore";
+
 interface AddDataProps {
   polygon: google.maps.LatLng[]; // Now correctly expects an array
   barangay: string;
   handleCancel: () => void; 
+  onSeverityChange: (severity: string) => void; // New prop for severity change
 }
 
 const AddFlood: React.FC<AddDataProps> = ({
   barangay,
   polygon,
   handleCancel,
+  onSeverityChange, // Destructure the new prop
 }) => {
   const [date, setDate] = useState<string>("");
-
   const [waterLevel, setWaterLevel] = useState<number | "">("");
   const [rainfallAmount, setRainfallAmount] = useState<number | "">("");
   const [casualties, setCasualties] = useState<number | "">("");
   const [cause, setCause] = useState<string>("");
-
   const [loading, setLoading] = useState(false);
+  const [severity, setSeverity] = useState<string>("low"); // State for severity
+
+  // Update severity based on water level
+  useEffect(() => {
+    let newSeverity = "low"; // Default severity
+    if (waterLevel) {
+      if (waterLevel > 1.5) {
+        newSeverity = "high";
+      } else if (waterLevel > 0.5) {
+        newSeverity = "moderate";
+      }
+    }
+    setSeverity(newSeverity);
+    onSeverityChange(newSeverity); // Call the severity change handler immediately
+  }, [waterLevel]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -35,12 +51,6 @@ const AddFlood: React.FC<AddDataProps> = ({
         lng: point.lng(),
       }));
 
-      let severity = "low";
-      if (waterLevel && waterLevel > 0.5 && waterLevel <= 1.5) {
-        severity = "moderate";
-      } else if (waterLevel && waterLevel > 1.5) {
-        severity = "high";
-      }
       const floodData = {
         position: polygonCoordinates,
         date,
@@ -65,8 +75,20 @@ const AddFlood: React.FC<AddDataProps> = ({
     setLoading(false);
   };
 
+  // Determine background color based on severity
+  const getBackgroundColor = () => {
+    switch (severity) {
+      case "high":
+        return "bg-[#7F00FF]"; // Violet for high severity
+      case "moderate":
+        return "bg-[#FFC0CB]"; // Pink for moderate severity
+      default:
+        return "bg-[#FFFFFF]"; // White for low severity
+    }
+  };
+
   return (
-    <div className="flex flex-col bg-[#f0f6f9] bg-opacity-50 text-zinc-700 dark:bg-zinc-800 rounded-xl shadow w-auto min-w-[30rem] h-auto my-auto p-4">
+    <div className={`flex flex-col border-2 border-gray-400 bg-opacity-50 text-zinc-700 dark:bg-zinc-800 rounded-xl shadow w-auto min-w-[30rem] h-auto my-auto p-4`}>
       <div className="flex justify-between">
         <span className="font-bold text-lg dark:text-zinc-100">
           Add Flood Data
@@ -100,7 +122,7 @@ const AddFlood: React.FC<AddDataProps> = ({
         </div>
 
         {/* Environmental Data */}
-        <div className="flex gap-3">
+        <div className="gap-3 grid grid-cols-2">
           <input
             type="number"
             placeholder="Water Level (in meters)"
@@ -108,6 +130,10 @@ const AddFlood: React.FC<AddDataProps> = ({
             onChange={(e) => setWaterLevel(parseFloat(e.target.value) || "")}
             className="sn-input w-full"
           />
+          {/* Display Severity */}
+          <div className={`flex rounded-md ${getBackgroundColor()}`}>
+            <p className="font-bold m-auto">Severity: {severity}</p>
+          </div>
           <input
             type="number"
             placeholder="Rainfall Amount (in mm)"
@@ -121,13 +147,6 @@ const AddFlood: React.FC<AddDataProps> = ({
 
         {/* Impact Data */}
         <div className="flex gap-3">
-          {/* <input
-            type="number"
-            placeholder="Casualties"
-            value={casualties}
-            onChange={(e) => setCasualties(parseInt(e.target.value) || "")}
-            className="sn-input w-full"
-          /> */}
           <div className="flex gap-3">
             <select
               value={cause}

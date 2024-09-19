@@ -134,6 +134,9 @@ const AnalysisModal: React.FC<{ barangay: string; year: string ; gender: string;
     <div className="p-4 bg-gray-10 dark:bg-zinc-900 bg-white bg-opacity-200 rounded-lg shadow w-full">
       <div className="">
         <Bar data={data} options={options} />
+        <div>
+          {/* display the data here */}
+        </div>
       </div>
     </div>
   );

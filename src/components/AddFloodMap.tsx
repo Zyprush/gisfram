@@ -44,6 +44,7 @@ const AddFloodMap: React.FC = () => {
   const [boundary, setBoundary] = useState<any>(paluanCoords);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [polygon, setPolygon] = useState<google.maps.LatLng[]>([]);
+  const [severity, setSeverity] = useState<string>("low"); // State for severity
 
   const handlePanToCenter = () => {
     if (mapRef.current) {
@@ -112,9 +113,22 @@ const AddFloodMap: React.FC = () => {
     setBarangayName("");
     setPolygon([]);
     setShowForm(false);
+    setSeverity("low"); // Reset severity
   };
+
   const handleUndoLast = () => {
     setPolygon((prev) => prev.slice(0, -1));
+  };
+
+  const handleMarkerDragEnd = (index: number, event: google.maps.MapMouseEvent) => {
+    if (!event.latLng) return;
+    const newPolygon = [...polygon];
+    newPolygon[index] = event.latLng; // Update the specific vertex
+    setPolygon(newPolygon);
+  };
+
+  const handleSeverityChange = (newSeverity: string) => {
+    setSeverity(newSeverity);
   };
 
   return (
@@ -164,12 +178,13 @@ const AddFloodMap: React.FC = () => {
             </button>
           )}
         </div>
-        <div>{/* dispaly the polygon map here */}</div>
+        <div>{/* display the polygon map here */}</div>
         {showForm && (
           <AddFlood
             barangay={barangayName}
             polygon={polygon}
             handleCancel={handleCancel}
+            onSeverityChange={handleSeverityChange} // Pass severity change handler
           />
         )}
       </div>
@@ -221,11 +236,31 @@ const AddFloodMap: React.FC = () => {
               }))}
               options={{
                 strokeColor: "#0000FF",
-                fillColor: "#0000FF",
-                fillOpacity: 0.4,
+                fillColor: severity === "high" ? "#7F00FF" : severity === "moderate" ? "#FFC0CB" : "#FFFFFF", // Corrected color mapping
+                fillOpacity: 1,
               }}
             />
           )}
+
+          {/* Render markers at each vertex of the polygon */}
+          {polygon.map((point, index) => (
+            <Marker
+              key={index}
+              position={{ lat: point.lat(), lng: point.lng() }}
+              draggable
+              onDragEnd={(event) => handleMarkerDragEnd(index, event)}
+              options={{
+                icon: {
+                  path: google.maps.SymbolPath.CIRCLE,
+                  scale: 5,
+                  fillColor: "#FF0000",
+                  fillOpacity: 1,
+                  strokeWeight: 1,
+                  strokeColor: "#FFFFFF",
+                },
+              }}
+            />
+          ))}
         </GoogleMap>
       )}
     </div>
