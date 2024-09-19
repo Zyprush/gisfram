@@ -235,9 +235,9 @@ const AddFloodMap: React.FC = () => {
                 lng: point.lng(),
               }))}
               options={{
-                strokeColor: "#0000FF",
+                strokeColor: severity === "high" ? "#7F00FF" : severity === "moderate" ? "#FFC0CB" : "#FFFFFF",
                 fillColor: severity === "high" ? "#7F00FF" : severity === "moderate" ? "#FFC0CB" : "#FFFFFF", // Corrected color mapping
-                fillOpacity: 1,
+                fillOpacity: 0.4,
               }}
             />
           )}
