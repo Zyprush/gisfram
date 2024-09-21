@@ -280,13 +280,13 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                 <span className="text-zinc-700 dark:text-white font-extrabold">
                   Flood legend
                 </span>
-                <span className="bg-[#00CCFF] p-2 py-1 text-xs rounded-sm font-semibold">
+                <span className="bg-[#FFFFFF] p-2 py-1 text-xs rounded-sm text-zinc-700 font-semibold">
                   low
                 </span>
-                <span className="bg-[#ff960c] p-2 py-1 text-xs rounded-sm font-semibold">
+                <span className="bg-[#FFC0CB] p-2 py-1 text-xs rounded-sm text-zinc-700 font-semibold">
                   moderate
                 </span>
-                <span className="bg-[#fc1616] p-2 py-1 text-xs rounded-sm font-semibold">
+                <span className="bg-[#7F00FF] p-2 py-1 text-xs rounded-sm font-semibold">
                   high
                 </span>
               </div>
@@ -403,21 +403,12 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                     key={index}
                     paths={floodData.position}
                     options={{
-                      fillColor:
-                        floodData.severity === "low"
-                          ? "#00CCFF"
-                          : floodData.severity === "moderate"
-                          ? "#ff960c"
-                          : "#fc1616",
-                      fillOpacity: 0.35,
-                      strokeColor:
-                        floodData.severity === "low"
-                          ? "#00CCFF"
-                          : floodData.severity === "moderate"
-                          ? "#ff960c"
-                          : "#ef0000",
+                      strokeColor: floodData.severity === "high" ? "#7F00FF" : floodData.severity === "moderate" ? "#FFC0CB" : "#FFFFFF",
+                      fillColor: floodData.severity === "high" ? "#7F00FF" : floodData.severity === "moderate" ? "#FFC0CB" : "#FFFFFF",
+                      fillOpacity: 0.3,
                       strokeOpacity: 0.45,
                       strokeWeight: 2,
+                      zIndex: floodData.severity === "high" ? 100 : floodData.severity === "moderate" ? 50 : 1,
                     }}
                     onClick={() => console.log(`Flood details: ${floodData}`)} // Optional: Handle polygon click
                   />

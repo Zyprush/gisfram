@@ -5,10 +5,9 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from "chart.js";
 import useFetchHouseholds from "@/hooks/useFetchHouseholds";
-import ChartDataLabels from 'chartjs-plugin-datalabels'; // Import the datalabels plugin
 
 // Register Chart.js components
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, ChartDataLabels); // Register the plugin
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale); // Register the plugin
 
 interface HouseholdData {
   member: any[];

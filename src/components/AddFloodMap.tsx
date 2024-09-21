@@ -167,7 +167,7 @@ const AddFloodMap: React.FC = () => {
               onChange={(e) => setShowForm(e.target.checked)}
               className="checkbox checkbox-xs checkbox-secondary rounded-md"
             />
-            <span className="ml-1 text-xs font-semibold">Show Form</span>
+            <span className="ml-1 text-xs font-semibold dark:text-white text-zinc-700">Show Form</span>
           </label>
           {polygon.length > 0 && (
             <button

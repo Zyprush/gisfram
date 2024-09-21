@@ -5,7 +5,7 @@ import { collection, addDoc } from "firebase/firestore";
 interface AddDataProps {
   polygon: google.maps.LatLng[]; // Now correctly expects an array
   barangay: string;
-  handleCancel: () => void; 
+  handleCancel: () => void;
   onSeverityChange: (severity: string) => void; // New prop for severity change
 }
 
@@ -35,7 +35,30 @@ const AddFlood: React.FC<AddDataProps> = ({
     }
     setSeverity(newSeverity);
     onSeverityChange(newSeverity); // Call the severity change handler immediately
-  }, [waterLevel]);
+  }, [waterLevel, onSeverityChange]);
+
+  const validateNumberInput = (value: string): boolean => {
+    const number = parseFloat(value);
+    return !isNaN(number) && number >= 0 && !(value.startsWith("0") && value !== "0");
+  };
+  
+  const handleWaterLevelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (validateNumberInput(value)) {
+      setWaterLevel(parseFloat(value));
+    } else {
+      setWaterLevel("");
+    }
+  };
+  
+  const handleRainfallAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (validateNumberInput(value)) {
+      setRainfallAmount(parseFloat(value));
+    } else {
+      setRainfallAmount("");
+    }
+  };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -88,7 +111,7 @@ const AddFlood: React.FC<AddDataProps> = ({
   };
 
   return (
-    <div className={`flex flex-col border-2 border-gray-400 bg-opacity-50 text-zinc-700 dark:bg-zinc-800 rounded-xl shadow w-auto min-w-[30rem] h-auto my-auto p-4`}>
+    <div className={`flex flex-col bg-opacity-50 text-zinc-700 dark:bg-zinc-800 rounded-xl shadow w-auto min-w-[30rem] h-auto my-auto p-4`}>
       <div className="flex justify-between">
         <span className="font-bold text-lg dark:text-zinc-100">
           Add Flood Data
@@ -126,8 +149,8 @@ const AddFlood: React.FC<AddDataProps> = ({
           <input
             type="number"
             placeholder="Water Level (in meters)"
-            value={waterLevel}
-            onChange={(e) => setWaterLevel(parseFloat(e.target.value) || "")}
+            value={waterLevel === "" ? "" : waterLevel.toString()}
+            onChange={handleWaterLevelChange}
             className="sn-input w-full"
           />
           {/* Display Severity */}
@@ -137,10 +160,8 @@ const AddFlood: React.FC<AddDataProps> = ({
           <input
             type="number"
             placeholder="Rainfall Amount (in mm)"
-            value={rainfallAmount}
-            onChange={(e) =>
-              setRainfallAmount(parseFloat(e.target.value) || "")
-            }
+            value={rainfallAmount === "" ? "" : rainfallAmount.toString()}
+            onChange={handleRainfallAmountChange}
             className="sn-input w-full"
           />
         </div>
@@ -154,9 +175,11 @@ const AddFlood: React.FC<AddDataProps> = ({
               className="sn-select w-full"
             >
               <option value="">Select Cause of Flood</option>
-              <option value="Tropical cyclones">
-                Tropical cyclones (typhoons)
-              </option>
+              <option value="Super typhoon">Super typhoon</option>
+              <option value="Typhoon">Typhoon</option>
+              <option value="Severe tropical storm">Severe tropical storm</option>
+              <option value="Tropical storm">Tropical storm</option>
+              <option value="Tropical depression">Tropical depression</option>
               <option value="Monsoon rains">Monsoon rains</option>
               <option value="River overflow">River overflow</option>
               <option value="Storm surges">Storm surges</option>

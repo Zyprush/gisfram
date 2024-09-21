@@ -69,7 +69,10 @@ const AddHouse: React.FC<AddDataProps> = ({
       { field: houseNo, msg: "Please enter a House Number." },
       { field: houseStruc, msg: "Please select a House Structure." },
       { field: headName, msg: "Please enter the Head of Household Name." },
-      { field: headContact, msg: "Please enter the Head of Household Contact." },
+      {
+        field: headContact,
+        msg: "Please enter the Head of Household Contact.",
+      },
       { field: headAge, msg: "Please enter the Head of Household Age." },
       { field: headGender, msg: "Please select the Head of Household Gender." },
     ];
@@ -101,7 +104,7 @@ const AddHouse: React.FC<AddDataProps> = ({
     let indigenousCount = 0;
     let seniorCount = 0;
     let pregnantCount = 0;
-    let memberCount = members.length +1;
+    let memberCount = members.length + 1;
 
     // Count the head of household
     if (headGender === "Male") maleCount++;
@@ -207,9 +210,17 @@ const AddHouse: React.FC<AddDataProps> = ({
             type="number"
             placeholder="Age"
             value={headAge}
-            onChange={(e) => setHeadAge(parseInt(e.target.value) || 0)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^[1-9]\d*$/.test(value) || value === "") {
+                setHeadAge(parseInt(value) || "");
+              }
+            }}
+            min={1}
+            step={1}
             className="sn-select"
           />
+
           <select
             value={headGender}
             onChange={(e) => setHeadGender(e.target.value)}
@@ -276,9 +287,12 @@ const AddHouse: React.FC<AddDataProps> = ({
                 type="number"
                 placeholder="Age"
                 value={member.age}
-                onChange={(e) =>
-                  handleMemberChange(index, "age", parseInt(e.target.value))
-                }
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^[1-9]\d*$/.test(value) || value === "") {
+                    handleMemberChange(index, "age", parseInt(value) || "");
+                  }
+                }}
                 className="sn-select"
               />
               <select

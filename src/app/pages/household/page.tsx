@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 import ViewEditHouse from "../add-flood/ViewEditHouse";
 import Link from "next/link";
+import { camelCaseToTitleCase } from "@/lib/string";
 
 interface Household {
   id: string;
@@ -62,31 +63,30 @@ const Households = () => {
     fetchHouseholds();
   }, [barangay, viewHouse]);
 
-// Handle the Archive function (move to 'archived' collection with the same id)
-const handleArchive = async (householdId: string) => {
-  const confirmArchive = window.confirm(
-    "Are you sure you want to archive this household?"
-  );
-  if (!confirmArchive) return;
-  try {
-    const householdRef = doc(db, "households", householdId);
-    const archivedRef = doc(db, "archived", householdId); // Use the same document ID
+  // Handle the Archive function (move to 'archived' collection with the same id)
+  const handleArchive = async (householdId: string) => {
+    const confirmArchive = window.confirm(
+      "Are you sure you want to archive this household?"
+    );
+    if (!confirmArchive) return;
+    try {
+      const householdRef = doc(db, "households", householdId);
+      const archivedRef = doc(db, "archived", householdId); // Use the same document ID
 
-    const householdDoc = await getDoc(householdRef);
-    if (!householdDoc.exists()) {
-      throw new Error("Household document does not exist.");
+      const householdDoc = await getDoc(householdRef);
+      if (!householdDoc.exists()) {
+        throw new Error("Household document does not exist.");
+      }
+      await setDoc(archivedRef, householdDoc.data());
+      await deleteDoc(householdRef);
+      setHouseholds((prev) => prev.filter((item) => item.id !== householdId));
+
+      window.alert("Household archived successfully!");
+    } catch (error) {
+      console.error("Error archiving household: ", error);
+      window.alert("Error archiving household. Please try again.");
     }
-    await setDoc(archivedRef, householdDoc.data());
-    await deleteDoc(householdRef);
-    setHouseholds((prev) => prev.filter((item) => item.id !== householdId));
-
-    window.alert("Household archived successfully!");
-  } catch (error) {
-    console.error("Error archiving household: ", error);
-    window.alert("Error archiving household. Please try again.");
-  }
-};
-
+  };
 
   // Search filter
   const filteredHouseholds = households.filter(
@@ -109,8 +109,15 @@ const handleArchive = async (householdId: string) => {
     <Layout>
       <Authenticator />
       <div className="flex flex-1 h-screen justify-start items-start">
-        <Link className="btn btn-sm tex-white fixed top-5 right-8 btn-primary" href={"/pages/archive"}>Archive</Link>
-      {viewHouse && <ViewEditHouse id={viewHouse} setViewHouse={setViewHouse} />}
+        <Link
+          className="btn btn-sm tex-white fixed top-5 right-8 btn-primary"
+          href={"/pages/archive"}
+        >
+          Archive
+        </Link>
+        {viewHouse && (
+          <ViewEditHouse id={viewHouse} setViewHouse={setViewHouse} />
+        )}
         <div className="p-4 md:p-10 border border-neutral-200 dark:border-neutral-700 bg-zinc-100 dark:bg-neutral-900 flex flex-col gap-8 flex-1 w-full h-full overflow-x-scroll">
           <div className="flex gap-4">
             <select
@@ -118,19 +125,19 @@ const handleArchive = async (householdId: string) => {
               onChange={handleBarangayChange}
               className="border border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-xs"
             >
-              <option value="">All Barangays</option>
-              <option value="Alipaoy">Alipaoy</option>
-              <option value="Barangay 5">Barangay 5</option>
-              <option value="Barangay 2">Barangay 2</option>
-              <option value="Harrison">Harrison</option>
-              <option value="Lumangbayan">Lumangbayan</option>
-              <option value="Mananao">Mananao</option>
-              <option value="Barangay 1">Barangay 1</option>
-              <option value="Marikit">Marikit</option>
-              <option value="Barangay 4">Barangay 4</option>
-              <option value="Barangay 6">Barangay 6</option>
-              <option value="Barangay 3">Barangay 3</option>
-              <option value="Tubili">Tubili</option>
+              <option value="">Select Barangay</option>
+              <option value="alipaoy">Alipaoy</option>
+              <option value="bagongSilangPob">Bagong Silang Pob</option>
+              <option value="handangTumulongPob">Handang Tumulong Pob</option>
+              <option value="harrison">Harrison</option>
+              <option value="lumangbayan">Lumangbayan</option>
+              <option value="mananao">Mananao</option>
+              <option value="mapaladPob">Mapalad Pob</option>
+              <option value="marikit">Marikit</option>
+              <option value="PagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
+              <option value="sanJosePob">San Jose Pob</option>
+              <option value="silahisNgPagAsaPob">Silahis Ng Pag-Asa Pob</option>
+              <option value="tubili">Tubili</option>
             </select>
             <input
               type="text"
@@ -163,9 +170,13 @@ const handleArchive = async (householdId: string) => {
                         key={household.id}
                         className="text-xs text-neutral-600 dark:text-neutral-300"
                       >
-                        <td className="p-2 capitalize">{household.barangay}</td>
+                        <td className="p-2">
+                          {camelCaseToTitleCase(household.barangay)}
+                        </td>
                         <td className="p-2">{household.houseNo}</td>
-                        <td className="p-2 capitalize">{household.headInfo.name}</td>
+                        <td className="p-2 capitalize">
+                          {household.headInfo.name}
+                        </td>
                         <td className="p-2 flex gap-4">
                           <button
                             onClick={() => setViewHouse(household.id)}
