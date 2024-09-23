@@ -8,6 +8,13 @@ interface AddDataProps {
   barangay: string;
 }
 
+/**
+ * AddHouse component is a form for adding household data
+ * @param handleCancel cancel function to close the form
+ * @param marker google maps marker position
+ * @param barangay barangay name
+ * @returns JSX element
+ */
 const AddHouse: React.FC<AddDataProps> = ({
   handleCancel,
   marker,
@@ -64,7 +71,26 @@ const AddHouse: React.FC<AddDataProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
-
+  
+    // Validate age for the head of household
+    const parsedHeadAge = parseInt(headAge as string, 10);
+    if (isNaN(parsedHeadAge) || parsedHeadAge <= 0) {
+      setLoading(false);
+      window.alert("Please enter a valid age for the Head of Household.");
+      return;
+    }
+  
+    // Validate age for members
+    for (let i = 0; i < members.length; i++) {
+      const member = members[i];
+      const parsedAge = parseInt(member.age as string, 10);
+      if (isNaN(parsedAge) || parsedAge <= 0) {
+        setLoading(false);
+        window.alert(`Please enter a valid age for member ${i + 1}.`);
+        return;
+      }
+    }
+  
     const requiredFields = [
       { field: houseNo, msg: "Please enter a House Number." },
       { field: houseStruc, msg: "Please select a House Structure." },
@@ -73,10 +99,9 @@ const AddHouse: React.FC<AddDataProps> = ({
         field: headContact,
         msg: "Please enter the Head of Household Contact.",
       },
-      { field: headAge, msg: "Please enter the Head of Household Age." },
       { field: headGender, msg: "Please select the Head of Household Gender." },
     ];
-
+  
     for (const { field, msg } of requiredFields) {
       if (!field) {
         setLoading(false);
@@ -84,7 +109,7 @@ const AddHouse: React.FC<AddDataProps> = ({
         return;
       }
     }
-
+  
     for (let i = 0; i < members.length; i++) {
       const member = members[i];
       const memberRequired = ["name", "age", "gender"];
@@ -96,7 +121,7 @@ const AddHouse: React.FC<AddDataProps> = ({
         }
       }
     }
-
+  
     // Initialize the counts
     let maleCount = 0;
     let femaleCount = 0;
@@ -105,7 +130,7 @@ const AddHouse: React.FC<AddDataProps> = ({
     let seniorCount = 0;
     let pregnantCount = 0;
     let memberCount = members.length + 1;
-
+  
     // Count the head of household
     if (headGender === "Male") maleCount++;
     if (headGender === "Female") femaleCount++;
@@ -113,7 +138,7 @@ const AddHouse: React.FC<AddDataProps> = ({
     if (headIndigenous) indigenousCount++;
     if (parseInt(String(headAge)) >= 60) seniorCount++;
     if (headPregnant) pregnantCount++;
-
+  
     // Count the members
     members.forEach((member) => {
       if (member.gender === "Male") maleCount++;
@@ -123,7 +148,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       if (parseInt(String(member.age)) >= 60) seniorCount++;
       if (member.pregnant) pregnantCount++; // Add to pregnant count if member is pregnant
     });
-
+  
     const householdData = {
       position: { lat: marker?.lat(), lng: marker?.lng() },
       date: new Date().toISOString(),
@@ -149,7 +174,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       pregnantCount, // Include pregnant count
       members,
     };
-
+  
     try {
       const docRef = await addDoc(collection(db, "households"), householdData);
       console.log("Document written with ID: ", docRef.id);
@@ -162,6 +187,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="bg-[#f0f6f9] bg-opacity-55 shadow text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-xl p-4 w-auto">

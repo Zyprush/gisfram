@@ -9,6 +9,7 @@ interface AddDataProps {
   onSeverityChange: (severity: string) => void; // New prop for severity change
 }
 
+
 const AddFlood: React.FC<AddDataProps> = ({
   barangay,
   polygon,
@@ -65,6 +66,20 @@ const AddFlood: React.FC<AddDataProps> = ({
     if (!barangay || !date || !cause) {
       setLoading(false);
       window.alert("Please fill in all required fields.");
+      return;
+    }
+
+    const parseRainfallAmount = parseInt(rainfallAmount as string, 10);
+    if (rainfallAmount && parseRainfallAmount <= 0) {
+      setLoading(false);
+      window.alert("Please enter a valid rainfall amount.");
+      return;
+    }
+    const parseWaterLevel = parseInt(waterLevel as string, 10);
+    if (isNaN(parseWaterLevel) || parseWaterLevel <= 0) {
+      console.log('parseWaterLevel', parseWaterLevel)
+      setLoading(false);
+      window.alert("Please enter a valid Water Level amount.");
       return;
     }
 
