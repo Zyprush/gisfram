@@ -8,21 +8,21 @@ import {
 } from "@react-google-maps/api";
 import { IconFocusCentered } from "@tabler/icons-react";
 import {
-  alipaoy,
-  bagongSilangPob,
-  handangTumulongPob,
-  lumangbayan,
-  mananao,
   mapaladPob,
-  marikit,
-  PagAsaNgBayanPob,
   sanJosePob,
-  silahisNgPagAsaPob,
   tubili,
 } from "./barangayCoord";
 import { paluanCoords } from "@/app/pages/map/paluanCoords";
 import AddHouse from "@/app/pages/add-house/AddHouse";
-import { harrison } from "./harrison";
+import { harrison } from "../lib/boundary/harrison";
+import { alipaoy } from "@/lib/boundary/alipaoy";
+import { bagongSilangPob } from "@/lib/boundary/bagongSilangPob";
+import { lumangbayan } from "@/lib/boundary/lumangbayan";
+import { mananao } from "@/lib/boundary/mananao";
+import { marikit } from "@/lib/boundary/marikit";
+import { pagAsaNgBayanPob } from "@/lib/boundary/pagAsaNgBayanPob";
+import { handangTumulongPob } from "@/lib/boundary/handangTumulongPob";
+import { silahisNgPagAsaPob } from "@/lib/boundary/silahisNgPagAsaPob";
 
 const mapContainerStyle = {
   width: "100%",
@@ -66,7 +66,7 @@ const AddHouseMap: React.FC = () => {
       mananao: mananao,
       mapaladPob: mapaladPob,
       marikit: marikit,
-      PagAsaNgBayanPob: PagAsaNgBayanPob,
+      pagAsaNgBayanPob: pagAsaNgBayanPob,
       sanJosePob: sanJosePob,
       silahisNgPagAsaPob: silahisNgPagAsaPob,
       tubili: tubili,
@@ -130,7 +130,7 @@ const AddHouseMap: React.FC = () => {
           <option value="mananao">Mananao</option>
           <option value="mapaladPob">Mapalad Pob</option>
           <option value="marikit">Marikit</option>
-          <option value="PagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
+          <option value="pagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
           <option value="sanJosePob">San Jose Pob</option>
           <option value="silahisNgPagAsaPob">Silahis Ng Pag-Asa Pob</option>
           <option value="tubili">Tubili</option>

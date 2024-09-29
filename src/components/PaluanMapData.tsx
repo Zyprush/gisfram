@@ -10,19 +10,11 @@ import {
   Data,
 } from "@react-google-maps/api";
 import { paluanCoords } from "@/app/pages/add-flood/paluanCoords";
-import { IconFocusCentered, IconChevronDown } from "@tabler/icons-react";
+import { IconChevronDown } from "@tabler/icons-react";
 import Loading from "./Loading";
 import {
-  alipaoy,
-  bagongSilangPob,
-  handangTumulongPob,
-  lumangbayan,
-  mananao,
   mapaladPob,
-  marikit,
-  PagAsaNgBayanPob,
   sanJosePob,
-  silahisNgPagAsaPob,
   tubili,
 } from "./barangayCoord";
 import AnalysisModal from "@/app/pages/map/AnalysisModal";
@@ -31,7 +23,15 @@ import useFetchFloods from "@/hooks/useFetchFloods"; // Import your custom hook
 import DataModal from "@/app/pages/map/DataModal";
 import { GeoJsonMenu, ZoomOutButton } from "./MapButtons";
 import PrintHeader from "./PrintHeader";
-import { harrison } from "./harrison";
+import { harrison } from "../lib/boundary/harrison";
+import { alipaoy } from "@/lib/boundary/alipaoy";
+import { bagongSilangPob } from "@/lib/boundary/bagongSilangPob";
+import { lumangbayan } from "@/lib/boundary/lumangbayan";
+import { mananao } from "@/lib/boundary/mananao";
+import { marikit } from "@/lib/boundary/marikit";
+import { handangTumulongPob } from "@/lib/boundary/handangTumulongPob";
+import { pagAsaNgBayanPob } from "@/lib/boundary/pagAsaNgBayanPob";
+import { silahisNgPagAsaPob } from "@/lib/boundary/silahisNgPagAsaPob";
 
 const mapContainerStyle = {
   width: "100%",
@@ -100,7 +100,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
       mananao,
       mapaladPob,
       marikit,
-      PagAsaNgBayanPob,
+      pagAsaNgBayanPob,
       sanJosePob,
       silahisNgPagAsaPob,
       tubili,
@@ -253,7 +253,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                 <option value="mananao">Mananao</option>
                 <option value="mapaladPob">Mapalad Pob</option>
                 <option value="marikit">Marikit</option>
-                <option value="PagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
+                <option value="pagAsaNgBayanPob">Pag-Asa Ng Bayan Pob</option>
                 <option value="sanJosePob">San Jose Pob</option>
                 <option value="silahisNgPagAsaPob">
                   Silahis Ng Pag-Asa Pob
