@@ -16,11 +16,10 @@ import { lumangbayan } from "@/lib/boundary/lumangbayan";
 import { mananao } from "@/lib/boundary/mananao";
 import { marikit } from "@/lib/boundary/marikit";
 import { pagAsaNgBayanPob } from "@/lib/boundary/pagAsaNgBayanPob";
-import { handangTumulongPob } from "@/lib/boundary/handangTumulongPob";
 import { silahisNgPagAsaPob } from "@/lib/boundary/silahisNgPagAsaPob";
 import { mapaladPob } from "@/lib/boundary/mapaladPob";
 import { sanJosePob } from "@/lib/boundary/sanJosePob";
-import { tubili } from "./barangayCoord";
+import { handangTumulongPob, tubili } from "./barangayCoord";
 
 const mapContainerStyle = {
   width: "100%",
