@@ -7,11 +7,6 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import { IconFocusCentered } from "@tabler/icons-react";
-import {
-  mapaladPob,
-  sanJosePob,
-  tubili,
-} from "./barangayCoord";
 import { paluanCoords } from "@/app/pages/map/paluanCoords";
 import AddHouse from "@/app/pages/add-house/AddHouse";
 import { harrison } from "../lib/boundary/harrison";
@@ -23,6 +18,9 @@ import { marikit } from "@/lib/boundary/marikit";
 import { pagAsaNgBayanPob } from "@/lib/boundary/pagAsaNgBayanPob";
 import { handangTumulongPob } from "@/lib/boundary/handangTumulongPob";
 import { silahisNgPagAsaPob } from "@/lib/boundary/silahisNgPagAsaPob";
+import { mapaladPob } from "@/lib/boundary/mapaladPob";
+import { sanJosePob } from "@/lib/boundary/sanJosePob";
+import { tubili } from "./barangayCoord";
 
 const mapContainerStyle = {
   width: "100%",

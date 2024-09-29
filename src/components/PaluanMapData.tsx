@@ -12,11 +12,6 @@ import {
 import { paluanCoords } from "@/app/pages/add-flood/paluanCoords";
 import { IconChevronDown } from "@tabler/icons-react";
 import Loading from "./Loading";
-import {
-  mapaladPob,
-  sanJosePob,
-  tubili,
-} from "./barangayCoord";
 import AnalysisModal from "@/app/pages/map/AnalysisModal";
 import useFetchHouseholds from "@/hooks/useFetchHouseholds";
 import useFetchFloods from "@/hooks/useFetchFloods"; // Import your custom hook
@@ -32,6 +27,9 @@ import { marikit } from "@/lib/boundary/marikit";
 import { handangTumulongPob } from "@/lib/boundary/handangTumulongPob";
 import { pagAsaNgBayanPob } from "@/lib/boundary/pagAsaNgBayanPob";
 import { silahisNgPagAsaPob } from "@/lib/boundary/silahisNgPagAsaPob";
+import { mapaladPob } from "@/lib/boundary/mapaladPob";
+import { sanJosePob } from "@/lib/boundary/sanJosePob";
+import { tubili } from "./barangayCoord";
 
 const mapContainerStyle = {
   width: "100%",
