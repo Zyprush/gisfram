@@ -40,7 +40,7 @@ const AddFlood: React.FC<AddDataProps> = ({
 
   const validateNumberInput = (value: string): boolean => {
     const number = parseFloat(value);
-    return !isNaN(number) && number >= 0 && !(value.startsWith("0") && value !== "0");
+    return !isNaN(number) && number >= 0;
   };
   
   const handleWaterLevelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,9 +117,9 @@ const AddFlood: React.FC<AddDataProps> = ({
   const getBackgroundColor = () => {
     switch (severity) {
       case "high":
-        return "bg-[#7F00FF]"; // Violet for high severity
+        return "bg-[#7F00FF] text-white"; // Violet for high severity
       case "moderate":
-        return "bg-[#FFC0CB]"; // Pink for moderate severity
+        return "bg-[#FFC0CB] text-black"; // Pink for moderate severity
       default:
         return "bg-[#FFFFFF]"; // White for low severity
     }
@@ -170,7 +170,7 @@ const AddFlood: React.FC<AddDataProps> = ({
           />
           {/* Display Severity */}
           <div className={`flex rounded-md ${getBackgroundColor()}`}>
-            <p className="font-bold m-auto">Severity: {severity}</p>
+            <p className="font-semibold text-sm m-auto">Severity: {severity}</p>
           </div>
           <input
             type="number"
