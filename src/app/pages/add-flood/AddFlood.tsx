@@ -17,8 +17,8 @@ const AddFlood: React.FC<AddDataProps> = ({
   onSeverityChange, // Destructure the new prop
 }) => {
   const [date, setDate] = useState<string>("");
-  const [waterLevel, setWaterLevel] = useState<number | "">("");
-  const [rainfallAmount, setRainfallAmount] = useState<number | "">("");
+  const [waterLevel, setWaterLevel] = useState<number>();
+  const [rainfallAmount, setRainfallAmount] = useState<number>();
   const [casualties, setCasualties] = useState<number | "">("");
   const [cause, setCause] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ const AddFlood: React.FC<AddDataProps> = ({
     if (validateNumberInput(value)) {
       setWaterLevel(parseFloat(value));
     } else {
-      setWaterLevel("");
+      setWaterLevel(0);
     }
   };
   
@@ -57,27 +57,29 @@ const AddFlood: React.FC<AddDataProps> = ({
     if (validateNumberInput(value)) {
       setRainfallAmount(parseFloat(value));
     } else {
-      setRainfallAmount("");
+      setRainfallAmount(0);
     }
   };
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (!barangay || !date || !cause) {
+    if (!barangay) {
+      setLoading(false);
+      window.alert("Please select a barangay.");
+      return;
+    }
+    if (!date || !cause || !waterLevel || !rainfallAmount) {
       setLoading(false);
       window.alert("Please fill in all required fields.");
       return;
     }
-
-    const parseRainfallAmount = parseInt(rainfallAmount as string, 10);
-    if (rainfallAmount && parseRainfallAmount <= 0) {
+    if (rainfallAmount <= 0) {
       setLoading(false);
       window.alert("Please enter a valid rainfall amount.");
       return;
     }
-    const parseWaterLevel = parseInt(waterLevel as string, 10);
-    if (isNaN(parseWaterLevel) || parseWaterLevel <= 0) {
-      console.log('parseWaterLevel', parseWaterLevel)
+    if (waterLevel <= 0) {
+      console.log('parseWaterLevel', waterLevel)
       setLoading(false);
       window.alert("Please enter a valid Water Level amount.");
       return;
@@ -164,7 +166,7 @@ const AddFlood: React.FC<AddDataProps> = ({
           <input
             type="number"
             placeholder="Water Level (in meters)"
-            value={waterLevel === "" ? "" : waterLevel.toString()}
+            value={waterLevel}
             onChange={handleWaterLevelChange}
             className="sn-input w-full"
           />
@@ -175,7 +177,7 @@ const AddFlood: React.FC<AddDataProps> = ({
           <input
             type="number"
             placeholder="Rainfall Amount (in mm)"
-            value={rainfallAmount === "" ? "" : rainfallAmount.toString()}
+            value={rainfallAmount}
             onChange={handleRainfallAmountChange}
             className="sn-input w-full"
           />
