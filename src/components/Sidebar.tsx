@@ -216,7 +216,7 @@ export const Sidebar: React.FC = () => {
 const Logo: React.FC<{ brandName: string }> = ({ brandName }) => {
   return (
     <Link
-      href="/pages/dashboard"
+      href="/pages/map"
       className="font-normal flex space-x-2 items-center text-sm dark:text-white text-black py-1 relative z-20"
     >
       <Image
