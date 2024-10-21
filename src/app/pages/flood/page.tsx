@@ -99,24 +99,30 @@ const FloodData = () => {
       <div className="flex flex-1 h-screen">
         <div className="p-2 md:p-8 border border-neutral-200 dark:border-neutral-700 bg-zinc-100 dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
           <div className="flex gap-4 mb-4 items-center">
+            <label className="text-xs text-zinc-600 dark:text-zinc-300" htmlFor="from">
+              From
+            </label>
             <input
               type="date"
+              id="from"
               value={filters.from}
               onChange={(e) => setFilters({ ...filters, from: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300"
-              placeholder="From"
+              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs"
             />
+            <label className="text-xs text-zinc-600 dark:text-zinc-300" htmlFor="to">
+              To
+            </label>
             <input
               type="date"
+              id="to"
               value={filters.to}
               onChange={(e) => setFilters({ ...filters, to: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300"
-              placeholder="To"
+              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs"
             />
             <select
               value={filters.barangay}
               onChange={(e) => setFilters({ ...filters, barangay: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300"
+              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300 ml-4"
             >
               <option value="">All Barangays</option>
               {/* Add barangay options */}

@@ -20,7 +20,7 @@ const AddHouse: React.FC<AddDataProps> = ({
   marker,
   barangay,
 }) => {
-  const [houseNo, setHouseNo] = useState<number | "">("");
+  const [houseNo, setHouseNo] = useState<string | "">("");
   const [loading, setLoading] = useState(false);
   const [headName, setHeadName] = useState("");
   const [headAge, setHeadAge] = useState<number | "">();
@@ -204,10 +204,10 @@ const AddHouse: React.FC<AddDataProps> = ({
         {/* Main info */}
         <div className="flex gap-3">
           <input
-            type="number"
+            type="text"
             placeholder="House No"
             value={houseNo}
-            onChange={(e) => setHouseNo(parseInt(e.target.value) || "")}
+            onChange={(e) => setHouseNo(e.target.value)}
             className="sn-input"
           />
           <select
