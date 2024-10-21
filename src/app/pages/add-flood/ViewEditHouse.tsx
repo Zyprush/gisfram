@@ -238,7 +238,7 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
         <div className="flex flex-col gap-4 mt-4">
           <div className="flex gap-3">
             <input
-              type="number"
+              type="text"
               placeholder="House No"
               value={data.houseNo}
               onChange={(e) => handleInputChange("houseNo", e.target.value)}

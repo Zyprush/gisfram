@@ -72,6 +72,7 @@ const FloodData = () => {
   // Effect to fetch flood data when filters change
   useEffect(() => {
     fetchFloodData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const handleDelete = async (id: string) => {
