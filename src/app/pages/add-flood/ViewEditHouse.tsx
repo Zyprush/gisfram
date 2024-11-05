@@ -158,7 +158,7 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
         indigenousCount,
         seniorCount,
         pregnantCount,
-        memberTotal: data.members.length +1
+        memberTotal: data.members.length + 1,
       });
 
       setIsEditing(false);
@@ -246,13 +246,31 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
               className="sn-input"
             />
             <select
+              value={data.year}
+              onChange={(e) => handleInputChange("year", e.target.value)}
+              className="sn-select w-20"
+              disabled={!isEditing}
+              required
+            >
+              {Array.from({ length: 20 }, (_, i) => {
+                const y = new Date().getFullYear() - i;
+                return (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                );
+              })}
+            </select>
+            <select
               value={data.houseStruc}
               onChange={(e) => handleInputChange("houseStruc", e.target.value)}
               disabled={!isEditing}
               className="sn-select"
             >
               <option value="Concrete">Concrete</option>
-              <option value="Lightweight Materials">Lightweight Materials</option>
+              <option value="Lightweight Materials">
+                Lightweight Materials
+              </option>
               <option value="Salvage">Salvage</option>
               <option value="Mix">Mix</option>
             </select>

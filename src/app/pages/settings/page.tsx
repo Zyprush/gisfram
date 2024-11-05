@@ -1,8 +1,10 @@
+"use client";
 import { Authenticator } from "@/components/Authenthicator";
 import { Layout } from "@/components/Layout";
 import SettingsItem from "@/components/SettingsItem";
 import { IconSettings } from "@tabler/icons-react";
 import Link from "next/link";
+import Sitio from "./Sitio";
 
 const Settings = () => {
   return (
@@ -28,6 +30,8 @@ const Settings = () => {
               </p>
             </Link>
           </div>
+          {/* <Barangays/> */}
+          <Sitio/>
           <SettingsItem title="About Us" name="aboutUs" row={5} />
         </div>
       </div>

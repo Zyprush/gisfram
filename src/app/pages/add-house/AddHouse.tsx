@@ -21,6 +21,7 @@ const AddHouse: React.FC<AddDataProps> = ({
   barangay,
 }) => {
   const [houseNo, setHouseNo] = useState<string | "">("");
+  const [year, setYear] = useState<string | "">("");
   const [loading, setLoading] = useState(false);
   const [headName, setHeadName] = useState("");
   const [headAge, setHeadAge] = useState<number | "">();
@@ -71,7 +72,7 @@ const AddHouse: React.FC<AddDataProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
-  
+
     // Validate age for the head of household
     const parsedHeadAge = parseInt(headAge as string, 10);
     if (isNaN(parsedHeadAge) || parsedHeadAge <= 0) {
@@ -79,7 +80,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       window.alert("Please enter a valid age for the Head of Household.");
       return;
     }
-  
+
     // Validate age for members
     for (let i = 0; i < members.length; i++) {
       const member = members[i];
@@ -90,7 +91,7 @@ const AddHouse: React.FC<AddDataProps> = ({
         return;
       }
     }
-  
+
     const requiredFields = [
       { field: houseNo, msg: "Please enter a House Number." },
       { field: houseStruc, msg: "Please select a House Structure." },
@@ -101,7 +102,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       },
       { field: headGender, msg: "Please select the Head of Household Gender." },
     ];
-  
+
     for (const { field, msg } of requiredFields) {
       if (!field) {
         setLoading(false);
@@ -109,7 +110,7 @@ const AddHouse: React.FC<AddDataProps> = ({
         return;
       }
     }
-  
+
     for (let i = 0; i < members.length; i++) {
       const member = members[i];
       const memberRequired = ["name", "age", "gender"];
@@ -121,7 +122,7 @@ const AddHouse: React.FC<AddDataProps> = ({
         }
       }
     }
-  
+
     // Initialize the counts
     let maleCount = 0;
     let femaleCount = 0;
@@ -130,7 +131,7 @@ const AddHouse: React.FC<AddDataProps> = ({
     let seniorCount = 0;
     let pregnantCount = 0;
     let memberCount = members.length + 1;
-  
+
     // Count the head of household
     if (headGender === "Male") maleCount++;
     if (headGender === "Female") femaleCount++;
@@ -138,7 +139,7 @@ const AddHouse: React.FC<AddDataProps> = ({
     if (headIndigenous) indigenousCount++;
     if (parseInt(String(headAge)) >= 60) seniorCount++;
     if (headPregnant) pregnantCount++;
-  
+
     // Count the members
     members.forEach((member) => {
       if (member.gender === "Male") maleCount++;
@@ -148,12 +149,13 @@ const AddHouse: React.FC<AddDataProps> = ({
       if (parseInt(String(member.age)) >= 60) seniorCount++;
       if (member.pregnant) pregnantCount++; // Add to pregnant count if member is pregnant
     });
-  
+
     const householdData = {
       position: { lat: marker?.lat(), lng: marker?.lng() },
       date: new Date().toISOString(),
       barangay,
       houseNo,
+      year,
       head: headName,
       memberTotal: members.length + 1,
       headInfo: {
@@ -174,7 +176,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       pregnantCount, // Include pregnant count
       members,
     };
-  
+
     try {
       const docRef = await addDoc(collection(db, "households"), householdData);
       console.log("Document written with ID: ", docRef.id);
@@ -187,7 +189,6 @@ const AddHouse: React.FC<AddDataProps> = ({
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="bg-[#f0f6f9] bg-opacity-55 shadow text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-xl p-4 w-auto">
@@ -210,6 +211,21 @@ const AddHouse: React.FC<AddDataProps> = ({
             onChange={(e) => setHouseNo(e.target.value)}
             className="sn-input"
           />
+          <select
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            className="sn-select w-20"
+            required
+          >
+            {Array.from({ length: 20 }, (_, i) => {
+              const y = new Date().getFullYear() - i;
+              return (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              );
+            })}
+          </select>
           <select
             value={houseStruc}
             onChange={(e) => setHouseStruc(e.target.value)}

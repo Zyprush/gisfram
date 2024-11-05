@@ -144,7 +144,7 @@ const Households = () => {
               value={searchTerm}
               onChange={handleSearchChange}
               placeholder="Search by head name or house number"
-              className="border border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-xs"
+              className="border w-80 border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-xs"
             />
           </div>
 
