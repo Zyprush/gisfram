@@ -1,7 +1,7 @@
 "use client";
 import { SignedIn } from "@/components/signed-in";
 import { SignedOut } from "@/components/signed-out"; 
-import Link from "next/link";  
+import Link from "next/link";   
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 import { LoggedIn } from "@/components/LoggedIn";
 import { auth } from "@/firebase";
