@@ -14,6 +14,11 @@ interface ViewEditDataProps {
   setViewHouse: React.Dispatch<React.SetStateAction<string>>;
 }
 
+interface Sitio {
+  name: string;
+  barangay: string;
+}
+
 const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +32,8 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
   const [indigenousCount, setIndigenousCount] = useState(0);
   const [seniorCount, setSeniorCount] = useState(0);
   const [pregnantCount, setPregnantCount] = useState(0);
+  const [sitioList, setSitioList] = useState<Sitio[]>([]);
+  const [sitio, setSitio] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,6 +130,21 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
     const newMembers = data.members.filter((_: any, i: number) => i !== index);
     setData({ ...data, members: newMembers });
   };
+
+  useEffect(() => {
+    if (data && data.barangay) {  // Ensure data is defined and has barangay
+      const fetchSitio = async () => {
+        const sitioDoc = await getDoc(doc(db, "settings", "sitio"));
+  
+        if (sitioDoc.exists()) {
+          const sitioList = sitioDoc.data().sitio || [];
+          const filteredSitioList = sitioList.filter((sitio: Sitio) => sitio.barangay === data.barangay);
+          setSitioList(filteredSitioList);
+        }
+      };
+      fetchSitio();
+    }
+  }, [data?.barangay]);  // Use optional chaining to safely check barangay
 
   const handleSubmit = async () => {
     if (!data.barangay || !data.houseNo || !data.houseStruc) {
@@ -245,6 +267,19 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
               disabled={!isEditing}
               className="sn-input"
             />
+            <select
+              value={data?.sitio}
+              onChange={(e) => handleInputChange("sitio", e.target.value)}
+              className="sn-select"
+              disabled={!isEditing}
+            >
+              <option value="">Select sitio</option>
+              {sitioList?.map((sitio, i) => (
+                <option key={i} value={sitio?.name}>
+                  {sitio?.name}
+                </option>
+              ))}
+            </select>
             <select
               value={data.year}
               onChange={(e) => handleInputChange("year", e.target.value)}

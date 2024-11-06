@@ -49,7 +49,7 @@ const AnalysisModal: React.FC<{ barangay: string; year: string ; gender: string;
   gender
 }) => {
   const floods = useFetchFloods(barangay, year, true); // Fetch floods based on barangay and year
-  const households = useFetchHouseholds(barangay, true); // Fetch households filtered by barangay
+  const households = useFetchHouseholds(barangay, true, ""); // Fetch households filtered by barangay
   const [affectedHouseholds, setAffectedHouseholds] = useState<number>(0);
   const [ageDistribution, setAgeDistribution] = useState<number[]>(Array(10).fill(0)); // Array 
 

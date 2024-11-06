@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
 
-const useFetchHouseholds = (barangayName: string, house: boolean) => {
+const useFetchHouseholds = (barangayName: string, house: boolean, sitio: string) => {
   const [households, setHouseholds] = useState<any[]>([]);
 
   useEffect(() => {
@@ -11,10 +11,14 @@ const useFetchHouseholds = (barangayName: string, house: boolean) => {
     const fetchHouseholdData = async () => {
       try {
         const ref = collection(db, "households");
-        const q =
+        let q =
           barangayName === ""
             ? query(ref)
             : query(ref, where("barangay", "==", barangayName));
+
+        if (sitio) {
+          q = query(q, where("sitio", "==", sitio));
+        }
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
           const fetchedHouseholds = querySnapshot.docs.map((doc) => ({
@@ -31,7 +35,7 @@ const useFetchHouseholds = (barangayName: string, house: boolean) => {
     };
 
     fetchHouseholdData();
-  }, [barangayName, house]);
+  }, [barangayName, house, sitio]);
 
   return households;
 };

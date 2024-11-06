@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { db } from "@/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 
 interface AddDataProps {
   handleCancel: () => void;
   marker: google.maps.LatLng | undefined;
+  barangay: string;
+}
+interface Sitio {
+  name: string;
   barangay: string;
 }
 
@@ -31,6 +43,8 @@ const AddHouse: React.FC<AddDataProps> = ({
   const [headGender, setHeadGender] = useState("Male");
   const [headPregnant, setHeadPregnant] = useState(false); // Added headPregnant state
   const [houseStruc, setHouseStruc] = useState("");
+  const [sitioList, setSitioList] = useState<Sitio[]>([]);
+  const [sitio, setSitio] = useState("");
   const [members, setMembers] = useState<
     {
       name: string;
@@ -42,6 +56,20 @@ const AddHouse: React.FC<AddDataProps> = ({
       gender: string;
     }[]
   >([]);
+
+  useEffect(() => {
+    const fetchSitio = async () => {
+      const sitioDoc = await getDoc(doc(db, "settings", "sitio"));
+
+      if (sitioDoc.exists()) {
+        const sitioList = sitioDoc.data().sitio || [];
+        const filteredSitioList = sitioList.filter((sitio: Sitio) => sitio.barangay === barangay);
+        setSitioList(filteredSitioList);
+
+      }
+    };
+    fetchSitio();
+  }, [barangay]);
 
   useEffect(() => {
     if (marker)
@@ -95,6 +123,7 @@ const AddHouse: React.FC<AddDataProps> = ({
     const requiredFields = [
       { field: houseNo, msg: "Please enter a House Number." },
       { field: houseStruc, msg: "Please select a House Structure." },
+      { field: sitio, msg: "Please select a Sitio, add sitio in the settings if necessary." },
       { field: headName, msg: "Please enter the Head of Household Name." },
       {
         field: headContact,
@@ -156,6 +185,7 @@ const AddHouse: React.FC<AddDataProps> = ({
       barangay,
       houseNo,
       year,
+      sitio,
       head: headName,
       memberTotal: members.length + 1,
       headInfo: {
@@ -226,6 +256,21 @@ const AddHouse: React.FC<AddDataProps> = ({
               );
             })}
           </select>
+
+          <select
+            value={sitio}
+            onChange={(e) => setSitio(e.target.value)}
+            className="sn-select"
+            //   className="p-2 text-sm border-primary border-2 rounded-sm"
+          >
+            <option value="">Select sitio</option>
+            {sitioList?.map((sitio, i) => (
+              <option key={i} value={sitio?.name}>
+                {sitio?.name}
+              </option>
+            ))}
+          </select>
+
           <select
             value={houseStruc}
             onChange={(e) => setHouseStruc(e.target.value)}
@@ -237,6 +282,7 @@ const AddHouse: React.FC<AddDataProps> = ({
             <option value="Salvage">Salvage</option>
             <option value="Mix">Mix</option>
           </select>
+
         </div>
         {/* Household leader */}
         <span className="font-bold text-sm ">Household Leader</span>

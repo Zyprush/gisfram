@@ -37,7 +37,7 @@ const DataModal = ({ barangay }: { barangay: string }) => {
     }, 0);
   };
 
-  const households = useFetchHouseholds(barangay, true); // Fetch households filtered by barangay
+  const households = useFetchHouseholds(barangay, true, ""); // Fetch households filtered by barangay
 
   useEffect(() => {
     const fetchHouseholdData = async () => {
