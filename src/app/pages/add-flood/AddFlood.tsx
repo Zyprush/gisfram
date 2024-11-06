@@ -9,7 +9,7 @@ interface AddDataProps {
   onSeverityChange: (severity: string) => void; // New prop for severity change
 }
 
-
+   
 const AddFlood: React.FC<AddDataProps> = ({
   barangay,
   polygon,
