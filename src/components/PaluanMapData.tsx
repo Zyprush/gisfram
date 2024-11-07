@@ -297,7 +297,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                 className="sn-select w-40"
               >
                 <option value="">Year</option>
-                {Array.from({ length: 10 }, (_, i) => currentYear - i).map(
+                {Array.from({ length: 30 }, (_, i) => currentYear - i).map(
                   (year) => (
                     <option key={year} value={year}>
                       {year}
