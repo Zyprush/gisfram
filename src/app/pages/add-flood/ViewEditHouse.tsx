@@ -33,7 +33,6 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
   const [seniorCount, setSeniorCount] = useState(0);
   const [pregnantCount, setPregnantCount] = useState(0);
   const [sitioList, setSitioList] = useState<Sitio[]>([]);
-  const [sitio, setSitio] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -287,6 +286,7 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
               disabled={!isEditing}
               required
             >
+              <option value="">Year</option>
               {Array.from({ length: 20 }, (_, i) => {
                 const y = new Date().getFullYear() - i;
                 return (
