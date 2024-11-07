@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
 
-const useFetchHouseholds = (barangayName: string, house: boolean, sitio: string) => {
+const useFetchHouseholds = (barangayName: string, house: boolean, sitio: string, year: string = "") => {
   const [households, setHouseholds] = useState<any[]>([]);
+  console.log('year', year)
 
   useEffect(() => {
     if (!house) return; // Only fetch if the `house` state is true
@@ -18,6 +19,10 @@ const useFetchHouseholds = (barangayName: string, house: boolean, sitio: string)
 
         if (sitio) {
           q = query(q, where("sitio", "==", sitio));
+        }
+
+        if (year) {
+          q = query(q, where("year", "==", year));
         }
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -35,7 +40,7 @@ const useFetchHouseholds = (barangayName: string, house: boolean, sitio: string)
     };
 
     fetchHouseholdData();
-  }, [barangayName, house, sitio]);
+  }, [barangayName, house, sitio, year]);
 
   return households;
 };

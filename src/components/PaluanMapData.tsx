@@ -63,7 +63,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
   const [analysis, setAnalysis] = useState<boolean>(false);
   const [barangayName, setBarangayName] = useState<string>("");
   const [year, setYear] = useState<string>(""); // Added year state
-  const households = useFetchHouseholds(barangayName, house, sitio);
+  const households = useFetchHouseholds(barangayName, house, sitio, year);
   const floods = useFetchFloods(barangayName, year, flood); // Fetch floods data
   const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -296,7 +296,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                 onChange={(e) => setYear(e.target.value)}
                 className="sn-select w-40"
               >
-                <option value="">Flood Year</option>
+                <option value="">Year</option>
                 {Array.from({ length: 10 }, (_, i) => currentYear - i).map(
                   (year) => (
                     <option key={year} value={year}>
