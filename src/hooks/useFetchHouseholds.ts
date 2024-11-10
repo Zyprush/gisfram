@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase";
 
-const useFetchHouseholds = (barangayName: string, house: boolean, sitio: string, year: string = "") => {
+const useFetchHouseholds = (barangayName: string , house: boolean, sitio: string, year: string = "") => {
   const [households, setHouseholds] = useState<any[]>([]);
   console.log('year', year)
 

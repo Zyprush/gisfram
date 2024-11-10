@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useRef, useEffect, LegacyRef } from "react";
 import {
   GoogleMap,
@@ -31,11 +30,7 @@ import { handangTumulongPob, tubili, mapaladPob } from "./barangayCoord";
 import Sitio from "@/app/pages/settings/Sitio";
 import { db } from "@/firebase";
 import { getDoc, doc } from "firebase/firestore";
-
-const mapContainerStyle = {
-  width: "100%",
-  height: "100vh",
-};
+import Link from "next/link";
 
 const center = { lat: 13.397099, lng: 120.459089 };
 
@@ -277,19 +272,21 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                 <option value="tubili">Tubili</option>
               </select>
 
-              {barangayName && house && <select
-                value={sitio}
-                onChange={(e) => setSitio(e.target.value)}
-                className="sn-select"
-                //   className="p-2 text-sm border-primary border-2 rounded-sm"
-              >
-                <option value="">Select sitio</option>
-                {sitioList?.map((sitio, i) => (
-                  <option key={i} value={sitio?.name}>
-                    {sitio?.name}
-                  </option>
-                ))}
-              </select>}
+              {barangayName && house && (
+                <select
+                  value={sitio}
+                  onChange={(e) => setSitio(e.target.value)}
+                  className="sn-select"
+                  //   className="p-2 text-sm border-primary border-2 rounded-sm"
+                >
+                  <option value="">Select sitio</option>
+                  {sitioList?.map((sitio, i) => (
+                    <option key={i} value={sitio?.name}>
+                      {sitio?.name}
+                    </option>
+                  ))}
+                </select>
+              )}
 
               <select
                 value={year}
@@ -461,6 +458,26 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                   ))
                 : null}
             </GoogleMap>
+            {/* <div className="p-2 bg-white dark:bg-zinc-800 rounded-xl fixed z-40 bottom-5 right-40">
+              <Link
+                href={`/pages/map/print?barangayName=${encodeURIComponent(
+                  barangayName ?? ""
+                )}&year=${encodeURIComponent(
+                  year ?? ""
+                )}&house=${encodeURIComponent(
+                  house ?? ""
+                )}&flood=${encodeURIComponent(
+                  flood ?? ""
+                )}&analysis=${encodeURIComponent(
+                  analysis ?? ""
+                )}&sitio=${encodeURIComponent(sitio ?? "")}`}
+                className="btn btn-primary btn-sm text-white"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Printers
+              </Link>
+            </div> */}
           </div>
         </div>
       </div>
