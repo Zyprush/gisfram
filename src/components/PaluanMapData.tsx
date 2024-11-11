@@ -418,8 +418,8 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                       lat: household.position.lat,
                       lng: household.position.lng,
                     }}
-                    title={`HOUSE NO.: ${household.houseNo.toString()}\nHEAD NAME: ${
-                      household.head
+                    title={`HOUSE NO.: ${household.houseNo.toString().toUpperCase()}\nHEAD NAME: ${
+                      household.head.toUpperCase()
                     }\nTOTAL MEMBER: ${household.memberTotal}`}
                   />
                 ))}
