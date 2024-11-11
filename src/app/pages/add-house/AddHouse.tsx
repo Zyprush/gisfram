@@ -40,7 +40,7 @@ const AddHouse: React.FC<AddDataProps> = ({
   const [headPwd, setHeadPwd] = useState(false);
   const [headContact, setHeadContact] = useState<string | undefined>("");
   const [headIndigenous, setHeadIndigenous] = useState(false);
-  const [headGender, setHeadGender] = useState("Male");
+  const [headGender, setHeadGender] = useState("");
   const [headPregnant, setHeadPregnant] = useState(false); // Added headPregnant state
   const [houseStruc, setHouseStruc] = useState("");
   const [sitioList, setSitioList] = useState<Sitio[]>([]);
@@ -314,6 +314,7 @@ const AddHouse: React.FC<AddDataProps> = ({
             onChange={(e) => setHeadGender(e.target.value)}
             className="sn-select"
           >
+            <option value="">Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </select>
@@ -390,6 +391,7 @@ const AddHouse: React.FC<AddDataProps> = ({
                 }
                 className="sn-select"
               >
+                <option value="">Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
