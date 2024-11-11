@@ -4,6 +4,7 @@ import Link, { LinkProps } from "next/link";
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX, IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
+import { usePathname } from "next/navigation";
 
 interface Links {
   label: string;
@@ -175,6 +176,7 @@ export const MobileSidebar = ({
 export const SidebarLink = ({
   link,
   className,
+  onClick,
   ...props
 }: {
   link: Links;
@@ -183,23 +185,41 @@ export const SidebarLink = ({
   props?: LinkProps;
 }) => {
   const { open, animate } = useSidebar();
+  const pathname = usePathname();
+  
+  // Check if the current path matches the link href
+  const isActive = pathname === link.href;
+
   return (
     <Link
       href={link.href}
+      onClick={onClick}
       className={cn(
-        "flex items-center justify-start gap-2 group/sidebar py-2",
+        "flex items-center justify-start gap-2 group/sidebar py-2 px-2 rounded-md transition-all duration-200",
+        isActive && "bg-neutral-200 dark:bg-neutral-700",
+        "hover:bg-neutral-200/80 dark:hover:bg-neutral-700/80",
         className
       )}
       {...props}
     >
-      {link.icon}
+      <div className={cn(
+        "transition-colors duration-200",
+        isActive ? "text-neutral-900 dark:text-white" : "text-neutral-600 dark:text-neutral-200"
+      )}>
+        {link.icon}
+      </div>
 
       <motion.span
         animate={{
           display: animate ? (open ? "inline-block" : "none") : "inline-block",
           opacity: animate ? (open ? 1 : 0) : 1,
         }}
-        className="text-neutral-700 font-semibold dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-4 transition duration-150 whitespace-pre inline-block !p-0 !m-0 group-hover/sidebar:font-bold"
+        className={cn(
+          "text-sm whitespace-pre inline-block !p-0 !m-0 transition-all duration-200",
+          isActive 
+            ? "text-neutral-900 dark:text-white font-bold"
+            : "text-neutral-700 dark:text-neutral-200 font-semibold group-hover/sidebar:translate-x-4 group-hover/sidebar:font-bold"
+        )}
       >
         {link.label}
       </motion.span>
