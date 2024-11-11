@@ -30,7 +30,6 @@ import { handangTumulongPob, tubili, mapaladPob } from "./barangayCoord";
 import Sitio from "@/app/pages/settings/Sitio";
 import { db } from "@/firebase";
 import { getDoc, doc } from "firebase/firestore";
-import Link from "next/link";
 
 const center = { lat: 13.397099, lng: 120.459089 };
 
@@ -419,9 +418,9 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                       lat: household.position.lat,
                       lng: household.position.lng,
                     }}
-                    title={`house no: ${household.houseNo.toString()}\nhead name: ${
+                    title={`HOUSE NO.: ${household.houseNo.toString()}\nHEAD NAME: ${
                       household.head
-                    }\nmember: ${household.memberTotal}`}
+                    }\nTOTAL MEMBER: ${household.memberTotal}`}
                   />
                 ))}
               {flood
