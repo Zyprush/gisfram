@@ -68,7 +68,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
   >([]);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true); //from false
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,

@@ -39,7 +39,7 @@ const AddFloodMap: React.FC = () => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const [barangayName, setBarangayName] = useState<string>("");
   const [boundary, setBoundary] = useState<any>(paluanCoords);
-  const [showForm, setShowForm] = useState<boolean>(false);
+  const [showForm, setShowForm] = useState<boolean>(true); //false
   const [polygon, setPolygon] = useState<google.maps.LatLng[]>([]);
   const [severity, setSeverity] = useState<string>("low"); // State for severity
 

@@ -36,9 +36,9 @@ const AddHouse: React.FC<AddDataProps> = ({
   const [year, setYear] = useState<string | "">("");
   const [loading, setLoading] = useState(false);
   const [headName, setHeadName] = useState("");
-  const [headAge, setHeadAge] = useState<number | "">();
+  const [headAge, setHeadAge] = useState<string>("");
   const [headPwd, setHeadPwd] = useState(false);
-  const [headContact, setHeadContact] = useState<string | undefined>("");
+  const [headContact, setHeadContact] = useState<string>("");
   const [headIndigenous, setHeadIndigenous] = useState(false);
   const [headGender, setHeadGender] = useState("");
   const [headPregnant, setHeadPregnant] = useState(false); // Added headPregnant state
@@ -48,7 +48,7 @@ const AddHouse: React.FC<AddDataProps> = ({
   const [members, setMembers] = useState<
     {
       name: string;
-      age: number | "";
+      age: string;
       pwd: boolean;
       contact?: string;
       indigenous: boolean;
@@ -56,6 +56,30 @@ const AddHouse: React.FC<AddDataProps> = ({
       gender: string;
     }[]
   >([]);
+
+  // Handle contact number input with validation
+  const handleContactChange = (value: string, isHead: boolean = true, memberIndex?: number) => {
+    // Only allow numbers and limit to 11 digits
+    const sanitizedValue = value.replace(/\D/g, '').slice(0, 11);
+
+    if (isHead) {
+      setHeadContact(sanitizedValue);
+    } else if (memberIndex !== undefined) {
+      handleMemberChange(memberIndex, "contact", sanitizedValue);
+    }
+  };
+
+  // Handle age input with validation
+  const handleAgeChange = (value: string, isHead: boolean = true, memberIndex?: number) => {
+    // Only allow numbers and empty string
+    const numericOnly = value.replace(/[^0-9]/g, '');
+    
+    if (isHead) {
+      setHeadAge(numericOnly);
+    } else if (memberIndex !== undefined) {
+      handleMemberChange(memberIndex, "age", numericOnly);
+    }
+  };
 
   useEffect(() => {
     const fetchSitio = async () => {
@@ -76,12 +100,19 @@ const AddHouse: React.FC<AddDataProps> = ({
       console.log("Marker position:", { lat: marker.lat(), lng: marker.lng() });
   }, [marker]);
 
+  // Reset pregnancy status when gender changes
+  useEffect(() => {
+    if (headGender === "Male") {
+      setHeadPregnant(false);
+    }
+  }, [headGender]);
+
   const addMember = () =>
     setMembers([
       ...members,
       {
         name: "",
-        age: 0,
+        age: "",
         pwd: false,
         indigenous: false,
         pregnant: false,
@@ -91,7 +122,16 @@ const AddHouse: React.FC<AddDataProps> = ({
 
   const handleMemberChange = (index: number, field: string, value: any) => {
     setMembers((prevMembers) =>
-      prevMembers.map((m, i) => (i === index ? { ...m, [field]: value } : m))
+      prevMembers.map((m, i) => {
+        if (i === index) {
+          // Reset pregnancy status when gender changes to Male
+          if (field === "gender" && value === "Male") {
+            return { ...m, [field]: value, pregnant: false };
+          }
+          return { ...m, [field]: value };
+        }
+        return m;
+      })
     );
   };
 
@@ -100,6 +140,22 @@ const AddHouse: React.FC<AddDataProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
+
+    // Validate contact number length
+    if (headContact.length !== 11 || !headContact.startsWith('09')) {
+      setLoading(false);
+      window.alert("Head contact number must be 11 digits and start with '09'");
+      return;
+    }
+
+    // Validate members' contact numbers
+    for (const member of members) {
+      if (member.contact && (member.contact.length !== 11 || !member.contact.startsWith('09'))) {
+        setLoading(false);
+        window.alert(`Member ${member.name}'s contact number must be 11 digits and start with '09'`);
+        return;
+      }
+    }
 
     // Validate age for the head of household
     const parsedHeadAge = parseInt(headAge as string, 10);
@@ -112,7 +168,7 @@ const AddHouse: React.FC<AddDataProps> = ({
     // Validate age for members
     for (let i = 0; i < members.length; i++) {
       const member = members[i];
-      const parsedAge = parseInt(member.age as string, 10);
+      const parsedAge = parseInt(member.age, 10);
       if (isNaN(parsedAge) || parsedAge <= 0) {
         setLoading(false);
         window.alert(`Please enter a valid age for member ${i + 1}.`);
@@ -261,7 +317,7 @@ const AddHouse: React.FC<AddDataProps> = ({
             value={sitio}
             onChange={(e) => setSitio(e.target.value)}
             className="sn-select"
-            //   className="p-2 text-sm border-primary border-2 rounded-sm"
+          //   className="p-2 text-sm border-primary border-2 rounded-sm"
           >
             <option value="">Select sitio</option>
             {sitioList?.map((sitio, i) => (
@@ -284,8 +340,8 @@ const AddHouse: React.FC<AddDataProps> = ({
           </select>
 
         </div>
-        {/* Household leader */}
-        <span className="font-bold text-sm ">Household Leader</span>
+        {/* Household leader section with updated inputs */}
+        <span className="font-bold text-sm">Household Leader</span>
         <div className="flex gap-3">
           <input
             type="text"
@@ -295,20 +351,12 @@ const AddHouse: React.FC<AddDataProps> = ({
             className="sn-select"
           />
           <input
-            type="number"
+            type="text"
             placeholder="Age"
             value={headAge}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^[1-9]\d*$/.test(value) || value === "") {
-                setHeadAge(parseInt(value) || "");
-              }
-            }}
-            min={1}
-            step={1}
+            onChange={(e) => handleAgeChange(e.target.value)}
             className="sn-select"
           />
-
           <select
             value={headGender}
             onChange={(e) => setHeadGender(e.target.value)}
@@ -319,10 +367,10 @@ const AddHouse: React.FC<AddDataProps> = ({
             <option value="Female">Female</option>
           </select>
           <input
-            type="number"
-            placeholder="Contact"
+            type="text"
+            placeholder="Contact (09xxxxxxxxx)"
             value={headContact}
-            onChange={(e) => setHeadContact(e.target.value)}
+            onChange={(e) => handleContactChange(e.target.value)}
             className="sn-select"
           />
           <label className="flex items-center">
@@ -343,17 +391,20 @@ const AddHouse: React.FC<AddDataProps> = ({
             />
             <span className="ml-2 text-sm">Indigenous</span>
           </label>
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={headPregnant} // Fixed onChange handler
-              onChange={(e) => setHeadPregnant(e.target.checked)}
-              className="checkbox checkbox-xs checkbox-primary"
-            />
-            <span className="ml-2 text-sm">Pregnant</span>
-          </label>
+          {headGender === "Female" && (
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={headPregnant}
+                onChange={(e) => setHeadPregnant(e.target.checked)}
+                className="checkbox checkbox-xs checkbox-primary"
+              />
+              <span className="ml-2 text-sm">Pregnant</span>
+            </label>
+          )}
         </div>
-        {/* Members */}
+
+        {/* Members section */}
         <div className="flex justify-between items-center">
           <span className="font-bold text-sm">Members</span>
           <button onClick={addMember} className="btn btn-xs btn-primary">
@@ -367,28 +418,19 @@ const AddHouse: React.FC<AddDataProps> = ({
                 type="text"
                 placeholder="Member Name"
                 value={member.name}
-                onChange={(e) =>
-                  handleMemberChange(index, "name", e.target.value)
-                }
+                onChange={(e) => handleMemberChange(index, "name", e.target.value)}
                 className="sn-select"
               />
               <input
-                type="number"
+                type="text"
                 placeholder="Age"
                 value={member.age}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^[1-9]\d*$/.test(value) || value === "") {
-                    handleMemberChange(index, "age", parseInt(value) || "");
-                  }
-                }}
+                onChange={(e) => handleAgeChange(e.target.value, false, index)}
                 className="sn-select"
               />
               <select
                 value={member.gender}
-                onChange={(e) =>
-                  handleMemberChange(index, "gender", e.target.value)
-                }
+                onChange={(e) => handleMemberChange(index, "gender", e.target.value)}
                 className="sn-select"
               >
                 <option value="">Gender</option>
@@ -397,20 +439,16 @@ const AddHouse: React.FC<AddDataProps> = ({
               </select>
               <input
                 type="text"
-                placeholder="Contact"
+                placeholder="Contact (09xxxxxxxxx)"
                 value={member.contact}
-                onChange={(e) =>
-                  handleMemberChange(index, "contact", e.target.value)
-                }
+                onChange={(e) => handleContactChange(e.target.value, false, index)}
                 className="sn-select"
               />
               <label className="flex items-center">
                 <input
                   type="checkbox"
                   checked={member.pwd}
-                  onChange={(e) =>
-                    handleMemberChange(index, "pwd", e.target.checked)
-                  }
+                  onChange={(e) => handleMemberChange(index, "pwd", e.target.checked)}
                   className="checkbox checkbox-xs checkbox-primary"
                 />
                 <span className="ml-2 text-sm">PWD</span>
@@ -419,24 +457,22 @@ const AddHouse: React.FC<AddDataProps> = ({
                 <input
                   type="checkbox"
                   checked={member.indigenous}
-                  onChange={(e) =>
-                    handleMemberChange(index, "indigenous", e.target.checked)
-                  }
+                  onChange={(e) => handleMemberChange(index, "indigenous", e.target.checked)}
                   className="checkbox checkbox-xs checkbox-primary"
                 />
                 <span className="ml-2 text-sm">Indigenous</span>
               </label>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={member.pregnant}
-                  onChange={(e) =>
-                    handleMemberChange(index, "pregnant", e.target.checked)
-                  }
-                  className="checkbox checkbox-xs checkbox-primary"
-                />
-                <span className="ml-2 text-sm">Pregnant</span>
-              </label>
+              {member.gender === "Female" && (
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={member.pregnant}
+                    onChange={(e) => handleMemberChange(index, "pregnant", e.target.checked)}
+                    className="checkbox checkbox-xs checkbox-primary"
+                  />
+                  <span className="ml-2 text-sm">Pregnant</span>
+                </label>
+              )}
               <button
                 onClick={() => deleteMember(index)}
                 className="btn btn-xs btn-error"
