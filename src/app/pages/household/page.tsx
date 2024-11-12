@@ -236,7 +236,7 @@ const Households = () => {
             />
             <button
               onClick={handleExport}
-              className="btn btn-sm btn-outline gap-2"
+              className="btn btn-sm tex-white  btn-primary"
               title="Export to CSV"
             >
               <FileDown size={16} />
@@ -244,7 +244,7 @@ const Households = () => {
             </button>
             <button
               onClick={handlePrint}
-              className="btn btn-sm btn-outline gap-2"
+              className="btn btn-sm tex-white  btn-primary"
               title="Print"
             >
               <Printer size={16} />
