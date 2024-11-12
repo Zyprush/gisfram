@@ -370,6 +370,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                   style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
                 },
                 mapTypeId: "satellite", // Set the default map type to satellite view
+                streetViewControl: false // Disable street view
               }}
             >
               {selectedFiles.map(

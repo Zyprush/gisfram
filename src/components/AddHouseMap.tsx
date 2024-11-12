@@ -168,6 +168,7 @@ const AddHouseMap: React.FC = () => {
               style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
             },
             mapTypeId: "satellite", // Set the default map type to satellite view
+            streetViewControl: false, // Set to false to hide the street view control
           }}
         >
           {boundary && (

@@ -214,6 +214,7 @@ const AddFloodMap: React.FC = () => {
               style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
             },
             mapTypeId: "satellite", // Set the default map type to satellite view
+            streetViewControl: false, // Disable the street view control
           }}
         >
           {boundary && (
