@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Authenticator } from "@/components/Authenthicator";
 import { Layout } from "@/components/Layout";
 import { db } from "@/firebase";
@@ -18,6 +18,7 @@ import {
 import ViewEditHouse from "../add-flood/ViewEditHouse";
 import Link from "next/link";
 import { camelCaseToTitleCase } from "@/lib/string";
+import { Printer, FileDown } from "lucide-react"; 
 
 interface Household {
   id: string;
@@ -36,6 +37,7 @@ const Households = () => {
   const [viewHouse, setViewHouse] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [households, setHouseholds] = useState<Household[]>([]);
+  const printRef = useRef<HTMLDivElement>(null);
 
   // Fetch households from Firestore
   useEffect(() => {
@@ -62,6 +64,92 @@ const Households = () => {
 
     fetchHouseholds();
   }, [barangay, viewHouse]);
+
+  // Handle export to CSV
+  const handleExport = () => {
+    const filteredData = households.filter(
+      household => !barangay || household.barangay === barangay
+    );
+    
+    const headers = ["Barangay", "House No.", "Head of Household", "Age", "Gender"];
+    const csvData = [
+      headers.join(","),
+      ...filteredData.map(household => [
+        camelCaseToTitleCase(household.barangay),
+        household.houseNo,
+        household.headInfo.name,
+        household.headInfo.age,
+        household.headInfo.gender
+      ].join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvData], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `households_${barangay || "all"}_${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+  // Handle print
+  const handlePrint = () => {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const filteredData = households.filter(
+      household => !barangay || household.barangay === barangay
+    );
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Households - ${barangay ? camelCaseToTitleCase(barangay) : "All Barangays"}</title>
+          <style>
+            body { font-family: Arial, sans-serif; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            h1 { text-align: center; }
+          </style>
+        </head>
+        <body>
+          <h1>Households - ${barangay ? camelCaseToTitleCase(barangay) : "All Barangays"}</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Barangay</th>
+                <th>House No.</th>
+                <th>Head of Household</th>
+                <th>Age</th>
+                <th>Gender</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredData.map(household => `
+                <tr>
+                  <td>${camelCaseToTitleCase(household.barangay)}</td>
+                  <td>${household.houseNo}</td>
+                  <td>${household.headInfo.name}</td>
+                  <td>${household.headInfo.age}</td>
+                  <td>${household.headInfo.gender}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+  };
 
   // Handle the Archive function (move to 'archived' collection with the same id)
   const handleArchive = async (householdId: string) => {
@@ -146,6 +234,22 @@ const Households = () => {
               placeholder="Search by head name or house number"
               className="border w-80 border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-xs"
             />
+            <button
+              onClick={handleExport}
+              className="btn btn-sm btn-outline gap-2"
+              title="Export to CSV"
+            >
+              <FileDown size={16} />
+              Export
+            </button>
+            <button
+              onClick={handlePrint}
+              className="btn btn-sm btn-outline gap-2"
+              title="Print"
+            >
+              <Printer size={16} />
+              Print
+            </button>
           </div>
 
           {loading ? (
