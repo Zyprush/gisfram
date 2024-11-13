@@ -19,6 +19,8 @@ import ViewEditHouse from "../add-flood/ViewEditHouse";
 import Link from "next/link";
 import { camelCaseToTitleCase } from "@/lib/string";
 import { Printer, FileDown, ArrowUpDown } from "lucide-react";
+import { usePinVerification } from "@/hooks/usePinVerification";
+import { PinVerificationModal } from "@/components/PinVerificationModal";
 
 interface Household {
   id: string;
@@ -47,6 +49,16 @@ const Households = () => {
   const [households, setHouseholds] = useState<Household[]>([]);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
   const printRef = useRef<HTMLDivElement>(null);
+
+  const {
+    isPinModalOpen,
+    setIsPinModalOpen,
+    pin,
+    setPin,
+    error,
+    verifyPin,
+    requirePin
+  } = usePinVerification();
 
 
   // Fetch households from Firestore
@@ -322,7 +334,7 @@ const Households = () => {
               className="border w-80 border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-xs"
             />
             <button
-              onClick={handleExport}
+              onClick={() => requirePin(handleExport)}
               className="btn btn-sm text-white  btn-primary"
               title="Export to CSV"
             >
@@ -393,6 +405,14 @@ const Households = () => {
           )}
         </div>
       </div>
+      <PinVerificationModal
+        isOpen={isPinModalOpen}
+        onClose={() => setIsPinModalOpen(false)}
+        pin={pin}
+        onPinChange={setPin}
+        onVerify={verifyPin}
+        error={error}
+      />
     </Layout>
   );
 };

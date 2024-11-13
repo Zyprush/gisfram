@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from "@/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { hash, compare } from 'bcryptjs';
+import Link from 'next/link';
 
 const Pin = () => {
   const [currentPin, setCurrentPin] = useState('');
@@ -102,9 +103,9 @@ const Pin = () => {
     <div className="fixed inset-0 bg-gray-700 bg-opacity-70 overflow-y-auto h-full w-full flex items-center justify-center">
       <div className="bg-gray-800 text-gray-200 p-8 rounded-lg shadow-xl w-full max-w-[23rem]">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-200">
-          {step === 'verify' ? 'Enter Current PIN' : 
-           step === 'create' ? 'Set New PIN' : 
-           'PIN Updated Successfully'}
+          {step === 'verify' ? 'Enter Current PIN' :
+            step === 'create' ? 'Set New PIN' :
+              'PIN Updated Successfully'}
         </h2>
 
         {step === 'verify' && hasExistingPin && (
@@ -126,6 +127,12 @@ const Pin = () => {
             >
               Verify PIN
             </button>
+            <Link
+              href="/pages/settings"
+              className="mt-4 w-full block text-center px-4 py-2 text-gray-200 rounded-md hover:bg-gray-500 focus:outline-none focus:ring-1 focus:ring-secondary focus:ring-opacity-50 transition ease-in-out duration-150 text-sm border border-gray-500"
+            >
+              Cancel
+            </Link>
           </div>
         )}
 

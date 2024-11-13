@@ -16,6 +16,8 @@ import EditFloodData from "./EditFloodData";
 import { Authenticator } from "@/components/Authenthicator";
 import { camelCaseToTitleCase } from "@/lib/string";
 import { Printer, FileDown, ArrowUpDown } from "lucide-react";
+import { usePinVerification } from "@/hooks/usePinVerification";
+import { PinVerificationModal } from "@/components/PinVerificationModal";
 
 interface Position {
   lat: number;
@@ -50,6 +52,15 @@ const FloodData = () => {
     barangay: "",
   });
   const [barangays, setBarangays] = useState<string[]>([]);
+  const {
+    isPinModalOpen,
+    setIsPinModalOpen,
+    pin,
+    setPin,
+    error,
+    verifyPin,
+    requirePin
+  } = usePinVerification();
 
   const fetchFloodData = async () => {
     setLoading(true);
@@ -356,7 +367,7 @@ const FloodData = () => {
               Filter
             </button>
             <button
-              onClick={handleExport}
+              onClick={() => requirePin(handleExport)}
               className="btn btn-sm text-white btn-primary"
               title="Export to CSV"
             >
@@ -426,6 +437,14 @@ const FloodData = () => {
           )}
         </div>
       </div>
+      <PinVerificationModal
+        isOpen={isPinModalOpen}
+        onClose={() => setIsPinModalOpen(false)}
+        pin={pin}
+        onPinChange={setPin}
+        onVerify={verifyPin}
+        error={error}
+      />
     </Layout>
   );
 };
