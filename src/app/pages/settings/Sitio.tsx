@@ -97,75 +97,67 @@ const Sitio: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#f0f6f9] bg-opacity-55 shadow text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-xl p-4 w-auto">
+    <div className="bg-[#f0f6f9] bg-opacity-55 shadow text-zinc-600 dark:text-zinc-200 dark:bg-neutral-800 rounded-xl p-4 h-full">
       <div className="flex justify-between items-center">
         <span className="font-bold mb-2 text-primary dark:text-white text-lg">Sitio</span>
       </div>
-
       {error && <div className="text-red-500">{error}</div>}
-
-      {sitio.length > 0 &&
-        sitio.map((sitio, index) => (
-          <div key={index} className="flex gap-3">
-            {isEditing ? (
-              <div className="flex gap-3 mt-3 items-center">
-                <input
-                  type="text"
-                  placeholder="Sitio Name"
-                  value={sitio.name}
-                  onChange={(e) =>
-                    handleSitioChange(index, "name", e.target.value)
-                  }
-                  //   className="p-2 text-sm border-primary border-2 rounded-sm w-80"
-                  className="sn-input"
-                />
-                <select
-                  value={sitio.barangay}
-                  onChange={(e) =>
-                    handleSitioChange(index, "barangay", e.target.value)
-                  }
-                  className="sn-select"
-                  //   className="p-2 text-sm border-primary border-2 rounded-sm"
-                >
-                  <option value="">Select Barangay</option>
-                  {barangay?.map((barangay, i) => (
-                    <option key={i} value={barangay?.name}>
-                      {barangay?.name}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => deleteSitio(index)}
-                  className="btn btn-sm rounded-md text-white btn-error"
-                >
-                  Delete
-                </button>
-              </div>
-            ) : (
-              <div className="w-full">
+      <div className="flex flex-col space-y-3">
+        {sitio.length > 0 &&
+          sitio.map((sitio, index) => (
+            <div key={index} className="w-full">
+              {isEditing ? (
+                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                  <input
+                    type="text"
+                    placeholder="Sitio Name"
+                    value={sitio.name}
+                    onChange={(e) => handleSitioChange(index, "name", e.target.value)}
+                    className="sn-input w-full sm:w-auto"
+                  />
+                  <select
+                    value={sitio.barangay}
+                    onChange={(e) => handleSitioChange(index, "barangay", e.target.value)}
+                    className="sn-select w-full sm:w-auto"
+                  >
+                    <option value="">Select Barangay</option>
+                    {barangay?.map((barangay, i) => (
+                      <option key={i} value={barangay?.name}>
+                        {barangay?.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => deleteSitio(index)}
+                    className="btn btn-sm rounded-md text-white btn-error w-full sm:w-auto"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ) : (
                 <table className="table w-full">
                   <tbody>
-                    <tr className="border border-neutral-200 dark:border-neutral-700 ">
-                      <td className="w-80">{sitio.name}</td>
-                      <td>{sitio.barangay}</td>
+                    <tr className="border border-neutral-200 dark:border-neutral-700">
+                      <td className="w-1/2">{sitio.name}</td>
+                      <td className="w-1/2">{sitio.barangay}</td>
                     </tr>
                   </tbody>
                 </table>
-              </div>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          ))}
+      </div>
       {isEditing && (
-        <div className="mx-auto flex gap-5 mt-5">
+        <div className="flex flex-col sm:flex-row gap-3 mt-5 justify-start">
           <button
             onClick={addSitio}
-            className="btn btn-sm rounded-none text-primary btn-outline"
+            className="btn btn-sm rounded-none text-primary btn-outline w-full sm:w-auto"
           >
             Add Sitio
           </button>
           <button
             onClick={saveSitio}
-            className="btn btn-sm rounded-none btn-primary text-white"
+            className="btn btn-sm rounded-none btn-primary text-white w-full sm:w-auto"
             disabled={!isFormValid() || loading}
           >
             {loading ? "Saving..." : "Save Changes"}
@@ -174,7 +166,7 @@ const Sitio: React.FC = () => {
       )}
       <button
         onClick={toggleEdit}
-        className="btn btn-sm mt-5 text-primary btn-outline rounded-sm dark:text-white"
+        className="btn btn-sm mt-5 text-primary btn-outline rounded-sm dark:text-white w-full sm:w-auto"
       >
         {isEditing ? "Cancel" : "Edit"}
       </button>
