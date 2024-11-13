@@ -15,11 +15,35 @@ import { Layout } from "@/components/Layout";
 import EditFloodData from "./EditFloodData";
 import { Authenticator } from "@/components/Authenthicator";
 import { camelCaseToTitleCase } from "@/lib/string";
+import { Printer, FileDown, ArrowUpDown } from "lucide-react";
+
+interface Position {
+  lat: number;
+  lng: number;
+}
+
+interface FloodRecord {
+  id: string;
+  barangay: string;
+  date: string;
+  severity: string;
+  waterLevel: number;
+  rainfallAmount: number;
+  position: Position[];
+}
+
+type SortableKey = 'barangay' | 'date' | 'severity' | 'waterLevel' | 'rainfallAmount';
+
+type SortConfig = {
+  key: SortableKey | null;
+  direction: 'asc' | 'desc';
+};
 
 const FloodData = () => {
-  const [floodData, setFloodData] = useState<any[]>([]);
+  const [floodData, setFloodData] = useState<FloodRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
   const [filters, setFilters] = useState<{ from: string; to: string; barangay: string }>({
     from: "",
     to: "",
@@ -31,7 +55,6 @@ const FloodData = () => {
     try {
       const conditions: any[] = [];
 
-      // Add date filters
       if (filters.from && filters.to) {
         conditions.push(
           where("date", ">=", filters.from),
@@ -43,12 +66,10 @@ const FloodData = () => {
         conditions.push(where("date", "<=", filters.to));
       }
 
-      // Add barangay filter if selected
       if (filters.barangay) {
         conditions.push(where("barangay", "==", filters.barangay));
       }
 
-      // Firebase requires fields used in 'where' to also be included in 'orderBy'
       const q = query(
         collection(db, "floods"),
         ...conditions,
@@ -60,7 +81,7 @@ const FloodData = () => {
       const data = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-      }));
+      })) as FloodRecord[];
       setFloodData(data);
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -69,10 +90,9 @@ const FloodData = () => {
     }
   };
 
-  // Effect to fetch flood data when filters change
   useEffect(() => {
     fetchFloodData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
   const handleDelete = async (id: string) => {
@@ -80,7 +100,7 @@ const FloodData = () => {
       setLoading(true);
       try {
         await deleteDoc(doc(db, "floods", id));
-        setFloodData(floodData.filter((item) => item.id !== id)); // Optimistic UI update
+        setFloodData(floodData.filter((item) => item.id !== id));
       } catch (error) {
         console.error("Error deleting document: ", error);
       } finally {
@@ -90,9 +110,181 @@ const FloodData = () => {
   };
 
   const handleEditSave = () => {
-    setEditId(null); // Close the edit mode
-    fetchFloodData(); // Refresh data after editing
+    setEditId(null);
+    fetchFloodData();
   };
+
+  // Sorting functions
+  const getSortValue = (record: FloodRecord, key: SortableKey): string | number => {
+    switch (key) {
+      case 'barangay':
+        return record.barangay.toLowerCase();
+      case 'date':
+        return record.date;
+      case 'severity':
+        return record.severity.toLowerCase();
+      case 'waterLevel':
+        return record.waterLevel;
+      case 'rainfallAmount':
+        return record.rainfallAmount;
+      default:
+        return '';
+    }
+  };
+
+  const handleSort = (key: SortableKey) => {
+    setSortConfig(current => {
+      if (current.key === key) {
+        return { key, direction: current.direction === 'asc' ? 'desc' : 'asc' };
+      }
+      return { key, direction: 'asc' };
+    });
+  };
+
+  const getSortedData = (dataToSort: FloodRecord[]) => {
+    if (!sortConfig.key) return dataToSort;
+
+    return [...dataToSort].sort((a, b) => {
+      const aValue = getSortValue(a, sortConfig.key as SortableKey);
+      const bValue = getSortValue(b, sortConfig.key as SortableKey);
+
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const handleExport = () => {
+    const processedData = getSortedData(floodData);
+
+    // Create headers for basic data and position columns
+    const basicHeaders = ["Barangay", "Date", "Severity", "Water Level (m)", "Rainfall Amount (mm)"];
+
+    // Find the maximum number of positions in any record
+    const maxPositions = Math.max(...processedData.map(record => record.position?.length || 0));
+
+    // Create position headers (Position 1 Lat, Position 1 Lng, Position 2 Lat, etc.)
+    const positionHeaders = Array.from({ length: maxPositions }, (_, i) =>
+      [`Position ${i + 1} Lat`, `Position ${i + 1} Lng`]
+    ).flat();
+
+    const headers = [...basicHeaders, ...positionHeaders];
+
+    const csvData = [
+      headers.join(","),
+      ...processedData.map(record => {
+        // Basic data
+        const basicData = [
+          camelCaseToTitleCase(record.barangay),
+          record.date,
+          record.severity,
+          record.waterLevel,
+          record.rainfallAmount
+        ];
+
+        // Position data
+        const positionData = Array.from({ length: maxPositions }, (_, i) => {
+          const pos = record.position?.[i];
+          return pos ? [pos.lat, pos.lng] : ['', ''];
+        }).flat();
+
+        return [...basicData, ...positionData].join(",");
+      })
+    ].join("\n");
+
+    const blob = new Blob([csvData], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `flood_data_${filters.barangay || "all"}_${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+  // Modified print function
+  const handlePrint = () => {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const processedData = getSortedData(floodData);
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Flood Data - ${filters.barangay ? camelCaseToTitleCase(filters.barangay) : "All Barangays"}</title>
+          <style>
+            body { font-family: Arial, sans-serif; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+            h1 { text-align: center; }
+            .positions { font-size: 0.9em; color: #666; }
+          </style>
+        </head>
+        <body>
+          <h1>Flood Data - ${filters.barangay ? camelCaseToTitleCase(filters.barangay) : "All Barangays"}</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Barangay</th>
+                <th>Date</th>
+                <th>Severity</th>
+                <th>Water Level (m)</th>
+                <th>Rainfall Amount (mm)</th>
+                <th>Positions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${processedData.map(record => `
+                <tr>
+                  <td>${camelCaseToTitleCase(record.barangay)}</td>
+                  <td>${record.date}</td>
+                  <td>${record.severity}</td>
+                  <td>${record.waterLevel}</td>
+                  <td>${record.rainfallAmount}</td>
+                  <td class="positions">
+                    ${record.position?.map((pos, index) =>
+      `Position ${index + 1}: (${pos.lat}, ${pos.lng})<br/>`
+    ).join("") || "No positions available"}
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+  };
+
+  const sortedData = getSortedData(floodData);
+
+  // Column header component
+  const SortableHeader = ({ label, sortKey }: { label: string; sortKey: SortableKey }) => (
+    <th
+      className="p-2 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+      onClick={() => handleSort(sortKey)}
+    >
+      <div className="flex items-center gap-2">
+        {label}
+        <ArrowUpDown
+          size={14}
+          className={`
+            ${sortConfig.key === sortKey ? 'opacity-100' : 'opacity-50'}
+            ${sortConfig.key === sortKey && sortConfig.direction === 'desc' ? 'transform rotate-180' : ''}
+          `}
+        />
+      </div>
+    </th>
+  );
 
   return (
     <Layout>
@@ -126,7 +318,6 @@ const FloodData = () => {
               className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300 ml-4"
             >
               <option value="">All Barangays</option>
-              {/* Add barangay options */}
               <option value="Alipaoy">Alipaoy</option>
               <option value="Barangay 5">Barangay 5</option>
               <option value="Barangay 2">Barangay 2</option>
@@ -143,11 +334,26 @@ const FloodData = () => {
             <button
               onClick={fetchFloodData}
               disabled={loading}
-              className={`btn btn-sm my-auto text-white ${
-                loading ? "btn-disabled" : "btn-primary"
-              }`}
+              className={`btn btn-sm my-auto text-white ${loading ? "btn-disabled" : "btn-primary"
+                }`}
             >
               Filter
+            </button>
+            <button
+              onClick={handleExport}
+              className="btn btn-sm text-white btn-primary"
+              title="Export to CSV"
+            >
+              <FileDown size={16} />
+              Export
+            </button>
+            <button
+              onClick={handlePrint}
+              className="btn btn-sm text-white btn-primary"
+              title="Print"
+            >
+              <Printer size={16} />
+              Print
             </button>
           </div>
 
@@ -163,16 +369,16 @@ const FloodData = () => {
               <table className="table-auto w-full">
                 <thead>
                   <tr className="text-sm text-neutral-600 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
-                    <th className="p-2">Barangay</th>
-                    <th className="p-2">Date</th>
-                    <th className="p-2">Severity</th>
-                    <th className="p-2">Water Level</th>
-                    <th className="p-2">Rainfall Amount</th>
+                    <SortableHeader label="Barangay" sortKey="barangay" />
+                    <SortableHeader label="Date" sortKey="date" />
+                    <SortableHeader label="Severity" sortKey="severity" />
+                    <SortableHeader label="Water Level" sortKey="waterLevel" />
+                    <SortableHeader label="Rainfall Amount" sortKey="rainfallAmount" />
                     <th className="p-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {floodData.map((data) => (
+                  {sortedData.map((data) => (
                     <tr
                       key={data.id}
                       className="text-xs text-neutral-600 dark:text-neutral-300"
