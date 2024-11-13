@@ -18,18 +18,26 @@ import {
 import ViewEditHouse from "../add-flood/ViewEditHouse";
 import Link from "next/link";
 import { camelCaseToTitleCase } from "@/lib/string";
-import { Printer, FileDown } from "lucide-react"; 
+import { Printer, FileDown, ArrowUpDown } from "lucide-react";
 
 interface Household {
   id: string;
   barangay: string;
   houseNo: string;
+  memberTotal: number;
   headInfo: {
     name: string;
     age: number;
     gender: string;
   };
 }
+// Create a more specific type for sortable keys
+type SortableKey = 'barangay' | 'houseNo' | 'headName';
+
+type SortConfig = {
+  key: SortableKey | null;
+  direction: 'asc' | 'desc';
+};
 
 const Households = () => {
   const [barangay, setBarangay] = useState("");
@@ -37,7 +45,9 @@ const Households = () => {
   const [viewHouse, setViewHouse] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [households, setHouseholds] = useState<Household[]>([]);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
   const printRef = useRef<HTMLDivElement>(null);
+
 
   // Fetch households from Firestore
   useEffect(() => {
@@ -65,21 +75,20 @@ const Households = () => {
     fetchHouseholds();
   }, [barangay, viewHouse]);
 
-  // Handle export to CSV
+  // Handle export to CSV using processed data
   const handleExport = () => {
-    const filteredData = households.filter(
-      household => !barangay || household.barangay === barangay
-    );
-    
-    const headers = ["Barangay", "House No.", "Head of Household", "Age", "Gender"];
+    const processedData = getProcessedHouseholds();
+
+    const headers = ["Barangay", "House No.", "Head of Household", "Age", "Gender", "Total Members"];
     const csvData = [
       headers.join(","),
-      ...filteredData.map(household => [
+      ...processedData.map(household => [
         camelCaseToTitleCase(household.barangay),
         household.houseNo,
         household.headInfo.name,
         household.headInfo.age,
-        household.headInfo.gender
+        household.headInfo.gender,
+        household.memberTotal
       ].join(","))
     ].join("\n");
 
@@ -94,14 +103,12 @@ const Households = () => {
     window.URL.revokeObjectURL(url);
   };
 
-  // Handle print
+  // Handle print using processed data
   const handlePrint = () => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
 
-    const filteredData = households.filter(
-      household => !barangay || household.barangay === barangay
-    );
+    const processedData = getProcessedHouseholds();
 
     const html = `
       <!DOCTYPE html>
@@ -126,16 +133,18 @@ const Households = () => {
                 <th>Head of Household</th>
                 <th>Age</th>
                 <th>Gender</th>
+                <th>Total Members</th>
               </tr>
             </thead>
             <tbody>
-              ${filteredData.map(household => `
+              ${processedData.map(household => `
                 <tr>
                   <td>${camelCaseToTitleCase(household.barangay)}</td>
                   <td>${household.houseNo}</td>
                   <td>${household.headInfo.name}</td>
                   <td>${household.headInfo.age}</td>
                   <td>${household.headInfo.gender}</td>
+                  <td>${household.memberTotal}</td>
                 </tr>
               `).join("")}
             </tbody>
@@ -176,6 +185,59 @@ const Households = () => {
     }
   };
 
+  const handleSort = (key: SortConfig['key']) => {
+    setSortConfig(current => {
+      if (current.key === key) {
+        return { key, direction: current.direction === 'asc' ? 'desc' : 'asc' };
+      }
+      return { key, direction: 'asc' };
+    });
+  };
+
+  // Function to get the value to sort by
+  const getSortValue = (household: Household, key: SortableKey): string => {
+    switch (key) {
+      case 'barangay':
+        return household.barangay.toLowerCase();
+      case 'houseNo':
+        return household.houseNo.toLowerCase();
+      case 'headName':
+        return household.headInfo.name.toLowerCase();
+      default:
+        return '';
+    }
+  };
+
+  // Sort the filtered households
+  const getSortedHouseholds = (householdsToSort: Household[]) => {
+    if (!sortConfig.key) return householdsToSort;
+
+    return [...householdsToSort].sort((a, b) => {
+      const aValue = getSortValue(a, sortConfig.key as SortableKey);
+      const bValue = getSortValue(b, sortConfig.key as SortableKey);
+
+      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  // Filter function that can be reused
+  const getFilteredHouseholds = (householdsToFilter: Household[]) => {
+    return householdsToFilter.filter(
+      household =>
+        (!barangay || household.barangay === barangay) &&
+        (household.headInfo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          household.houseNo.toString().includes(searchTerm))
+    );
+  };
+
+  // Get processed data (filtered and sorted)
+  const getProcessedHouseholds = () => {
+    const filtered = getFilteredHouseholds(households);
+    return getSortedHouseholds(filtered);
+  };
+
   // Search filter
   const filteredHouseholds = households.filter(
     (household) =>
@@ -183,6 +245,31 @@ const Households = () => {
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       household.houseNo.toString().includes(searchTerm)
+  );
+
+
+  // Get sorted households after filtering
+  const sortedHouseholds = getSortedHouseholds(filteredHouseholds);
+
+  const processedHouseholds = getProcessedHouseholds();
+
+  // Column header component
+  const SortableHeader = ({ label, sortKey }: { label: string; sortKey: SortConfig['key'] }) => (
+    <th
+      className="p-2 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+      onClick={() => handleSort(sortKey)}
+    >
+      <div className="flex items-center gap-2">
+        {label}
+        <ArrowUpDown
+          size={14}
+          className={`
+            ${sortConfig.key === sortKey ? 'opacity-100' : 'opacity-50'}
+            ${sortConfig.key === sortKey && sortConfig.direction === 'desc' ? 'transform rotate-180' : ''}
+          `}
+        />
+      </div>
+    </th>
   );
 
   const handleBarangayChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -236,7 +323,7 @@ const Households = () => {
             />
             <button
               onClick={handleExport}
-              className="btn btn-sm tex-white  btn-primary"
+              className="btn btn-sm text-white  btn-primary"
               title="Export to CSV"
             >
               <FileDown size={16} />
@@ -244,7 +331,7 @@ const Households = () => {
             </button>
             <button
               onClick={handlePrint}
-              className="btn btn-sm tex-white  btn-primary"
+              className="btn btn-sm text-white  btn-primary"
               title="Print"
             >
               <Printer size={16} />
@@ -258,18 +345,18 @@ const Households = () => {
             </div>
           ) : (
             <div className="flex-1 p-5 bg-white dark:bg-zinc-800 rounded-lg dark:border dark:border-zinc-700 dark:border-opacity-40 dark:bg-opacity-45 mb-auto h-80 overflow-y-auto">
-              {filteredHouseholds.length > 0 ? (
+              {processedHouseholds.length > 0 ? (
                 <table className="table-auto w-full text-left">
                   <thead>
                     <tr className="text-sm text-neutral-600 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
-                      <th className="p-2">Barangay</th>
-                      <th className="p-2">House No.</th>
-                      <th className="p-2">Head of Household</th>
+                      <SortableHeader label="Barangay" sortKey="barangay" />
+                      <SortableHeader label="House No." sortKey="houseNo" />
+                      <SortableHeader label="Head of Household" sortKey="headName" />
                       <th className="p-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredHouseholds.map((household) => (
+                    {sortedHouseholds.map((household) => (
                       <tr
                         key={household.id}
                         className="text-xs text-neutral-600 dark:text-neutral-300"
