@@ -17,6 +17,7 @@ import {
   IconChevronRight,
   IconArchive,
   IconFloatCenter,
+  IconHistory,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -25,6 +26,7 @@ import { useSignOut } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase";
 import { getSetting } from "@/app/pages/settings/getSetting";
 import { useTheme } from "next-themes";
+import { icons } from "lucide-react";
 
 const links = [
   {
@@ -67,6 +69,7 @@ const links = [
       />
     ),
   },
+  
   {
     label: "Flood",
     href: "/pages/flood",
@@ -76,6 +79,16 @@ const links = [
         stroke={2.4}
       />
     ),
+  },
+  {
+    label: "History",
+    href: "/pages/history",
+    icon: (
+      <IconHistory
+        className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+        stroke={2.4}
+      />
+    )
   },
   {
     label: "Settings",
@@ -160,7 +173,7 @@ export const Sidebar: React.FC = () => {
                 href: "#",
                 icon: (
                   <IconOutbound
-                    className="text-neutral-600 dark:text-neutral-200 h-5 w-5 flex-shrink-0"
+                    className="text-red-600 dark:text-red-500 h-5 w-5 flex-shrink-0"
                     stroke={2.5}
                   />
                 ),
