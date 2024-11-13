@@ -8,6 +8,7 @@ import {
   addDoc,
   collection,
 } from "firebase/firestore";
+import { logHouseholdAction } from "@/utils/logging";
 
 interface ViewEditDataProps {
   id: string;
@@ -181,6 +182,8 @@ const ViewEditHouse: React.FC<ViewEditDataProps> = ({ id, setViewHouse }) => {
         pregnantCount,
         memberTotal: data.members.length + 1,
       });
+
+      await logHouseholdAction('update', data.headInfo.name); //this is for history
 
       setIsEditing(false);
       setViewHouse(""); // Close the modal after submit

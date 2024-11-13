@@ -14,6 +14,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import Link from "next/link";
+import { logHouseholdAction } from "@/utils/logging";
 
 interface Household {
   id: string;
@@ -71,6 +72,8 @@ const Archive = () => {
       await deleteDoc(doc(db, "archived", household.id)); // Remove from 'archived'
       
       window.alert("Household restored successfully!");
+
+      await logHouseholdAction('restored', household.headInfo.name);
       
       // Remove from local state
       setArchivedHouseholds((prev) =>
@@ -83,17 +86,18 @@ const Archive = () => {
   };
 
   // Permanently delete a household from the archive collection
-  const handlePermanentDelete = async (householdId: string) => {
+  const handlePermanentDelete = async (household: Household) => {  // Change parameter to full household object
     const confirmDelete = window.confirm(
       "Are you sure you want to permanently delete this household? This action cannot be undone."
     );
     if (!confirmDelete) return;
-
+  
     try {
-      await deleteDoc(doc(db, "archived", householdId));
+      await deleteDoc(doc(db, "archived", household.id));
       window.alert("Household permanently deleted!");
+      await logHouseholdAction('delete', household.headInfo.name);  // Now we can access the name
       setArchivedHouseholds((prev) =>
-        prev.filter((item) => item.id !== householdId)
+        prev.filter((item) => item.id !== household.id)
       );
     } catch (error) {
       console.error("Error deleting household: ", error);
@@ -178,7 +182,7 @@ const Archive = () => {
                             Restore
                           </button>
                           <button
-                            onClick={() => handlePermanentDelete(household.id)}
+                            onClick={() => handlePermanentDelete(household)}
                             className="text-white btn btn-xs btn-error rounded-sm"
                           >
                             Delete

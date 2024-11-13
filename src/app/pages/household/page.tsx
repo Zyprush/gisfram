@@ -21,6 +21,7 @@ import { camelCaseToTitleCase } from "@/lib/string";
 import { Printer, FileDown, ArrowUpDown } from "lucide-react";
 import { usePinVerification } from "@/hooks/usePinVerification";
 import { PinVerificationModal } from "@/components/PinVerificationModal";
+import { logHouseholdAction } from "@/utils/logging";
 
 interface Household {
   id: string;
@@ -88,7 +89,8 @@ const Households = () => {
   }, [barangay, viewHouse]);
 
   // Handle export to CSV using processed data
-  const handleExport = () => {
+  const handleExport = async () => {
+    
     const processedData = getProcessedHouseholds();
 
     const headers = ["Barangay", "House No.", "Head of Household", "Age", "Gender", "Total Members"];
@@ -113,10 +115,13 @@ const Households = () => {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+
+    await logHouseholdAction('exported', barangay || 'All Barangays');
+    
   };
 
   // Handle print using processed data
-  const handlePrint = () => {
+  const handlePrint = async () => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
 
@@ -170,6 +175,8 @@ const Households = () => {
     printWindow.onload = () => {
       printWindow.print();
     };
+
+    await logHouseholdAction('printed', barangay || 'All Barangays');
   };
 
   // Handle the Archive function (move to 'archived' collection with the same id)
@@ -189,6 +196,8 @@ const Households = () => {
       await setDoc(archivedRef, householdDoc.data());
       await deleteDoc(householdRef);
       setHouseholds((prev) => prev.filter((item) => item.id !== householdId));
+
+      await logHouseholdAction('archive', householdDoc.data().headInfo.name);
 
       window.alert("Household archived successfully!");
     } catch (error) {

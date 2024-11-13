@@ -43,9 +43,11 @@ const Settings = () => {
                 Change your password here
               </p>
             </Link>
+            
           </div>
           {/* <Barangays/> */}
           <Sitio />
+          
           <SettingsItem title="About Us" name="aboutUs" row={5} />
         </div>
       </div>

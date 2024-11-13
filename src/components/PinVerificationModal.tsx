@@ -48,7 +48,7 @@ export const PinVerificationModal: React.FC<PinVerificationModalProps> = ({
           <div className="flex space-x-3">
             <button
               onClick={onVerify}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
+              className="flex-1 bg-primary hover:bg-primary/50 text-white font-bold py-2 px-4 rounded-md transition-colors"
             >
               Verify
             </button>

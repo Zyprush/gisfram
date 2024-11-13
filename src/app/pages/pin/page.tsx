@@ -123,7 +123,7 @@ const Pin = () => {
             </div>
             <button
               onClick={handleVerifyPin}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
+              className="w-full bg-primary hover:bg-primary/50 text-white font-bold py-2 px-4 rounded-md transition-colors"
             >
               Verify PIN
             </button>
@@ -162,7 +162,7 @@ const Pin = () => {
             </div>
             <button
               onClick={handleSetPin}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
+              className="w-full bg-primary hover:bg-primary/50 text-white font-bold py-2 px-4 rounded-md transition-colors"
             >
               Set PIN
             </button>
@@ -174,7 +174,7 @@ const Pin = () => {
             <p className="text-green-400 mb-4">PIN has been successfully updated!</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors"
+              className="bg-primary hover:bg-primary/50 text-white font-bold py-2 px-4 rounded-md transition-colors"
             >
               Close
             </button>

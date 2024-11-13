@@ -4,6 +4,7 @@ import { Authenticator } from "@/components/Authenthicator";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
 import PaluanMapData from "@/components/PaluanMapData";
+import { logHouseholdAction } from "@/utils/logging";
 import React, { useEffect, useRef, useState } from "react";
 import ReactToPrint from "react-to-print";
 
@@ -14,9 +15,28 @@ const Map = () => {
   const mapRef = useRef(null);
   const chartRef = useRef(null);
 
+  const dummyItem = "dummyItem";
+  
+
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 2000);
   }, []);
+
+  const handlePrintMap = async () => {
+    try {
+      await logHouseholdAction('printedMap', dummyItem);
+    } catch (error) {
+      console.error('Error logging print action:', error);
+    }
+  };
+
+  const handlePrintAnalysis = async () => {
+    try {
+      await logHouseholdAction('printedAnalysis', dummyItem);
+    } catch (error) {
+      console.error('Error logging print action:', error);
+    }
+  };
 
   return (
     <Layout>
@@ -45,6 +65,7 @@ const Map = () => {
                       </button>
                     )}
                     content={() => mapRef.current}
+                    onAfterPrint={handlePrintMap}
                   />
                   <ReactToPrint
                     trigger={() => (
@@ -53,6 +74,7 @@ const Map = () => {
                       </button>
                     )}
                     content={() => chartRef.current}
+                    onAfterPrint={handlePrintAnalysis}
                   />
                 </div>
               )}

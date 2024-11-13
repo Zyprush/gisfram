@@ -9,6 +9,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { logHouseholdAction } from "@/utils/logging";
 
 interface AddDataProps {
   handleCancel: () => void;
@@ -266,6 +267,7 @@ const AddHouse: React.FC<AddDataProps> = ({
     try {
       const docRef = await addDoc(collection(db, "households"), householdData);
       console.log("Document written with ID: ", docRef.id);
+      await logHouseholdAction('add', householdData.head,);
       handleCancel();
       alert("Household data submitted!");
     } catch (e) {

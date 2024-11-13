@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "@/firebase";
 import { doc, updateDoc } from "firebase/firestore";
+import { logFloodAction } from "@/utils/logging";
 
 interface EditFloodDataProps {
   id: string;
@@ -54,6 +55,7 @@ const EditFloodData: React.FC<EditFloodDataProps> = ({
     try {
       const docRef = doc(db, "floods", id);
       await updateDoc(docRef, formData);
+      await logFloodAction('update', formData.barangay);
       onSave(); // Call onSave to refresh the data and close the edit form
     } catch (error) {
       console.error("Error updating document: ", error);

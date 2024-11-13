@@ -18,6 +18,7 @@ import { camelCaseToTitleCase } from "@/lib/string";
 import { Printer, FileDown, ArrowUpDown } from "lucide-react";
 import { usePinVerification } from "@/hooks/usePinVerification";
 import { PinVerificationModal } from "@/components/PinVerificationModal";
+import { logFloodAction } from "@/utils/logging";
 
 interface Position {
   lat: number;
@@ -110,11 +111,12 @@ const FloodData = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this record?")) {
+  const handleDelete = async (id: string, barangay: string) => {
+    if (window.confirm(`Are you sure you want to delete flood record for Brgy. ${barangay}?`)) {
       setLoading(true);
       try {
         await deleteDoc(doc(db, "floods", id));
+        await logFloodAction('delete', barangay);
         setFloodData(floodData.filter((item) => item.id !== id));
       } catch (error) {
         console.error("Error deleting document: ", error);
@@ -169,7 +171,7 @@ const FloodData = () => {
     });
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     const processedData = getSortedData(floodData);
 
     // Create headers for basic data and position columns
@@ -216,10 +218,12 @@ const FloodData = () => {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+
+    await logFloodAction('exported', filters.barangay || 'All Barangays');
   };
 
   // Modified print function
-  const handlePrint = () => {
+  const handlePrint = async() => {
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
 
@@ -278,6 +282,8 @@ const FloodData = () => {
     printWindow.onload = () => {
       printWindow.print();
     };
+
+    await logFloodAction('printed', filters.barangay || 'All Barangays');
   };
 
   const sortedData = getSortedData(floodData);
@@ -423,7 +429,7 @@ const FloodData = () => {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(data.id)}
+                          onClick={() => handleDelete(data.id, data.barangay)}
                           className="text-white btn btn-xs btn-error rounded-sm"
                         >
                           Delete

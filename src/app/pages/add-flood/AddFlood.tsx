@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "@/firebase"; // Ensure you have configured Firebase and Firestore
 import { collection, addDoc } from "firebase/firestore";
+import { logFloodAction } from "@/utils/logging";
 
 interface AddDataProps {
   polygon: google.maps.LatLng[]; // Now correctly expects an array
@@ -104,6 +105,7 @@ const AddFlood: React.FC<AddDataProps> = ({
 
       try {
         const docRef = await addDoc(collection(db, "floods"), floodData);
+        await logFloodAction("add", barangay);
         handleCancel();
         alert("Flood data has been successfully submitted");
       } catch (e) {
