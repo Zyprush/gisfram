@@ -10,6 +10,7 @@ import { FirebaseError } from "firebase/app";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { logSystemAction } from "@/utils/logging";
 
 const Password = () => {
   const router = useRouter();
@@ -46,6 +47,7 @@ const Password = () => {
       try {
         await reauthenticateWithCredential(user, credential);
         await updatePassword(user, newPassword);
+        await logSystemAction("edit", "Password");
         alert("Password updated successfully.");
         router.push("/pages/settings");
       } catch (error: any) {

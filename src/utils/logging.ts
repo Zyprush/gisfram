@@ -86,12 +86,11 @@ export const logFloodAction = async (
 };
 
 export const logSystemAction = async (
-  actionType: "edit" | "printedMap" | "printedAnalysis",
+  actionType: "edit",
+  name: string
 ) => {
   const actionMessages = {
-    edit: `The System has been edited`,
-    printedMap: `The Map Data has been printed`,
-    printedAnalysis: `The Analysis has been printed`,
+    edit: `The ${name} has been edited`,
   };
 
   await logAction(actionMessages[actionType]);

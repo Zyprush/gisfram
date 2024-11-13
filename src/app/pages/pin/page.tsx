@@ -5,6 +5,7 @@ import { db } from "@/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { hash, compare } from 'bcryptjs';
 import Link from 'next/link';
+import { logSystemAction } from '@/utils/logging';
 
 const Pin = () => {
   const [currentPin, setCurrentPin] = useState('');
@@ -90,6 +91,8 @@ const Pin = () => {
         debug: Buffer.from(newPin).toString('base64'),
         updatedAt: new Date().toISOString()
       });
+
+      await logSystemAction('edit', 'PIN');
 
       setStep('success');
       setError('');

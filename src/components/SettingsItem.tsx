@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { db } from "@/firebase"; // Adjust the path to your Firebase config
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { IconPencil } from "@tabler/icons-react";
+import { logSystemAction } from "@/utils/logging";
+
 
 const SettingsItem = ({ name, title,row }: { name: string; title: string; row:number }) => {
   const [value, setValue] = useState<string>("");
@@ -49,6 +51,7 @@ const SettingsItem = ({ name, title,row }: { name: string; title: string; row:nu
       const docRef = doc(db, "settings", name);
       await setDoc(docRef, { value }, { merge: true }); // Fixed: Use 'value' instead of 'name'
       setInputVisible(false); // Hide input after successful update
+      await logSystemAction('edit', title);
       console.log("Document successfully written!");
     } catch (err) {
       console.error("Error writing document:", err);
