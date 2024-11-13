@@ -49,39 +49,43 @@ const FloodData = () => {
     to: "",
     barangay: "",
   });
+  const [barangays, setBarangays] = useState<string[]>([]);
 
   const fetchFloodData = async () => {
     setLoading(true);
     try {
-      const conditions: any[] = [];
+      let q = collection(db, "floods");
+      const queryConstraints: any[] = [];
 
+      // Add date filters if they exist
       if (filters.from && filters.to) {
-        conditions.push(
-          where("date", ">=", filters.from),
-          where("date", "<=", filters.to)
-        );
+        queryConstraints.push(where("date", ">=", filters.from));
+        queryConstraints.push(where("date", "<=", filters.to));
       } else if (filters.from) {
-        conditions.push(where("date", ">=", filters.from));
+        queryConstraints.push(where("date", ">=", filters.from));
       } else if (filters.to) {
-        conditions.push(where("date", "<=", filters.to));
+        queryConstraints.push(where("date", "<=", filters.to));
       }
 
+      // Add barangay filter if selected
       if (filters.barangay) {
-        conditions.push(where("barangay", "==", filters.barangay));
+        // Create case-insensitive options for the barangay name
+        const barangayName = filters.barangay.trim();
+        queryConstraints.push(where("barangay", "==", barangayName));
       }
 
-      const q = query(
-        collection(db, "floods"),
-        ...conditions,
-        orderBy("date", "desc"),
-        limit(50)
-      );
+      // Add ordering
+      queryConstraints.push(orderBy("date", "desc"));
+      queryConstraints.push(limit(50));
 
-      const querySnapshot = await getDocs(q);
+      // Construct and execute query
+      const querySnapshot = await getDocs(query(q, ...queryConstraints));
+
       const data = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as FloodRecord[];
+
       setFloodData(data);
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -286,6 +290,25 @@ const FloodData = () => {
     </th>
   );
 
+  const fetchBarangays = async () => {
+    const barangaysQuery = query(collection(db, "floods"));
+    const querySnapshot = await getDocs(barangaysQuery);
+    const uniqueBarangays = new Set<string>();
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.barangay) {
+        uniqueBarangays.add(data.barangay);
+      }
+    });
+
+    setBarangays(Array.from(uniqueBarangays).sort());
+  };
+
+  useEffect(() => {
+    fetchBarangays();
+  }, []);
+
   return (
     <Layout>
       <Authenticator />
@@ -318,18 +341,11 @@ const FloodData = () => {
               className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300 ml-4"
             >
               <option value="">All Barangays</option>
-              <option value="Alipaoy">Alipaoy</option>
-              <option value="Barangay 5">Barangay 5</option>
-              <option value="Barangay 2">Barangay 2</option>
-              <option value="Harrison">Harrison</option>
-              <option value="Lumangbayan">Lumangbayan</option>
-              <option value="Mananao">Mananao</option>
-              <option value="Barangay 1">Barangay 1</option>
-              <option value="Marikit">Marikit</option>
-              <option value="Barangay 4">Barangay 4</option>
-              <option value="Barangay 6">Barangay 6</option>
-              <option value="Barangay 3">Barangay 3</option>
-              <option value="Tubili">Tubili</option>
+              {barangays.map((barangay) => (
+                <option key={barangay} value={barangay}>
+                  {camelCaseToTitleCase(barangay)}
+                </option>
+              ))}
             </select>
             <button
               onClick={fetchFloodData}
