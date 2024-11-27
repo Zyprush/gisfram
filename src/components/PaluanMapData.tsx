@@ -62,7 +62,6 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
   const mapRef = useRef<google.maps.Map | null>(null);
 
   const [geoJsonData, setGeoJsonData] = useState<{ [key: string]: any }>({});
-  const [error, setError] = useState<string | null>(null);
   const [geoJsonFiles, setGeoJsonFiles] = useState<
     Array<{ name: string; file: string }>
   >([]);
@@ -152,7 +151,6 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
       })
       .catch((err) => {
         console.error("Error loading GeoJSON file list:", err);
-        setError("Error loading GeoJSON file list");
       });
   }, []);
 
@@ -168,7 +166,6 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
           })
           .catch((err) => {
             console.error("Error loading GeoJSON data:", err);
-            setError(`Error loading GeoJSON data for ${file}`);
           });
       }
     });
@@ -339,7 +336,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                       gender="Female"
                     />
                   </div>
-                  <DataModal barangay={barangayName} />
+                  <DataModal barangay={barangayName} year={year} />
                 </div>
               </div>
             )}

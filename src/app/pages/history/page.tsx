@@ -57,21 +57,21 @@ const History = () => {
     <Layout>
       <div className="flex h-screen">
         <div className="p-2 md:p-8 border border-neutral-200 dark:border-neutral-700 bg-[#f5f5f5] dark:bg-neutral-900 flex flex-col items-start justify-start gap-5 w-full h-full overflow-auto">
-          <h1 className="text-2xl font-bold">History Logs</h1>
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">History Logs</h1>
           
           {loading ? (
-            <div className="w-full text-center py-4">Loading...</div>
+            <div className="w-full text-center py-4 text-neutral-900 dark:text-white">Loading...</div>
           ) : logs.length === 0 ? (
-            <div className="w-full text-center py-4">No history logs found</div>
+            <div className="w-full text-center py-4 text-neutral-900 dark:text-white">No history logs found</div>
           ) : (
             <div className="w-full overflow-x-auto">
               <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
                 <thead>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-900 dark:text-white uppercase tracking-wider">
                       Action
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-900 dark:text-white uppercase tracking-wider">
                       Timestamp
                     </th>
                   </tr>
@@ -79,10 +79,10 @@ const History = () => {
                 <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
                   {logs.map((log) => (
                     <tr key={log.id} className="hover:bg-neutral-100 dark:hover:bg-neutral-800">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 dark:text-white">
                         {log.action}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 dark:text-white">
                         {formatDate(log.timestamp)}
                       </td>
                     </tr>

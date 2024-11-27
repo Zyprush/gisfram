@@ -22,7 +22,7 @@ interface HouseholdData {
   pregnantCount: number;
 }
 
-const DataModal = ({ barangay }: { barangay: string }) => {
+const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
   const [loading, setLoading] = useState(false);
   const [indigenousCount, setIndigenousCount] = useState(0);
   const [pwdCount, setPwdCount] = useState(0);
@@ -37,18 +37,15 @@ const DataModal = ({ barangay }: { barangay: string }) => {
     }, 0);
   };
 
-  const households = useFetchHouseholds(barangay, true, ""); // Fetch households filtered by barangay
-
   useEffect(() => {
     const fetchHouseholdData = async () => {
       setLoading(true);
       try {
-        const q = barangay
-          ? query(
-              collection(db, "households"),
-              where("barangay", "==", barangay)
-            )
-          : query(collection(db, "households"));
+        let q = query(
+          collection(db, "households"),
+          ...(barangay ? [where("barangay", "==", barangay)] : []),
+          ...(year ? [where("year", "==", year)] : [])
+        );
 
         const querySnapshot = await getDocs(q);
         const householdsData: HouseholdData[] = [];
@@ -83,7 +80,7 @@ const DataModal = ({ barangay }: { barangay: string }) => {
     };
 
     fetchHouseholdData();
-  }, [barangay]);
+  }, [barangay, year]);
 
   // Pie chart data and options
   const pieData = {
