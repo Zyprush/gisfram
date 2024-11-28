@@ -5,7 +5,7 @@ import SettingsItem from "@/components/SettingsItem";
 import { IconEdit, IconPassword, IconSettings } from "@tabler/icons-react";
 import Link from "next/link";
 import Sitio from "./Sitio";
-import BarangayComponent from "./barangayx";
+import BarangayComponent from "./Barangayx";
 
 const Settings = () => {
   return (
