@@ -332,7 +332,7 @@ const FloodData = () => {
       <div className="flex flex-1 h-screen">
         <div className="p-2 md:p-8 border border-neutral-200 dark:border-neutral-700 bg-zinc-100 dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
           <div className="flex gap-4 mb-4 items-center">
-            <label className="text-xs text-zinc-600 dark:text-zinc-300" htmlFor="from">
+            <label className="text-xs text-neutral-600 dark:text-neutral-300" htmlFor="from">
               From
             </label>
             <input
@@ -340,9 +340,9 @@ const FloodData = () => {
               id="from"
               value={filters.from}
               onChange={(e) => setFilters({ ...filters, from: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs"
+              className="border border-neutral-300 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-800 rounded-md p-2 text-xs"
             />
-            <label className="text-xs text-zinc-600 dark:text-zinc-300" htmlFor="to">
+            <label className="text-xs text-neutral-600 dark:text-neutral-300" htmlFor="to">
               To
             </label>
             <input
@@ -350,12 +350,12 @@ const FloodData = () => {
               id="to"
               value={filters.to}
               onChange={(e) => setFilters({ ...filters, to: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs"
+              className="border border-neutral-300 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-800 rounded-md p-2 text-xs"
             />
             <select
               value={filters.barangay}
               onChange={(e) => setFilters({ ...filters, barangay: e.target.value })}
-              className="border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-zinc-800 dark:bg-opacity-50 rounded-md p-2 text-xs text-zinc-600 dark:text-zinc-300 ml-4"
+              className="border border-neutral-300 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-800 rounded-md p-2 text-xs text-neutral-600 dark:text-neutral-300 ml-4"
             >
               <option value="">All Barangays</option>
               {barangays.map((barangay) => (
@@ -367,8 +367,7 @@ const FloodData = () => {
             <button
               onClick={fetchFloodData}
               disabled={loading}
-              className={`btn btn-sm my-auto text-white ${loading ? "btn-disabled" : "btn-primary"
-                }`}
+              className={`btn btn-sm my-auto text-white ${loading ? "btn-disabled" : "btn-primary"}`}
             >
               Filter
             </button>
