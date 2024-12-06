@@ -27,7 +27,7 @@ interface Household {
   id: string;
   barangay: string;
   houseNo: string;
-  year: string;
+  year?: string;
   memberTotal: number;
   headInfo: {
     name: string;
@@ -240,13 +240,13 @@ const Households = () => {
   const getSortValue = (household: Household, key: SortableKey): string => {
     switch (key) {
       case "barangay":
-        return household.barangay.toLowerCase();
+        return household.barangay.toLowerCase() || "";
       case "houseNo":
         return household.houseNo.toLowerCase();
       case "headName":
         return household.headInfo.name.toLowerCase();
       case "year":
-        return household.year.toLowerCase();
+        return (household.year || "").toLowerCase();
       default:
         return "";
     }
@@ -346,7 +346,7 @@ const Households = () => {
     new Set(
       households.map((household) => household.year).filter((year) => year)
     )
-  ).sort((a, b) => parseInt(b) - parseInt(a));
+  ).sort((a, b) => Number(b) - Number(a));
 
   return (
     <Layout>
@@ -437,7 +437,7 @@ const Households = () => {
                         label="Head of Household"
                         sortKey="headName"
                       />
-                      <SortableHeader label="Year Built" sortKey="year" />
+                      <SortableHeader label="Year" sortKey="year" />
                       <th className="p-2">Actions</th>
                     </tr>
                   </thead>
