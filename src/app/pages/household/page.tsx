@@ -27,6 +27,7 @@ interface Household {
   id: string;
   barangay: string;
   houseNo: string;
+  year: string;
   memberTotal: number;
   headInfo: {
     name: string;
@@ -35,20 +36,24 @@ interface Household {
   };
 }
 // Create a more specific type for sortable keys
-type SortableKey = 'barangay' | 'houseNo' | 'headName';
+type SortableKey = "barangay" | "houseNo" | "headName" | "year";
 
 type SortConfig = {
   key: SortableKey | null;
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 };
 
 const Households = () => {
   const [barangay, setBarangay] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [year, setYear] = useState<string>("");
   const [viewHouse, setViewHouse] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [households, setHouseholds] = useState<Household[]>([]);
-  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    key: null,
+    direction: "asc",
+  });
   const printRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -58,9 +63,8 @@ const Households = () => {
     setPin,
     error,
     verifyPin,
-    requirePin
+    requirePin,
   } = usePinVerification();
-
 
   // Fetch households from Firestore
   useEffect(() => {
@@ -90,34 +94,43 @@ const Households = () => {
 
   // Handle export to CSV using processed data
   const handleExport = async () => {
-    
     const processedData = getProcessedHouseholds();
 
-    const headers = ["Barangay", "House No.", "Head of Household", "Age", "Gender", "Total Members"];
+    const headers = [
+      "Barangay",
+      "House No.",
+      "Head of Household",
+      "Age",
+      "Gender",
+      "Total Members",
+    ];
     const csvData = [
       headers.join(","),
-      ...processedData.map(household => [
-        camelCaseToTitleCase(household.barangay),
-        household.houseNo,
-        household.headInfo.name,
-        household.headInfo.age,
-        household.headInfo.gender,
-        household.memberTotal
-      ].join(","))
+      ...processedData.map((household) =>
+        [
+          camelCaseToTitleCase(household.barangay),
+          household.houseNo,
+          household.headInfo.name,
+          household.headInfo.age,
+          household.headInfo.gender,
+          household.memberTotal,
+        ].join(",")
+      ),
     ].join("\n");
 
     const blob = new Blob([csvData], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `households_${barangay || "all"}_${new Date().toISOString().split("T")[0]}.csv`;
+    a.download = `households_${barangay || "all"}_${
+      new Date().toISOString().split("T")[0]
+    }.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
 
-    await logHouseholdAction('exported', barangay || 'All Barangays');
-    
+    await logHouseholdAction("exported", barangay || "All Barangays");
   };
 
   // Handle print using processed data
@@ -131,7 +144,9 @@ const Households = () => {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Households - ${barangay ? camelCaseToTitleCase(barangay) : "All Barangays"}</title>
+          <title>Households - ${
+            barangay ? camelCaseToTitleCase(barangay) : "All Barangays"
+          }</title>
           <style>
             body { font-family: Arial, sans-serif; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -141,7 +156,9 @@ const Households = () => {
           </style>
         </head>
         <body>
-          <h1>Households - ${barangay ? camelCaseToTitleCase(barangay) : "All Barangays"}</h1>
+          <h1>Households - ${
+            barangay ? camelCaseToTitleCase(barangay) : "All Barangays"
+          }</h1>
           <table>
             <thead>
               <tr>
@@ -154,7 +171,9 @@ const Households = () => {
               </tr>
             </thead>
             <tbody>
-              ${processedData.map(household => `
+              ${processedData
+                .map(
+                  (household) => `
                 <tr>
                   <td>${camelCaseToTitleCase(household.barangay)}</td>
                   <td>${household.houseNo}</td>
@@ -163,7 +182,9 @@ const Households = () => {
                   <td>${household.headInfo.gender}</td>
                   <td>${household.memberTotal}</td>
                 </tr>
-              `).join("")}
+              `
+                )
+                .join("")}
             </tbody>
           </table>
         </body>
@@ -176,7 +197,7 @@ const Households = () => {
       printWindow.print();
     };
 
-    await logHouseholdAction('printed', barangay || 'All Barangays');
+    await logHouseholdAction("printed", barangay || "All Barangays");
   };
 
   // Handle the Archive function (move to 'archived' collection with the same id)
@@ -197,7 +218,7 @@ const Households = () => {
       await deleteDoc(householdRef);
       setHouseholds((prev) => prev.filter((item) => item.id !== householdId));
 
-      await logHouseholdAction('archive', householdDoc.data().headInfo.name);
+      await logHouseholdAction("archive", householdDoc.data().headInfo.name);
 
       window.alert("Household archived successfully!");
     } catch (error) {
@@ -206,26 +227,28 @@ const Households = () => {
     }
   };
 
-  const handleSort = (key: SortConfig['key']) => {
-    setSortConfig(current => {
+  const handleSort = (key: SortConfig["key"]) => {
+    setSortConfig((current) => {
       if (current.key === key) {
-        return { key, direction: current.direction === 'asc' ? 'desc' : 'asc' };
+        return { key, direction: current.direction === "asc" ? "desc" : "asc" };
       }
-      return { key, direction: 'asc' };
+      return { key, direction: "asc" };
     });
   };
 
   // Function to get the value to sort by
   const getSortValue = (household: Household, key: SortableKey): string => {
     switch (key) {
-      case 'barangay':
+      case "barangay":
         return household.barangay.toLowerCase();
-      case 'houseNo':
+      case "houseNo":
         return household.houseNo.toLowerCase();
-      case 'headName':
+      case "headName":
         return household.headInfo.name.toLowerCase();
+      case "year":
+        return household.year.toLowerCase();
       default:
-        return '';
+        return "";
     }
   };
 
@@ -237,8 +260,8 @@ const Households = () => {
       const aValue = getSortValue(a, sortConfig.key as SortableKey);
       const bValue = getSortValue(b, sortConfig.key as SortableKey);
 
-      if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
       return 0;
     });
   };
@@ -246,9 +269,12 @@ const Households = () => {
   // Filter function that can be reused
   const getFilteredHouseholds = (householdsToFilter: Household[]) => {
     return householdsToFilter.filter(
-      household =>
+      (household) =>
         (!barangay || household.barangay === barangay) &&
-        (household.headInfo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (!year || year === "all" || household.year === year) &&
+        (household.headInfo.name
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
           household.houseNo.toString().includes(searchTerm))
     );
   };
@@ -262,12 +288,13 @@ const Households = () => {
   // Search filter
   const filteredHouseholds = households.filter(
     (household) =>
-      household.headInfo.name
+      (!barangay || household.barangay === barangay) &&
+      (!year || year === "all" || household.year === year) &&
+      (household.headInfo.name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      household.houseNo.toString().includes(searchTerm)
+        household.houseNo.toString().includes(searchTerm))
   );
-
 
   // Get sorted households after filtering
   const sortedHouseholds = getSortedHouseholds(filteredHouseholds);
@@ -275,7 +302,13 @@ const Households = () => {
   const processedHouseholds = getProcessedHouseholds();
 
   // Column header component
-  const SortableHeader = ({ label, sortKey }: { label: string; sortKey: SortConfig['key'] }) => (
+  const SortableHeader = ({
+    label,
+    sortKey,
+  }: {
+    label: string;
+    sortKey: SortConfig["key"];
+  }) => (
     <th
       className="p-2 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
       onClick={() => handleSort(sortKey)}
@@ -285,8 +318,12 @@ const Households = () => {
         <ArrowUpDown
           size={14}
           className={`
-            ${sortConfig.key === sortKey ? 'opacity-100' : 'opacity-50'}
-            ${sortConfig.key === sortKey && sortConfig.direction === 'desc' ? 'transform rotate-180' : ''}
+            ${sortConfig.key === sortKey ? "opacity-100" : "opacity-50"}
+            ${
+              sortConfig.key === sortKey && sortConfig.direction === "desc"
+                ? "transform rotate-180"
+                : ""
+            }
           `}
         />
       </div>
@@ -300,6 +337,16 @@ const Households = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setYear(e.target.value);
+  };
+
+  const availableYears = Array.from(
+    new Set(
+      households.map((household) => household.year).filter((year) => year)
+    )
+  ).sort((a, b) => parseInt(b) - parseInt(a));
 
   return (
     <Layout>
@@ -335,6 +382,20 @@ const Households = () => {
               <option value="silahisNgPagAsaPob">Silahis Ng Pag-Asa Pob</option>
               <option value="tubili">Tubili</option>
             </select>
+
+            <select
+              value={year}
+              onChange={handleYearChange}
+              className="border border-neutral-200 dark:border-neutral-700 text-zinc-600 dark:text-zinc-300 bg-white dark:bg-zinc-800 rounded-md p-2 text-xs"
+            >
+              <option value="all">All Years</option>
+              {availableYears.map((availableYear) => (
+                <option key={availableYear} value={availableYear}>
+                  {availableYear}
+                </option>
+              ))}
+            </select>
+
             <input
               type="text"
               value={searchTerm}
@@ -372,7 +433,11 @@ const Households = () => {
                     <tr className="text-sm text-neutral-600 dark:text-neutral-300 border-b border-neutral-200 dark:border-neutral-700 text-left p-2 font-semibold">
                       <SortableHeader label="Barangay" sortKey="barangay" />
                       <SortableHeader label="House No." sortKey="houseNo" />
-                      <SortableHeader label="Head of Household" sortKey="headName" />
+                      <SortableHeader
+                        label="Head of Household"
+                        sortKey="headName"
+                      />
+                      <SortableHeader label="Year Built" sortKey="year" />
                       <th className="p-2">Actions</th>
                     </tr>
                   </thead>
@@ -389,6 +454,7 @@ const Households = () => {
                         <td className="p-2 capitalize">
                           {household.headInfo.name}
                         </td>
+                        <td className="p-2">{household.year}</td>
                         <td className="p-2 flex gap-4">
                           <button
                             onClick={() => setViewHouse(household.id)}
