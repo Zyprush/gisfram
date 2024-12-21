@@ -60,6 +60,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
   const households = useFetchHouseholds(barangayName, house, sitio, year);
   const floods = useFetchFloods(barangayName, year, flood); // Fetch floods data
   const mapRef = useRef<google.maps.Map | null>(null);
+  const [hoveredSeverity, setHoveredSeverity] = useState<string>("");
 
   const [geoJsonData, setGeoJsonData] = useState<{ [key: string]: any }>({});
   const [geoJsonFiles, setGeoJsonFiles] = useState<
@@ -367,7 +368,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                   style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
                 },
                 mapTypeId: "satellite", // Set the default map type to satellite view
-                streetViewControl: true // Disable street view
+                streetViewControl: true, // Disable street view
               }}
             >
               {selectedFiles.map(
@@ -416,9 +417,11 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                       lat: household.position.lat,
                       lng: household.position.lng,
                     }}
-                    title={`HOUSE NO.: ${household.houseNo.toString().toUpperCase()}\nHEAD NAME: ${
-                      household.head.toUpperCase()
-                    }\nTOTAL MEMBER: ${household.memberTotal}`}
+                    title={`HOUSE NO.: ${household.houseNo
+                      .toString()
+                      .toUpperCase()}\nHEAD NAME: ${household.head.toUpperCase()}\nTOTAL MEMBER: ${
+                      household.memberTotal
+                    }`}
                   />
                 ))}
               {flood
@@ -451,6 +454,8 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                             : 1,
                       }}
                       onClick={() => console.log(`Flood details: ${floodData}`)} // Optional: Handle polygon click
+                      onMouseOver={() => setHoveredSeverity(floodData.severity)}
+                      onMouseOut={() => setHoveredSeverity("")}
                     />
                   ))
                 : null}
@@ -476,6 +481,11 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
               </Link>
             </div> */}
           </div>
+          {hoveredSeverity && (
+            <div className={`flood-severity-tooltip top-10 transform -translate-x-1/2 bg-white dark:bg-zinc-800 text-black dark:text-zinc-300 px-2 p-5 text-2xl fixed flex rounded-lg capitalize`} style={{ left: '50%' }}>
+              {hoveredSeverity}
+            </div>
+          )}
         </div>
       </div>
     </div>
