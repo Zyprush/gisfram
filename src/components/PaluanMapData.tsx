@@ -30,6 +30,7 @@ import { handangTumulongPob, tubili, mapaladPob } from "./barangayCoord";
 import Sitio from "@/app/pages/settings/Sitio";
 import { db } from "@/firebase";
 import { getDoc, doc } from "firebase/firestore";
+import Link from "next/link";
 
 const center = { lat: 13.397099, lng: 120.459089 };
 
@@ -460,7 +461,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                   ))
                 : null}
             </GoogleMap>
-            {/* <div className="p-2 bg-white dark:bg-zinc-800 rounded-xl fixed z-40 bottom-5 right-40">
+            <div className="p-2 bg-white dark:bg-zinc-800 rounded-xl fixed z-40 bottom-8 right-20">
               <Link
                 href={`/pages/map/print?barangayName=${encodeURIComponent(
                   barangayName ?? ""
@@ -477,9 +478,9 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Printers
+                Print
               </Link>
-            </div> */}
+            </div>
           </div>
           {hoveredSeverity && (
             <div className={`flood-severity-tooltip top-10 transform -translate-x-1/2 bg-white dark:bg-zinc-800 text-black dark:text-zinc-300 px-2 p-5 text-2xl fixed flex rounded-lg capitalize`} style={{ left: '50%' }}>

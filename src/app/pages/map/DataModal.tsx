@@ -4,7 +4,6 @@ import { db } from "@/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from "chart.js";
-import useFetchHouseholds from "@/hooks/useFetchHouseholds";
 
 // Register Chart.js components
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale); // Register the plugin
@@ -126,20 +125,35 @@ const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
           <p>Loading...</p>
         </div>
       ) : (
-        <div className="flex-col p-5 bg-white shadow dark:bg-zinc-900 rounded-lg dark:border dark:border-zinc-900 h-auto flex mr-auto ml-0 mx-auto items-start justify-start dark:text-zinc-400 text-zinc-600">
-          <span className="text-lg font-bold text-primary dark:text-zinc-300">
+        <div className="flex-row p-4 pl-0 bg-white shadow dark:bg-zinc-900 rounded-lg dark:border dark:border-zinc-900 h-auto flex mr-auto ml-0 mx-auto items-start justify-start dark:text-zinc-400 text-zinc-600">
+          {/* <span className="text-lg font-bold text-primary dark:text-zinc-300">
             Vulnerable Groups 
-          </span>
-          <div className="h-64 w-full mt-4">
+          </span> */}
+          <div className="h-60">
             <Pie data={pieData} options={pieOptions} />
           </div>
           {/* Display the data counts */}
-          <div className="mt-4">
-            <p>Indigenous: {indigenousCount}</p>
-            <p>PWD: {pwdCount}</p>
-            <p>Pregnant: {totalPregnant}</p>
-            <p>Senior: {seniorCount}</p>
-            <p>Total Population: {totalPopulation}</p> {/* Total population count */}
+          <div className="mt-4 grid grid-cols-2 gap-4 text-xs">
+            <div className="bg-yellow-100 p-2 rounded shadow">
+              <p className="font-semibold">Indigenous</p>
+              <p>{indigenousCount}</p>
+            </div>
+            <div className="bg-blue-100 p-2 rounded shadow">
+              <p className="font-semibold">PWD</p>
+              <p>{pwdCount}</p>
+            </div>
+            <div className="bg-pink-100 p-2 rounded shadow">
+              <p className="font-semibold">Pregnant</p>
+              <p>{totalPregnant}</p>
+            </div>
+            <div className="bg-teal-100 p-2 rounded shadow">
+              <p className="font-semibold">Senior</p>
+              <p>{seniorCount}</p>
+            </div>
+            <div className="col-span-2 bg-gray-100 p-2 rounded shadow">
+              <p className="font-semibold">Total Population</p>
+              <p>{totalPopulation}</p>
+            </div>
           </div>
         </div>
       )}
