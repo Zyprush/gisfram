@@ -20,6 +20,10 @@ import { paluanCoords } from "../paluanCoords";
 import { getSetting } from "../../settings/getSetting";
 
 const Print = () => {
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const reactToPrintFn = useReactToPrint({
+    content: () => contentRef.current,
+  });
   const searchParams = useSearchParams();
   const mapContainerStyle = {
     width: "100%",
@@ -63,9 +67,9 @@ const Print = () => {
   if (!isLoaded) return <Loading />;
 
   return (
-    <div className="flex justify-center items-center w-screen h-full py-10 overflow-x-hidden">
+    <div className="flex justify-center items-center w-screen h-full py-10 print:p-0 print:bg-white overflow-x-hidden">
       <div
-        id="printable"
+        ref={contentRef}
         className="w-[210mm] tahoma h-[297mm] mx-auto p-0 text-center bg-white border border-gray-200 shadow-lg text-zinc-700 relative"
       >
         <div className="print:z-50 mt-5">
@@ -205,29 +209,33 @@ const Print = () => {
                 : null}
             </GoogleMap>
           </div>
-            <div className="flex gap-3 w-full">
-              <div className="flex w-2/5 flex-col gap-3">
-                <AnalysisModal
-                  barangay={barangayName}
-                  year={year}
-                  gender="Male"
-                />
-                <AnalysisModal
-                  barangay={barangayName}
-                  year={year}
-                  gender="Female"
-                />
-              </div>
-              <DataModal barangay={barangayName} year={year} />
+          <div className="flex gap-3 w-full">
+            <div className="flex w-2/5 flex-col gap-3">
+              <AnalysisModal
+                barangay={barangayName}
+                year={year}
+                gender="Male"
+              />
+              <AnalysisModal
+                barangay={barangayName}
+                year={year}
+                gender="Female"
+              />
             </div>
-            <div className="text-zinc-600 flex flex-col absolute bottom-0 right-10 p-3">
-                {printName}
-                <span className="text-xs">
-                    Printed By
-                </span>
-            </div>
+            <DataModal barangay={barangayName} year={year} />
+          </div>
+          <div className="text-zinc-600 flex flex-col absolute bottom-0 right-10 p-3">
+            {printName}
+            <span className="text-xs">Printed By</span>
+          </div>
         </div>
       </div>
+      <button
+        onClick={reactToPrintFn}
+        className="fixed bottom-10 right-10 btn btn-primary text-white mt-5"
+      >
+        Print
+      </button>
     </div>
   );
 };

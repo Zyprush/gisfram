@@ -4,9 +4,7 @@ import { Authenticator } from "@/components/Authenthicator";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
 import PaluanMapData from "@/components/PaluanMapData";
-import { logHouseholdAction } from "@/utils/logging";
 import React, { useEffect, useRef, useState } from "react";
-import ReactToPrint from "react-to-print";
 
 const Map = () => {
   const [isLoading, setIsLoading] = useState(true);
