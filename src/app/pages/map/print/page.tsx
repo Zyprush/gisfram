@@ -14,6 +14,7 @@ import {
   Polygon,
   Polyline,
   useJsApiLoader,
+  Data,
 } from "@react-google-maps/api";
 import Loading from "@/components/Loading";
 import { paluanCoords } from "../paluanCoords";
@@ -55,6 +56,10 @@ const Print = () => {
   const [boundary, setBoundary] = useState<any>(paluanCoords);
   const [printName, setPrintName] = useState("");
   const mapRef = useRef<google.maps.Map | null>(null);
+  const [geoJsonData, setGeoJsonData] = useState<{ [key: string]: any }>({});
+
+  const geojsonParam = searchParams.get("geojson") || "";
+  const selectedFiles = geojsonParam ? geojsonParam.split(",") : [];
 
   const panAndZoomToBarangay = (coordinates: google.maps.LatLngLiteral[]) => {
     if (mapRef.current) {
@@ -109,6 +114,21 @@ const Print = () => {
     };
     fetchBrandName();
   }, []);
+
+  useEffect(() => {
+    selectedFiles.forEach((file) => {
+      if (!geoJsonData[file]) {
+        fetch(`/geojson/${file}`)
+          .then((response) => response.json())
+          .then((data) => {
+            setGeoJsonData((prevData) => ({ ...prevData, [file]: data }));
+          })
+          .catch((err) => {
+            console.error("Error loading GeoJSON data:", err);
+          });
+      }
+    });
+  }, [selectedFiles]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!isLoaded) return <Loading />;
 
@@ -168,16 +188,12 @@ const Print = () => {
                 streetViewControl: false, // Disable street view
               }}
             >
-              {/* {selectedFiles.map(
+              {selectedFiles.map(
                 (file) =>
                   geoJsonData[file] && (
                     <Data
                       key={file}
                       onLoad={(data) => {
-                        console.log(
-                          "Loading GeoJSON data onto map for file:",
-                          file
-                        );
                         data.addGeoJson(geoJsonData[file]);
                         data.setStyle({
                           strokeColor: "#FF0000",
@@ -194,7 +210,7 @@ const Print = () => {
                       }}
                     />
                   )
-              )} */}
+              )}
               {boundary && (
                 <Polyline
                   path={boundary}

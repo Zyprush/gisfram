@@ -473,7 +473,9 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                   flood ?? ""
                 )}&analysis=${encodeURIComponent(
                   analysis ?? ""
-                )}&sitio=${encodeURIComponent(sitio ?? "")}`}
+                )}&sitio=${encodeURIComponent(
+                  sitio ?? ""
+                )}&geojson=${encodeURIComponent(selectedFiles.join(","))}`}
                 className="btn btn-primary btn-sm text-white"
                 target="_blank"
                 rel="noopener noreferrer"
