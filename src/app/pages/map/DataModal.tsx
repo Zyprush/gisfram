@@ -5,20 +5,97 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale } from "chart.js";
 
-// Register Chart.js components
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale); // Register the plugin
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
+
+interface Position {
+  lat: number;
+  lng: number;
+}
+
+interface Flood {
+  position: Position[];
+  id: string;
+  cause: string;
+  waterLevel: number;
+  casualties: number;
+  rainfallAmount: number;
+  date: string;
+  severity: string;
+  barangay: string;
+}
 
 interface HouseholdData {
   member: any[];
   headInfo: {
     gender: string;
+    name: string;
+    age: number;
+    contact: string;
+    pwd: boolean;
+    indigenous: boolean;
+    pregnant: boolean;
   };
+  position: Position;
   femaleCount: number;
   pwdCount: number;
   indigenousCount: number;
   memberTotal: number;
   seniorCount: number;
   pregnantCount: number;
+  houseStruc: string;
+  year: string;
+  barangay: string;
+  sitio: string;
+  houseNo: string;
+  members: Array<{
+    name: string;
+    age: number;
+    gender: string;
+    contact?: string;
+    pwd: boolean;
+    indigenous: boolean;
+    pregnant: boolean;
+  }>;
+  maleCount: number;
+  date: string;
+}
+
+function isPointInPolygon(point: Position, polygon: Position[]): boolean {
+  let inside = false;
+  const x = point.lng;
+  const y = point.lat;
+
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].lng;
+    const yi = polygon[i].lat;
+    const xj = polygon[j].lng;
+    const yj = polygon[j].lat;
+
+    const intersect = ((yi > y) !== (yj > y)) &&
+      (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    
+    if (intersect) inside = !inside;
+  }
+
+  return inside;
+}
+
+function getAffectedPopulation(floods: Flood[], households: HouseholdData[]): number {
+  let totalAffected = 0;
+
+  households.forEach(household => {
+    if (!household.position) return;
+    
+    const isAffected = floods.some(flood => 
+      flood.position && isPointInPolygon(household.position, flood.position)
+    );
+
+    if (isAffected) {
+      totalAffected += household.memberTotal || 0;
+    }
+  });
+
+  return totalAffected;
 }
 
 const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
@@ -27,31 +104,46 @@ const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
   const [pwdCount, setPwdCount] = useState(0);
   const [seniorCount, setSeniorCount] = useState(0);
   const [totalPregnant, setTotalPregnant] = useState(0);
-  const [totalPopulation, setTotalPopulation] = useState(0); // State for total population
+  const [totalPopulation, setTotalPopulation] = useState(0);
+  const [totalAffected, setTotalAffected] = useState(0);
 
-  // Function to get total population based on affected households
   const getTotalPopulation = (households: HouseholdData[]) => {
     return households.reduce((total, household) => {
-      return total + (household.memberTotal || 0); // Sum up memberTotal for each household
+      return total + (household.memberTotal || 0);
     }, 0);
   };
 
   useEffect(() => {
-    const fetchHouseholdData = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
-        let q = query(
+        const householdsQuery = query(
           collection(db, "households"),
           ...(barangay ? [where("barangay", "==", barangay)] : []),
           ...(year ? [where("year", "==", year)] : [])
         );
+        
+        const floodsQuery = query(
+          collection(db, "floods"),
+          ...(barangay ? [where("barangay", "==", barangay)] : [])
+        );
 
-        const querySnapshot = await getDocs(q);
+        const [householdsSnapshot, floodsSnapshot] = await Promise.all([
+          getDocs(householdsQuery),
+          getDocs(floodsQuery)
+        ]);
+
         const householdsData: HouseholdData[] = [];
+        const floodsData: Flood[] = [];
 
-        querySnapshot.forEach((doc) => {
+        householdsSnapshot.forEach((doc) => {
           const data = doc.data() as HouseholdData;
-          householdsData.push(data); // Collect household data
+          householdsData.push(data);
+        });
+
+        floodsSnapshot.forEach((doc) => {
+          const data = doc.data() as Flood;
+          floodsData.push(data);
         });
 
         let totalIndigenous = 0;
@@ -70,18 +162,19 @@ const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
         setPwdCount(totalPWD);
         setTotalPregnant(totalPregnant);
         setSeniorCount(seniorCount);
-        setTotalPopulation(getTotalPopulation(householdsData)); // Set total population
+        setTotalPopulation(getTotalPopulation(householdsData));
+        setTotalAffected(getAffectedPopulation(floodsData, householdsData));
+
       } catch (error) {
-        console.error("Error fetching household data: ", error);
+        console.error("Error fetching data: ", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchHouseholdData();
+    fetchData();
   }, [barangay, year]);
 
-  // Pie chart data and options
   const pieData = {
     labels: ['Indigenous', 'PWD', 'Pregnant', 'Senior'],
     datasets: [
@@ -108,11 +201,11 @@ const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
           },
         },
       },
-      datalabels: { // Update this section to display both label and value
+      datalabels: {
         color: '#fff',
         formatter: (value: number, context: any) => {
-          const label = context.chart.data.labels[context.dataIndex]; // Get the label
-          return `${value} ${label}`; // Format as "value label"
+          const label = context.chart.data.labels[context.dataIndex];
+          return `${value} ${label}`;
         },
       },
     },
@@ -126,13 +219,9 @@ const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
         </div>
       ) : (
         <div className="flex-row p-4 pl-0 bg-white shadow dark:bg-zinc-900 rounded-lg dark:border dark:border-zinc-900 h-auto flex mr-auto ml-0 mx-auto items-start justify-start dark:text-zinc-400 text-zinc-600">
-          {/* <span className="text-lg font-bold text-primary dark:text-zinc-300">
-            Vulnerable Groups 
-          </span> */}
           <div className="h-60">
             <Pie data={pieData} options={pieOptions} />
           </div>
-          {/* Display the data counts */}
           <div className="mt-4 grid grid-cols-2 gap-4 text-xs">
             <div className="bg-yellow-100 p-2 rounded shadow">
               <p className="font-semibold">Indigenous</p>
@@ -153,6 +242,10 @@ const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
             <div className="col-span-2 bg-gray-100 p-2 rounded shadow">
               <p className="font-semibold">Total Population</p>
               <p>{totalPopulation}</p>
+            </div>
+            <div className="col-span-2 bg-red-300 p-2 rounded shadow">
+              <p className="font-semibold">Total Affected</p>
+              <p>{totalAffected}</p>
             </div>
           </div>
         </div>

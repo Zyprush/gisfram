@@ -46,7 +46,10 @@ const Print = () => {
   const [printName, setPrintName] = useState("");
 
   const households = useFetchHouseholds(barangayName, house, sitio, year);
-  const floods = useFetchFloods(barangayName, year, flood); // Fetch floods data
+  const floods = useFetchFloods(barangayName, year, flood);
+  console.dir(floods);
+  console.dir(households);
+
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
     libraries: ["geometry"],
@@ -69,8 +72,9 @@ const Print = () => {
   return (
     <div className="flex justify-center items-center w-screen h-full py-10 print:p-0 print:bg-white overflow-x-hidden">
       <div
+        id="contentToPrint"
         ref={contentRef}
-        className="w-[210mm] tahoma h-[297mm] mx-auto p-0 text-center bg-white border border-gray-200 shadow-lg text-zinc-700 relative"
+        className="w-[210mm] tahoma h-[297mm] mx-auto flex flex-col p-0 text-center bg-white border border-gray-200 shadow-lg text-zinc-700 relative"
       >
         <div className="print:z-50 mt-5">
           <PrintHeader />
