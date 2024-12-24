@@ -54,7 +54,15 @@ const Print = () => {
   const sitio = searchParams.get("sitio") || "";
   const [boundary, setBoundary] = useState<any>(paluanCoords);
   const [printName, setPrintName] = useState("");
+  const mapRef = useRef<google.maps.Map | null>(null);
 
+  const panAndZoomToBarangay = (coordinates: google.maps.LatLngLiteral[]) => {
+    if (mapRef.current) {
+      const bounds = new google.maps.LatLngBounds();
+      coordinates.forEach((coord) => bounds.extend(coord));
+      mapRef.current.fitBounds(bounds); // Automatically fits the boundary
+    }
+  };
   useEffect(() => {
     const barangayBoundaries = {
       alipaoy,
@@ -71,6 +79,10 @@ const Print = () => {
       tubili,
     };
     setBoundary(
+      barangayBoundaries[barangayName as keyof typeof barangayBoundaries] ||
+        paluanCoords
+    );
+    panAndZoomToBarangay(
       barangayBoundaries[barangayName as keyof typeof barangayBoundaries] ||
         paluanCoords
     );
