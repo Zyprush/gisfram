@@ -18,6 +18,16 @@ import {
 import Loading from "@/components/Loading";
 import { paluanCoords } from "../paluanCoords";
 import { getSetting } from "../../settings/getSetting";
+import { alipaoy } from "@/lib/boundary/alipaoy";
+import { bagongSilangPob } from "@/lib/boundary/bagongSilangPob";
+import { handangTumulongPob, mapaladPob, tubili } from "@/components/barangayCoord";
+import { harrison } from "@/lib/boundary/harrison";
+import { lumangbayan } from "@/lib/boundary/lumangbayan";
+import { mananao } from "@/lib/boundary/mananao";
+import { marikit } from "@/lib/boundary/marikit";
+import { pagAsaNgBayanPob } from "@/lib/boundary/pagAsaNgBayanPob";
+import { sanJosePob } from "@/lib/boundary/sanJosePob";
+import { silahisNgPagAsaPob } from "@/lib/boundary/silahisNgPagAsaPob";
 
 const Print = () => {
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -44,6 +54,27 @@ const Print = () => {
   const sitio = searchParams.get("sitio") || "";
   const [boundary, setBoundary] = useState<any>(paluanCoords);
   const [printName, setPrintName] = useState("");
+
+  useEffect(() => {
+    const barangayBoundaries = {
+      alipaoy,
+      bagongSilangPob,
+      handangTumulongPob,
+      harrison,
+      lumangbayan,
+      mananao,
+      mapaladPob,
+      marikit,
+      pagAsaNgBayanPob,
+      sanJosePob,
+      silahisNgPagAsaPob,
+      tubili,
+    };
+    setBoundary(
+      barangayBoundaries[barangayName as keyof typeof barangayBoundaries] ||
+        paluanCoords
+    );
+  }, [barangayName]);
 
   const households = useFetchHouseholds(barangayName, house, sitio, year);
   const floods = useFetchFloods(barangayName, year, flood);
