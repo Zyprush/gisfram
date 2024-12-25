@@ -4,7 +4,7 @@ import PrintHeader from "@/components/PrintHeader";
 import useFetchFloods from "@/hooks/useFetchFloods";
 import useFetchHouseholds from "@/hooks/useFetchHouseholds";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import AnalysisModal from "@/app/pages/map/AnalysisModal";
 import DataModal from "../DataModal";
@@ -30,7 +30,7 @@ import { pagAsaNgBayanPob } from "@/lib/boundary/pagAsaNgBayanPob";
 import { sanJosePob } from "@/lib/boundary/sanJosePob";
 import { silahisNgPagAsaPob } from "@/lib/boundary/silahisNgPagAsaPob";
 
-const Print = () => {
+const PrintContent = () => {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const reactToPrintFn = useReactToPrint({
     content: () => contentRef.current,
@@ -104,15 +104,15 @@ const Print = () => {
   });
 
   useEffect(() => {
-    const fetchBrandName = async () => {
+    const fetchPrintedName = async () => {
       try {
         const name = await getSetting("printedBy");
         if (name) setPrintName(name);
       } catch (error) {
-        console.error("Error fetching brand name:", error);
+        console.error("Error fetching printed name:", error);
       }
     };
-    fetchBrandName();
+    fetchPrintedName();
   }, []);
 
   useEffect(() => {
@@ -289,7 +289,7 @@ const Print = () => {
           </div>
           <div className="text-zinc-600 flex flex-col absolute bottom-0 right-10 p-3">
             {printName}
-            <span className="text-xs">Printed By</span>
+            <span className="text-xs">Noted By</span>
           </div>
         </div>
       </div>
@@ -300,6 +300,14 @@ const Print = () => {
         Print
       </button>
     </div>
+  );
+};
+
+const Print = () => {
+  return (
+    <Suspense fallback={<Loading />}>
+      <PrintContent />
+    </Suspense>
   );
 };
 

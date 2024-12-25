@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Authenticator } from "@/components/Authenthicator";
 import { Layout } from "@/components/Layout";
-import { db } from "@/firebase";
+import { db, storage } from "@/firebase";
 import {
   collection,
   getDocs,
@@ -18,10 +18,12 @@ import {
 import ViewEditHouse from "../add-flood/ViewEditHouse";
 import Link from "next/link";
 import { camelCaseToTitleCase } from "@/lib/string";
-import { Printer, FileDown, ArrowUpDown } from "lucide-react";
+import { Printer, FileDown, ArrowUpDown} from "lucide-react";
 import { usePinVerification } from "@/hooks/usePinVerification";
 import { PinVerificationModal } from "@/components/PinVerificationModal";
 import { logHouseholdAction } from "@/utils/logging";
+import { getSetting } from "../settings/getSetting";
+import { ref, getDownloadURL } from "firebase/storage";
 
 interface Household {
   id: string;
@@ -50,11 +52,37 @@ const Households = () => {
   const [viewHouse, setViewHouse] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [households, setHouseholds] = useState<Household[]>([]);
+  const [printName, setPrintName] = useState("");
+  const [imageURL, setImageURL] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: null,
     direction: "asc",
   });
-  const printRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getSetting("printedBy")
+      .then((name) => {
+        if (name) setPrintName(name);
+      })
+      .catch((error) => {
+        console.error("Error fetching printed name:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const fetchSignatureImageURL = async () => {
+      try {
+        const storageRef = ref(storage, "settings/signature");
+        const url = await getDownloadURL(storageRef);
+        setImageURL(url);
+      } catch (error) {
+        console.error("Error fetching signature image URL", error);
+        setImageURL(null);
+      }
+    };
+
+    fetchSignatureImageURL();
+  }, []);
 
   const {
     isPinModalOpen,
@@ -187,6 +215,11 @@ const Households = () => {
                 .join("")}
             </tbody>
           </table>
+          <div style="width: 100%; text-align: right;">
+          <div style="margin-right: 40px"><image src="${imageURL}" width="100" height="100"></div>
+          <p style="font-weight: bold; margin-right: 10px; margin-top: -50px">${printName}</p>
+          <p style="margin-right: 40px">Noted by</p> 
+          </div>
         </body>
       </html>
     `;

@@ -6,6 +6,7 @@ import { IconDownload, IconPassword, IconSettings } from "@tabler/icons-react";
 import Link from "next/link";
 import Sitio from "./Sitio";
 import BarangayComponent from "./Barangayx";
+import ImgSetting from "./ImgSetting";
 
 const Settings = () => {
   return (
@@ -17,6 +18,10 @@ const Settings = () => {
             {/* System Name Card */}
             <div className="h-full">
               <SettingsItem title="Printed By" name="printedBy" row={1} />
+            </div>
+
+            <div className="h-full">
+              <ImgSetting fileName="signature" name="Signature" />
             </div>
 
             <div className="h-full">
