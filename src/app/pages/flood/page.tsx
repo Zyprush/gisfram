@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { db } from "@/firebase";
+import { db, storage } from "@/firebase";
 import {
   collection,
   query,
@@ -19,6 +19,8 @@ import { Printer, FileDown, ArrowUpDown } from "lucide-react";
 import { usePinVerification } from "@/hooks/usePinVerification";
 import { PinVerificationModal } from "@/components/PinVerificationModal";
 import { logFloodAction } from "@/utils/logging";
+import { getDownloadURL, ref } from "firebase/storage";
+import { getSetting } from "../settings/getSetting";
 
 interface Position {
   lat: number;
@@ -45,7 +47,9 @@ type SortConfig = {
 const FloodData = () => {
   const [floodData, setFloodData] = useState<FloodRecord[]>([]);
   const [loading, setLoading] = useState(false);
+  const [imageURL, setImageURL] = useState<string | null>(null);
   const [editId, setEditId] = useState<string | null>(null);
+  const [printName, setPrintName] = useState("");
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
   const [filters, setFilters] = useState<{ from: string; to: string; barangay: string }>({
     from: "",
@@ -62,6 +66,30 @@ const FloodData = () => {
     verifyPin,
     requirePin
   } = usePinVerification();
+
+  useEffect(() => {
+    const fetchSignatureImageURL = async () => {
+      try {
+        const storageRef = ref(storage, "settings/signature");
+        const url = await getDownloadURL(storageRef);
+        setImageURL(url);
+      } catch (error) {
+        console.error("Error fetching signature image URL", error);
+        setImageURL(null);
+      }
+    };
+
+    fetchSignatureImageURL();
+  }, []);
+  useEffect(() => {
+    getSetting("printedBy")
+      .then((name) => {
+        if (name) setPrintName(name);
+      })
+      .catch((error) => {
+        console.error("Error fetching printed name:", error);
+      });
+  }, []);
 
   const fetchFloodData = async () => {
     setLoading(true);
@@ -273,6 +301,11 @@ const FloodData = () => {
               `).join("")}
             </tbody>
           </table>
+          <div style="width: 100%; text-align: right;">
+            <div style="margin-right: 40px"><image src="${imageURL}" width="100" height="100"></div>
+            <p style="font-weight: bold; margin-right: 10px; margin-top: -50px">${printName}</p>
+            <p style="margin-right: 40px">Noted by</p> 
+          </div>
         </body>
       </html>
     `;

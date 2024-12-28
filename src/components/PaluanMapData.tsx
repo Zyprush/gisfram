@@ -338,7 +338,7 @@ const PaluanMapData: React.FC<PaluanMapDataProps> = ({
                       gender="Female"
                     />
                   </div>
-                  <DataModal barangay={barangayName} year={year} />
+                  <DataModal barangay={barangayName} year={year} flood={flood} />
                 </div>
               </div>
             )}

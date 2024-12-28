@@ -21,7 +21,11 @@ import { paluanCoords } from "../paluanCoords";
 import { getSetting } from "../../settings/getSetting";
 import { alipaoy } from "@/lib/boundary/alipaoy";
 import { bagongSilangPob } from "@/lib/boundary/bagongSilangPob";
-import { handangTumulongPob, mapaladPob, tubili } from "@/components/barangayCoord";
+import {
+  handangTumulongPob,
+  mapaladPob,
+  tubili,
+} from "@/components/barangayCoord";
 import { harrison } from "@/lib/boundary/harrison";
 import { lumangbayan } from "@/lib/boundary/lumangbayan";
 import { mananao } from "@/lib/boundary/mananao";
@@ -29,6 +33,7 @@ import { marikit } from "@/lib/boundary/marikit";
 import { pagAsaNgBayanPob } from "@/lib/boundary/pagAsaNgBayanPob";
 import { sanJosePob } from "@/lib/boundary/sanJosePob";
 import { silahisNgPagAsaPob } from "@/lib/boundary/silahisNgPagAsaPob";
+import GetImage from "../../settings/GetImage";
 
 const PrintContent = () => {
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -285,8 +290,12 @@ const PrintContent = () => {
                 gender="Female"
               />
             </div>
-            <DataModal barangay={barangayName} year={year} />
+            <DataModal barangay={barangayName} year={year} flood={flood} />
           </div>
+
+          <span className="w-40 absolute right-10 bottom-3">
+            <GetImage storageLink="settings/signature" />
+          </span>
           <div className="text-zinc-600 flex flex-col absolute bottom-0 right-10 p-3">
             {printName}
             <span className="text-xs">Noted By</span>

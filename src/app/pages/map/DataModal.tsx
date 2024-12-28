@@ -98,7 +98,7 @@ function getAffectedPopulation(floods: Flood[], households: HouseholdData[]): nu
   return totalAffected;
 }
 
-const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
+const DataModal = ({ barangay, year, flood }: { barangay: string, year: string, flood: boolean }) => {
   const [loading, setLoading] = useState(false);
   const [indigenousCount, setIndigenousCount] = useState(0);
   const [pwdCount, setPwdCount] = useState(0);
@@ -243,10 +243,12 @@ const DataModal = ({ barangay, year }: { barangay: string, year: string }) => {
               <p className="font-semibold">Total Population</p>
               <p>{totalPopulation}</p>
             </div>
-            <div className="col-span-2 bg-red-300 p-2 rounded shadow">
-              <p className="font-semibold">Total Affected</p>
-              <p>{totalAffected}</p>
-            </div>
+            {flood && (
+              <div className="col-span-2 bg-red-300 p-2 rounded shadow">
+                <p className="font-semibold">Total Affected</p>
+                <p>{totalAffected}</p>
+              </div>
+            )}
           </div>
         </div>
       )}
