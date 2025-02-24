@@ -5,7 +5,7 @@ import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
 import PaluanMapData from "@/components/PaluanMapData";
 import React, { useEffect, useRef, useState } from "react";
-
+ 
 const Map = () => {
   const [isLoading, setIsLoading] = useState(true);
 
